@@ -1,0 +1,104 @@
+@if (isLoading) {
+  <div class="flex items-center justify-center h-64"><mat-spinner diameter="48"></mat-spinner></div>
+} @else if (student) {
+  <div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <a routerLink="/etudiants" class="text-gray-400 hover:text-primary transition-colors">
+          <i class="fas fa-arrow-left text-lg"></i>
+        </a>
+        <div>
+          <div class="flex items-center gap-3">
+            <h1 class="text-2xl font-bold text-primary">{{ student.prenom }} {{ student.nom }}</h1>
+            <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="student.actif ? 'bg-green-50 text-success' : 'bg-gray-100 text-gray-500'">
+              {{ student.actif ? 'Actif' : 'Inactif' }}
+            </span>
+          </div>
+          <p class="text-sm text-gray-500 mt-0.5">
+            <span class="font-mono bg-gray-100 px-2 py-0.5 rounded mr-2">{{ student.etudiant?.matricule }}</span>
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button mat-stroked-button (click)="openEditDialog()"><i class="fas fa-pen mr-2"></i> Modifier</button>
+        <button mat-raised-button class="!bg-secondary !text-white" (click)="telechargerReleve()"><i class="fas fa-file-pdf mr-2"></i> Télécharger relevé</button>
+      </div>
+    </div>
+
+    <!-- Personal Info -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h3 class="text-lg font-semibold text-primary mb-4">Informations personnelles</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        <div class="space-y-3">
+          <div><span class="text-xs text-gray-400 uppercase">Nom complet</span><p class="font-medium">{{ student.prenom }} {{ student.nom }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Email</span><p class="text-sm">{{ student.email }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Téléphone</span><p class="text-sm">{{ student.telephone || '—' }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Date de naissance</span><p class="text-sm">{{ student.dateNaissance ? formatDate(student.dateNaissance) : '—' }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Adresse</span><p class="text-sm">{{ student.adresse || '—' }}</p></div>
+        </div>
+        <div class="space-y-3">
+          <div><span class="text-xs text-gray-400 uppercase">Matricule</span><p class="font-mono font-medium">{{ student.etudiant?.matricule || '—' }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Niveau actuel</span><p class="text-sm">{{ student.etudiant?.niveauActuel || '—' }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Filière</span><p class="text-sm">{{ student.etudiant?.filiereActuelle || '—' }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Date d'inscription</span><p class="text-sm">{{ student.etudiant?.dateInscription ? formatDate($any(student.etudiant).dateInscription) : '—' }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Tuteur</span><p class="text-sm">{{ student.etudiant?.nomTuteur || '—' }} {{ student.etudiant?.numeroTuteur ? '(' + $any(student.etudiant).numeroTuteur + ')' : '' }}</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes récentes -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h3 class="text-lg font-semibold text-primary mb-4">Notes récentes</h3>
+      @if (notes.length === 0) {
+        <div class="text-center py-8 text-gray-400">
+          <i class="fas fa-clipboard-list text-3xl mb-2"></i>
+          <p class="text-sm">Aucune note disponible</p>
+        </div>
+      } @else {
+        <table mat-table [dataSource]="notes" class="w-full">
+          <ng-container matColumnDef="evaluation">
+            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Évaluation</th>
+            <td mat-cell *matCellDef="let row" class="!font-medium text-sm">{{ row.evaluationNom }}</td>
+          </ng-container>
+          <ng-container matColumnDef="module">
+            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Module</th>
+            <td mat-cell *matCellDef="let row" class="text-sm">—</td>
+          </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Type</th>
+            <td mat-cell *matCellDef="let row"><span class="text-xs bg-gray-100 px-2 py-0.5 rounded">—</span></td>
+          </ng-container>
+          <ng-container matColumnDef="note">
+            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase !text-right">Note</th>
+            <td mat-cell *matCellDef="let row" class="!text-right" [class]="getNoteClass(row.valeur)">{{ row.valeur | number:'1.1-1' }}/{{ row.noteMax }}</td>
+          </ng-container>
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Date</th>
+            <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ formatDate(row.dateSaisie) }}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="notesColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: notesColumns" class="hover:bg-gray-50"></tr>
+        </table>
+      }
+    </div>
+
+    <!-- Alertes actives -->
+    @if (alertes.length > 0) {
+      <div class="bg-orange-50 border border-orange-200 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-orange-800 mb-3"><i class="fas fa-triangle-exclamation mr-2"></i>Alertes actives</h3>
+        <div class="space-y-2">
+          @for (alerte of alertes; track alerte.id) {
+            <div class="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
+              <i class="fas fa-exclamation-circle mt-0.5" [class]="getAlertIcon(alerte.type)"></i>
+              <div>
+                <p class="text-sm font-medium text-gray-800">{{ alerte.message }}</p>
+                <p class="text-xs text-gray-500">{{ formatDate(alerte.createdAt) }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}
