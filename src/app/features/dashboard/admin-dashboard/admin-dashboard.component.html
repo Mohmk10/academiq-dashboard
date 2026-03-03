@@ -1,0 +1,167 @@
+@if (isLoading) {
+  <div class="flex items-center justify-center h-64">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+} @else if (data) {
+  <div class="space-y-6">
+    <!-- Metric Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <!-- Total Étudiants -->
+      <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+          <i class="fas fa-user-graduate text-blue-600 text-lg"></i>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-primary">{{ data.totalEtudiants }}</p>
+          <p class="text-sm text-gray-500">Total Étudiants</p>
+        </div>
+      </div>
+
+      <!-- Total Enseignants -->
+      <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center shrink-0">
+          <i class="fas fa-chalkboard-user text-green-600 text-lg"></i>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-primary">{{ data.totalEnseignants }}</p>
+          <p class="text-sm text-gray-500">Total Enseignants</p>
+        </div>
+      </div>
+
+      <!-- Filières actives -->
+      <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center shrink-0">
+          <i class="fas fa-building-columns text-purple-600 text-lg"></i>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-primary">{{ data.totalFilieres }}</p>
+          <p class="text-sm text-gray-500">Filières actives</p>
+        </div>
+      </div>
+
+      <!-- Alertes actives -->
+      <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center shrink-0 relative">
+          <i class="fas fa-triangle-exclamation text-red-600 text-lg"></i>
+          @if (data.alertesActives > 0) {
+            <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-danger animate-pulse"></span>
+          }
+        </div>
+        <div>
+          <p class="text-3xl font-bold" [class]="data.alertesActives > 0 ? 'text-danger' : 'text-primary'">{{ data.alertesActives }}</p>
+          <p class="text-sm text-gray-500">Alertes actives</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Doughnut: Répartition par filière -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-primary mb-4">Inscriptions par filière</h3>
+        <div class="h-72">
+          <canvas baseChart
+            [data]="doughnutData"
+            [options]="doughnutOptions"
+            type="doughnut">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Bar: Taux de réussite -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-primary mb-4">Taux de réussite par filière</h3>
+        <div class="h-72">
+          <canvas baseChart
+            [data]="barData"
+            [options]="barOptions"
+            type="bar">
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tables -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Répartition table -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-primary mb-4">Répartition des étudiants</h3>
+        <table mat-table [dataSource]="data.repartitionEtudiants" class="w-full">
+          <ng-container matColumnDef="label">
+            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Filière</th>
+            <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.label }}</td>
+          </ng-container>
+          <ng-container matColumnDef="valeur">
+            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase !text-right">Inscrits</th>
+            <td mat-cell *matCellDef="let row" class="!text-right !font-bold">{{ row.valeur }}</td>
+          </ng-container>
+          <ng-container matColumnDef="pourcentage">
+            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase !text-right">%</th>
+            <td mat-cell *matCellDef="let row" class="!text-right text-gray-500">{{ row.pourcentage | number:'1.1-1' }}%</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="['label', 'valeur', 'pourcentage']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['label', 'valeur', 'pourcentage']" class="hover:bg-gray-50 transition-colors cursor-pointer"></tr>
+        </table>
+      </div>
+
+      <!-- Alertes récentes -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-primary mb-4">Alertes critiques récentes</h3>
+        @if (data.dernieresAlertes.length === 0) {
+          <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+            <i class="fas fa-check-circle text-success text-4xl mb-3"></i>
+            <p class="text-sm">Aucune alerte critique</p>
+          </div>
+        } @else {
+          <div class="space-y-3">
+            @for (alerte of data.dernieresAlertes; track alerte.id) {
+              <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                     [class]="alerte.type === 'ABSENCE_NOTE' ? 'bg-orange-50' : 'bg-red-50'">
+                  <i class="fas fa-exclamation-circle text-sm"
+                     [class]="getAlertTypeIcon(alerte.type)"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-primary truncate">{{ alerte.etudiantNom }}</p>
+                  <p class="text-xs text-gray-500 truncate">{{ alerte.message }}</p>
+                </div>
+                <span class="text-xs text-gray-400 whitespace-nowrap">{{ formatDate(alerte.date) }}</span>
+              </div>
+            }
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-100">
+            <a routerLink="/alertes" class="text-sm text-secondary font-medium hover:underline flex items-center gap-1">
+              Voir toutes les alertes <i class="fas fa-arrow-right text-xs"></i>
+            </a>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Summary Bar -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h3 class="text-lg font-semibold text-primary mb-4">Résumé rapide</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="text-center">
+          <p class="text-2xl font-bold text-secondary">{{ data.totalModules }}</p>
+          <p class="text-sm text-gray-500 mt-1">Modules actifs</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-secondary">{{ data.moyenneGenerale | number:'1.1-1' }}/20</p>
+          <p class="text-sm text-gray-500 mt-1">Moyenne générale</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold"
+             [class]="data.tauxReussiteGlobal >= 70 ? 'text-success' : data.tauxReussiteGlobal >= 50 ? 'text-warning' : 'text-danger'">
+            {{ data.tauxReussiteGlobal | number:'1.1-1' }}%
+          </p>
+          <p class="text-sm text-gray-500 mt-1">Taux de réussite global</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-secondary">{{ data.totalFilieres }}</p>
+          <p class="text-sm text-gray-500 mt-1">Filières actives</p>
+        </div>
+      </div>
+    </div>
+  </div>
+}
