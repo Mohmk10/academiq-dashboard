@@ -1,70 +1,89 @@
-<div class="flex h-screen overflow-hidden bg-gray-50">
+<div class="flex h-screen overflow-hidden bg-background">
 
   <!-- Mobile backdrop -->
   @if (mobileView && sidebarOpen) {
-    <div class="fixed inset-0 bg-black/50 z-40 lg:hidden" (click)="closeMobileSidebar()"></div>
+    <div class="fixed inset-0 bg-black/40 z-40 lg:hidden" (click)="closeMobileSidebar()"></div>
   }
 
   <!-- Sidebar -->
   <aside
-    class="fixed lg:static z-50 h-full bg-primary text-white flex flex-col transition-all duration-300 ease-in-out"
-    [class.w-64]="!sidebarCollapsed"
-    [class.w-16]="sidebarCollapsed && !mobileView"
+    class="fixed lg:static z-50 h-full w-[260px] bg-sidebar text-white flex flex-col transition-transform duration-300 ease-in-out"
     [class.-translate-x-full]="mobileView && !sidebarOpen"
-    [class.translate-x-0]="!mobileView || sidebarOpen"
-    [class.w-64]="mobileView && sidebarOpen">
+    [class.translate-x-0]="!mobileView || sidebarOpen">
 
     <!-- Logo -->
-    <div class="flex items-center gap-3 px-4 h-16 border-b border-white/10 shrink-0">
-      <i class="fas fa-graduation-cap text-accent text-xl"></i>
-      @if (!sidebarCollapsed || mobileView) {
-        <span class="text-xl font-bold tracking-tight whitespace-nowrap">AcademiQ</span>
-      }
+    <div class="px-6 pt-7 pb-2">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+          <i class="fas fa-graduation-cap text-accent text-sm"></i>
+        </div>
+        <div>
+          <span class="text-lg font-semibold text-white tracking-tight">AcademiQ</span>
+          <p class="text-[10px] text-gray-500 uppercase tracking-widest">Gestion Academique</p>
+        </div>
+      </div>
     </div>
 
+    <div class="border-t border-gray-800 mx-4 my-3"></div>
+
     <!-- Navigation -->
-    <nav class="flex-1 overflow-y-auto py-4 px-2 space-y-1">
-      @for (item of menuItems; track item.route) {
-        <a [routerLink]="item.route"
-           routerLinkActive="bg-white/10 border-l-[3px] border-accent"
-           [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
-           (click)="closeMobileSidebar()"
-           class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-300 hover:bg-white/5 hover:text-white transition-colors group"
-           [matTooltip]="sidebarCollapsed && !mobileView ? item.label : ''"
-           matTooltipPosition="right">
-          <i [class]="item.icon + ' w-5 text-center text-sm group-hover:text-accent transition-colors'"></i>
-          @if (!sidebarCollapsed || mobileView) {
-            <span class="text-sm font-medium whitespace-nowrap">{{ item.label }}</span>
-          }
-        </a>
+    <nav class="flex-1 overflow-y-auto px-3 pb-4 space-y-5">
+      @for (section of menuSections; track section.title) {
+        <div>
+          <p class="text-[10px] text-gray-500 uppercase tracking-wider font-medium px-3 mb-2">{{ section.title }}</p>
+          <div class="space-y-0.5">
+            @for (item of section.items; track item.route) {
+              <a [routerLink]="item.route"
+                 routerLinkActive="sidebar-active"
+                 [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+                 (click)="closeMobileSidebar()"
+                 class="sidebar-item">
+                <i [class]="item.icon + ' w-5 text-center text-sm text-gray-400 group-hover:text-white transition-colors'"></i>
+                <span class="text-sm font-medium">{{ item.label }}</span>
+              </a>
+            }
+          </div>
+        </div>
       }
     </nav>
 
-    <!-- Footer -->
-    @if (!sidebarCollapsed || mobileView) {
-      <div class="px-4 py-3 border-t border-white/10 text-xs text-gray-500">
-        v1.0.0
-      </div>
-    }
+    <!-- Footer: User profile -->
+    <div class="border-t border-gray-800 px-4 py-4">
+      <a routerLink="/profil" (click)="closeMobileSidebar()"
+         class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-hover transition-colors group">
+        <div class="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-xs font-semibold text-primary">
+          {{ userInitials }}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-gray-200 truncate">{{ userName }}</p>
+          <p class="text-[10px] text-gray-500">{{ getRoleLabel() }}</p>
+        </div>
+      </a>
+      <button (click)="logout()"
+              class="w-full flex items-center gap-3 px-4 py-2 mt-1 rounded-lg text-gray-400 hover:text-red-400 hover:bg-sidebar-hover transition-colors text-sm">
+        <i class="fas fa-arrow-right-from-bracket text-sm"></i>
+        <span>Deconnexion</span>
+      </button>
+    </div>
   </aside>
 
   <!-- Main content area -->
-  <div class="flex-1 flex flex-col overflow-hidden"
-       [class.lg:ml-0]="true">
+  <div class="flex-1 flex flex-col overflow-hidden min-w-0">
 
     <!-- Header -->
     <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6 shrink-0 z-30">
-      <!-- Left: hamburger + DEV selector -->
-      <div class="flex items-center gap-4">
-        <button mat-icon-button (click)="toggleSidebar()" class="text-gray-500 hover:text-primary">
-          <mat-icon>menu</mat-icon>
+      <!-- Left -->
+      <div class="flex items-center gap-3">
+        <!-- Hamburger (mobile) -->
+        <button (click)="toggleSidebar()" class="lg:hidden p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors">
+          <mat-icon class="!text-xl">menu</mat-icon>
         </button>
 
         @if (isDevMode) {
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase tracking-wide">DEV</span>
+          <div class="flex items-center gap-2.5">
+            <span class="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wide">DEV</span>
             <select
-              class="text-sm border border-gray-300 rounded-md px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary cursor-pointer"
+              class="text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer transition-all"
               [ngModel]="selectedRole"
               (ngModelChange)="onDevRoleChange($event)">
               @for (r of devRoles; track r.value) {
@@ -75,34 +94,38 @@
         }
       </div>
 
-      <!-- Right: notifications + user -->
-      <div class="flex items-center gap-2">
+      <!-- Right -->
+      <div class="flex items-center gap-1">
         <!-- Notifications -->
-        <button mat-icon-button [matBadge]="'3'" matBadgeColor="warn" matBadgeSize="small" class="text-gray-500 hover:text-primary">
-          <mat-icon>notifications_none</mat-icon>
+        <button class="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <mat-icon class="!text-xl">notifications_none</mat-icon>
+          <span class="absolute top-1.5 right-1.5 w-4 h-4 bg-danger text-white text-[10px] font-bold rounded-full flex items-center justify-center">3</span>
         </button>
 
+        <!-- Separator -->
+        <div class="hidden sm:block border-l border-gray-200 h-8 mx-2"></div>
+
         <!-- User menu -->
-        <button mat-button [matMenuTriggerFor]="userMenu" class="!rounded-full flex items-center gap-2 !px-2">
-          <div class="w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center text-xs font-bold">
+        <button [matMenuTriggerFor]="userMenu" class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+          <div class="w-9 h-9 rounded-full bg-primary-light flex items-center justify-center text-xs font-semibold text-primary">
             {{ userInitials }}
           </div>
-          <span class="hidden sm:inline text-sm font-medium text-gray-700">{{ userName }}</span>
-          <mat-icon class="text-gray-400 !text-lg">arrow_drop_down</mat-icon>
+          <span class="hidden sm:block text-sm font-medium text-gray-700">{{ userName }}</span>
+          <mat-icon class="hidden sm:block text-gray-400 !text-lg">keyboard_arrow_down</mat-icon>
         </button>
 
         <mat-menu #userMenu="matMenu" xPosition="before">
           <div class="px-4 py-3 border-b border-gray-100">
-            <p class="text-sm font-semibold text-primary">{{ userName }}</p>
+            <p class="text-sm font-semibold text-gray-900">{{ userName }}</p>
             <p class="text-xs text-gray-500">{{ getRoleLabel() }}</p>
           </div>
           <button mat-menu-item routerLink="/profil">
-            <mat-icon>person</mat-icon>
+            <mat-icon class="!text-gray-400">person_outline</mat-icon>
             <span>Mon profil</span>
           </button>
           <button mat-menu-item (click)="logout()">
-            <mat-icon class="!text-danger">logout</mat-icon>
-            <span class="text-danger">Déconnexion</span>
+            <mat-icon class="!text-red-500">logout</mat-icon>
+            <span class="text-red-600">Deconnexion</span>
           </button>
         </mat-menu>
       </div>
@@ -112,9 +135,11 @@
     <app-loading-bar></app-loading-bar>
 
     <!-- Page content -->
-    <main class="flex-1 overflow-y-auto p-6 bg-[#F8FAFC]">
-      <app-breadcrumb></app-breadcrumb>
-      <router-outlet />
+    <main class="flex-1 overflow-y-auto p-6 bg-background">
+      <div class="page-container fade-in-up">
+        <app-breadcrumb></app-breadcrumb>
+        <router-outlet />
+      </div>
     </main>
   </div>
 </div>

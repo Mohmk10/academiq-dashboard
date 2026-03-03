@@ -5,18 +5,48 @@
 
 aside {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 
   &::-webkit-scrollbar {
     width: 4px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 2px;
   }
 }
 
-a.border-l-\[3px\] {
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  color: #9CA3AF;
+  cursor: pointer;
+  transition: all 150ms ease;
+
+  &:hover {
+    background-color: #151E33;
+    color: #fff;
+    transform: translateX(2px);
+
+    i {
+      color: #fff;
+    }
+  }
+}
+
+.sidebar-active {
+  @apply bg-sidebar-active text-white border-l-[3px] border-accent;
   padding-left: calc(0.75rem - 3px);
+
+  i {
+    color: #F59E0B;
+  }
+
+  span {
+    @apply text-white;
+  }
 }
