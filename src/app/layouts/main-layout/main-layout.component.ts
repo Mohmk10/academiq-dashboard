@@ -9,6 +9,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { Role } from '../../core/models/user.model';
+import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
+import { BreadcrumbComponent } from '../../shared/components/breadcrumb/breadcrumb.component';
 
 interface MenuItem {
   label: string;
@@ -28,7 +30,9 @@ interface MenuItem {
     MatButtonModule,
     MatMenuModule,
     MatBadgeModule,
-    MatTooltipModule
+    MatTooltipModule,
+    LoadingBarComponent,
+    BreadcrumbComponent
   ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
