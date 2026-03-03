@@ -1,0 +1,102 @@
+<div class="flex h-screen overflow-hidden bg-gray-50">
+
+  <!-- Mobile backdrop -->
+  @if (mobileView && sidebarOpen) {
+    <div class="fixed inset-0 bg-black/50 z-40 lg:hidden" (click)="closeMobileSidebar()"></div>
+  }
+
+  <!-- Sidebar -->
+  <aside
+    class="fixed lg:static z-50 h-full bg-primary text-white flex flex-col transition-all duration-300 ease-in-out"
+    [class.w-64]="!sidebarCollapsed"
+    [class.w-16]="sidebarCollapsed && !mobileView"
+    [class.-translate-x-full]="mobileView && !sidebarOpen"
+    [class.translate-x-0]="!mobileView || sidebarOpen"
+    [class.w-64]="mobileView && sidebarOpen">
+
+    <!-- Logo -->
+    <div class="flex items-center gap-3 px-4 h-16 border-b border-white/10 shrink-0">
+      <i class="fas fa-graduation-cap text-accent text-xl"></i>
+      @if (!sidebarCollapsed || mobileView) {
+        <span class="text-xl font-bold tracking-tight whitespace-nowrap">AcademiQ</span>
+      }
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 overflow-y-auto py-4 px-2 space-y-1">
+      @for (item of menuItems; track item.route) {
+        <a [routerLink]="item.route"
+           routerLinkActive="bg-white/10 border-l-[3px] border-accent"
+           [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+           (click)="closeMobileSidebar()"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-300 hover:bg-white/5 hover:text-white transition-colors group"
+           [matTooltip]="sidebarCollapsed && !mobileView ? item.label : ''"
+           matTooltipPosition="right">
+          <i [class]="item.icon + ' w-5 text-center text-sm group-hover:text-accent transition-colors'"></i>
+          @if (!sidebarCollapsed || mobileView) {
+            <span class="text-sm font-medium whitespace-nowrap">{{ item.label }}</span>
+          }
+        </a>
+      }
+    </nav>
+
+    <!-- Footer -->
+    @if (!sidebarCollapsed || mobileView) {
+      <div class="px-4 py-3 border-t border-white/10 text-xs text-gray-500">
+        v1.0.0
+      </div>
+    }
+  </aside>
+
+  <!-- Main content area -->
+  <div class="flex-1 flex flex-col overflow-hidden"
+       [class.lg:ml-0]="true">
+
+    <!-- Header -->
+    <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6 shrink-0 z-30">
+      <!-- Left: hamburger -->
+      <div class="flex items-center gap-4">
+        <button mat-icon-button (click)="toggleSidebar()" class="text-gray-500 hover:text-primary">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+
+      <!-- Right: notifications + user -->
+      <div class="flex items-center gap-2">
+        <!-- Notifications -->
+        <button mat-icon-button [matBadge]="'3'" matBadgeColor="warn" matBadgeSize="small" class="text-gray-500 hover:text-primary">
+          <mat-icon>notifications_none</mat-icon>
+        </button>
+
+        <!-- User menu -->
+        <button mat-button [matMenuTriggerFor]="userMenu" class="!rounded-full flex items-center gap-2 !px-2">
+          <div class="w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center text-xs font-bold">
+            {{ userInitials }}
+          </div>
+          <span class="hidden sm:inline text-sm font-medium text-gray-700">{{ userName }}</span>
+          <mat-icon class="text-gray-400 !text-lg">arrow_drop_down</mat-icon>
+        </button>
+
+        <mat-menu #userMenu="matMenu" xPosition="before">
+          <div class="px-4 py-3 border-b border-gray-100">
+            <p class="text-sm font-semibold text-primary">{{ userName }}</p>
+            <p class="text-xs text-gray-500">{{ getRoleLabel() }}</p>
+          </div>
+          <button mat-menu-item routerLink="/profil">
+            <mat-icon>person</mat-icon>
+            <span>Mon profil</span>
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon class="!text-danger">logout</mat-icon>
+            <span class="text-danger">Déconnexion</span>
+          </button>
+        </mat-menu>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <main class="flex-1 overflow-y-auto p-6 bg-[#F8FAFC]">
+      <router-outlet />
+    </main>
+  </div>
+</div>
