@@ -1,0 +1,39 @@
+@if (isLoading) {
+  <div class="flex items-center justify-center h-64"><mat-spinner diameter="48"></mat-spinner></div>
+} @else if (teacher) {
+  <div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <a routerLink="/enseignants" class="text-gray-400 hover:text-primary transition-colors"><i class="fas fa-arrow-left text-lg"></i></a>
+        <div>
+          <div class="flex items-center gap-3">
+            <h1 class="text-2xl font-bold text-primary">{{ teacher.prenom }} {{ teacher.nom }}</h1>
+            <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="teacher.actif ? 'bg-green-50 text-success' : 'bg-gray-100 text-gray-500'">{{ teacher.actif ? 'Actif' : 'Inactif' }}</span>
+          </div>
+          <p class="text-sm text-gray-500 mt-0.5"><span class="font-mono bg-gray-100 px-2 py-0.5 rounded">{{ teacher.enseignant?.matricule }}</span></p>
+        </div>
+      </div>
+      <button mat-stroked-button (click)="openEditDialog()"><i class="fas fa-pen mr-2"></i> Modifier</button>
+    </div>
+
+    <!-- Infos -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h3 class="text-lg font-semibold text-primary mb-4">Informations personnelles</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        <div class="space-y-3">
+          <div><span class="text-xs text-gray-400 uppercase">Nom complet</span><p class="font-medium">{{ teacher.prenom }} {{ teacher.nom }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Email</span><p class="text-sm">{{ teacher.email }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Téléphone</span><p class="text-sm">{{ teacher.telephone || '—' }}</p></div>
+        </div>
+        <div class="space-y-3">
+          <div><span class="text-xs text-gray-400 uppercase">Spécialité</span><p class="font-medium">{{ teacher.enseignant?.specialite || '—' }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Grade</span><p class="text-sm">{{ teacher.enseignant?.grade || '—' }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Département</span><p class="text-sm">{{ teacher.enseignant?.departement || '—' }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Bureau</span><p class="text-sm">{{ teacher.enseignant?.bureau || '—' }}</p></div>
+          <div><span class="text-xs text-gray-400 uppercase">Date de recrutement</span><p class="text-sm">{{ teacher.enseignant?.dateRecrutement ? formatDate($any(teacher.enseignant).dateRecrutement) : '—' }}</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

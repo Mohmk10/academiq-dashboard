@@ -1,0 +1,81 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-primary">Gestion des enseignants</h1>
+      <p class="text-sm text-gray-500 mt-1">{{ totalElements }} enseignants au total</p>
+    </div>
+    <button mat-raised-button class="!bg-secondary !text-white" (click)="openCreateDialog()">
+      <i class="fas fa-plus mr-2"></i> Ajouter un enseignant
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white rounded-xl shadow-sm p-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-icon matPrefix class="mr-2 !text-gray-400">search</mat-icon>
+        <mat-label>Rechercher</mat-label>
+        <input matInput [formControl]="searchControl" placeholder="Nom, prénom ou matricule">
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Statut</mat-label>
+        <mat-select [formControl]="statutFilter">
+          <mat-option value="">Tous</mat-option>
+          <mat-option value="actif">Actif</mat-option>
+          <mat-option value="inactif">Inactif</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    @if (isLoading) {
+      <div class="flex items-center justify-center h-48"><mat-spinner diameter="40"></mat-spinner></div>
+    } @else if (teachers.length === 0) {
+      <div class="flex flex-col items-center justify-center py-16 text-gray-400">
+        <i class="fas fa-chalkboard-user text-5xl mb-4"></i>
+        <p class="font-medium">Aucun enseignant trouvé</p>
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table mat-table [dataSource]="teachers" matSort class="w-full">
+          <ng-container matColumnDef="matricule">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="!text-gray-500 !text-xs !font-semibold uppercase">Matricule</th>
+            <td mat-cell *matCellDef="let row"><span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.matricule || '—' }}</span></td>
+          </ng-container>
+          <ng-container matColumnDef="nom">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="!text-gray-500 !text-xs !font-semibold uppercase">Nom & Prénom</th>
+            <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.nom }} {{ row.prenom }}</td>
+          </ng-container>
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Email</th>
+            <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ row.email }}</td>
+          </ng-container>
+          <ng-container matColumnDef="statut">
+            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Statut</th>
+            <td mat-cell *matCellDef="let row">
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getStatutBadge(row.actif).class">{{ getStatutBadge(row.actif).text }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="!w-16"></th>
+            <td mat-cell *matCellDef="let row">
+              <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()"><mat-icon>more_vert</mat-icon></button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="viewTeacher(row.id)"><i class="fas fa-eye mr-3 text-gray-400"></i> Voir le profil</button>
+                <button mat-menu-item (click)="openEditDialog(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Modifier</button>
+                <button mat-menu-item (click)="toggleActivation(row)"><i class="fas mr-3" [class]="row.actif ? 'fa-lock text-warning' : 'fa-lock-open text-success'"></i> {{ row.actif ? 'Désactiver' : 'Activer' }}</button>
+                <button mat-menu-item (click)="deleteTeacher(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+              </mat-menu>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50 cursor-pointer transition-colors" (click)="viewTeacher(row.id)"></tr>
+        </table>
+      </div>
+      <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageSizeOptions]="[10, 25, 50]" [pageIndex]="pageIndex" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
+    }
+  </div>
+</div>
