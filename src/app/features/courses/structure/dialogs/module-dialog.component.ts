@@ -14,17 +14,21 @@ import { UeResponse, ModuleResponse } from '../../../../core/models/structure.mo
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
   template: `
-    <h2 mat-dialog-title class="!text-lg !font-semibold">{{ data.mode === 'create' ? 'Nouveau module' : 'Modifier le module' }}</h2>
-    <mat-dialog-content>
-      <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
-        <div class="grid grid-cols-2 gap-4">
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <h2 class="dialog-title">{{ dialogTitle }}</h2>
+        <p class="dialog-subtitle">Renseignez les informations du module</p>
+      </div>
+
+      <form [formGroup]="form" class="dialog-content">
+        <div class="form-grid-2">
           <mat-form-field appearance="outline">
             <mat-label>Nom</mat-label>
-            <input matInput formControlName="nom">
+            <input matInput formControlName="nom" placeholder="Ex: Algorithmique">
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Code</mat-label>
-            <input matInput formControlName="code">
+            <input matInput formControlName="code" placeholder="Ex: INFO-101">
           </mat-form-field>
         </div>
         <mat-form-field appearance="outline">
@@ -35,29 +39,34 @@ import { UeResponse, ModuleResponse } from '../../../../core/models/structure.mo
             }
           </mat-select>
         </mat-form-field>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="form-grid-2">
           <mat-form-field appearance="outline">
             <mat-label>Coefficient</mat-label>
-            <input matInput type="number" formControlName="coefficient">
+            <input matInput type="number" formControlName="coefficient" placeholder="Ex: 3">
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Volume horaire</mat-label>
-            <input matInput type="number" formControlName="volumeHoraire">
+            <input matInput type="number" formControlName="volumeHoraire" placeholder="Ex: 48">
           </mat-form-field>
         </div>
       </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!pt-4">
-      <button mat-stroked-button (click)="onCancel()">Annuler</button>
-      <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit()">
-        {{ data.mode === 'create' ? 'Créer' : 'Enregistrer' }}
-      </button>
-    </mat-dialog-actions>
+
+      <div class="dialog-actions">
+        <button class="btn-secondary" (click)="onCancel()">Annuler</button>
+        <button class="btn-primary" [disabled]="form.invalid" (click)="onSubmit()">
+          {{ data.mode === 'create' ? 'Créer' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
   `
 })
 export class ModuleDialogComponent implements OnInit {
   form: FormGroup;
   ues: UeResponse[] = [];
+
+  get dialogTitle(): string {
+    return this.data.mode === 'create' ? 'Nouveau module' : 'Modifier le module';
+  }
 
   constructor(
     private fb: FormBuilder,

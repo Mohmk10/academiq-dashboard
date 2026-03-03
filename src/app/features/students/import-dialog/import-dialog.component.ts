@@ -11,57 +11,64 @@ import { ImportResult } from '../../../core/models/note.model';
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatButtonModule, MatProgressBarModule],
   template: `
-    <h2 mat-dialog-title class="!text-lg !font-semibold">Importer des étudiants</h2>
-    <mat-dialog-content>
-      @if (!result && !isUploading) {
-        <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors"
-             (click)="fileInput.click()"
-             (dragover)="$event.preventDefault(); dragOver = true"
-             (dragleave)="dragOver = false"
-             (drop)="onDrop($event)"
-             [class.border-primary]="dragOver"
-             [class.bg-blue-50]="dragOver">
-          <i class="fas fa-cloud-arrow-up text-4xl text-gray-400 mb-3"></i>
-          <p class="text-gray-600 font-medium">Glissez votre fichier CSV ici</p>
-          <p class="text-sm text-gray-400 mt-1">ou cliquez pour parcourir</p>
-          @if (selectedFile) {
-            <p class="mt-3 text-sm text-primary font-medium"><i class="fas fa-file-csv mr-1"></i> {{ selectedFile.name }}</p>
-          }
-        </div>
-        <input #fileInput type="file" accept=".csv,.xlsx" class="hidden" (change)="onFileSelected($event)">
-      }
-      @if (isUploading) {
-        <div class="text-center py-4">
-          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-          <p class="text-sm text-gray-500 mt-3">Importation en cours...</p>
-        </div>
-      }
-      @if (result) {
-        <div class="space-y-3 py-2">
-          <div class="flex items-center gap-3 p-3 rounded-lg bg-green-50">
-            <i class="fas fa-check-circle text-success"></i>
-            <span class="text-sm">{{ result.totalSucces }} étudiants importés avec succès</span>
-          </div>
-          @if (result.totalEchecs > 0) {
-            <div class="flex items-center gap-3 p-3 rounded-lg bg-red-50">
-              <i class="fas fa-times-circle text-danger"></i>
-              <span class="text-sm">{{ result.totalEchecs }} erreurs</span>
-            </div>
-            @for (err of result.erreurs; track err) {
-              <p class="text-xs text-red-600 pl-4">{{ err }}</p>
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <h2 class="dialog-title">Importer des étudiants</h2>
+        <p class="dialog-subtitle">Importez un fichier CSV ou XLSX</p>
+      </div>
+
+      <div class="dialog-content">
+        @if (!result && !isUploading) {
+          <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all duration-200"
+               (click)="fileInput.click()"
+               (dragover)="$event.preventDefault(); dragOver = true"
+               (dragleave)="dragOver = false"
+               (drop)="onDrop($event)"
+               [class.border-primary]="dragOver"
+               [class.bg-blue-50]="dragOver">
+            <i class="fas fa-cloud-arrow-up text-4xl text-gray-400 mb-3"></i>
+            <p class="text-gray-600 font-medium">Glissez votre fichier ici</p>
+            <p class="text-sm text-gray-400 mt-1">ou cliquez pour parcourir</p>
+            @if (selectedFile) {
+              <p class="mt-3 text-sm text-primary font-medium"><i class="fas fa-file-csv mr-1"></i> {{ selectedFile.name }}</p>
             }
-          }
-        </div>
-      }
-    </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!pt-4">
-      @if (result) {
-        <button mat-raised-button color="primary" (click)="dialogRef.close(true)">Fermer</button>
-      } @else {
-        <button mat-stroked-button (click)="dialogRef.close()">Annuler</button>
-        <button mat-raised-button color="primary" (click)="upload()" [disabled]="!selectedFile || isUploading">Importer</button>
-      }
-    </mat-dialog-actions>
+          </div>
+          <input #fileInput type="file" accept=".csv,.xlsx" class="hidden" (change)="onFileSelected($event)">
+        }
+        @if (isUploading) {
+          <div class="text-center py-4">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            <p class="text-sm text-gray-500 mt-3">Importation en cours...</p>
+          </div>
+        }
+        @if (result) {
+          <div class="space-y-3">
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-green-50">
+              <i class="fas fa-check-circle text-success"></i>
+              <span class="text-sm">{{ result.totalSucces }} étudiants importés avec succès</span>
+            </div>
+            @if (result.totalEchecs > 0) {
+              <div class="flex items-center gap-3 p-3 rounded-lg bg-red-50">
+                <i class="fas fa-times-circle text-danger"></i>
+                <span class="text-sm">{{ result.totalEchecs }} erreurs</span>
+              </div>
+              @for (err of result.erreurs; track err) {
+                <p class="text-xs text-red-600 pl-4">{{ err }}</p>
+              }
+            }
+          </div>
+        }
+      </div>
+
+      <div class="dialog-actions">
+        @if (result) {
+          <button class="btn-primary" (click)="dialogRef.close(true)">Fermer</button>
+        } @else {
+          <button class="btn-secondary" (click)="dialogRef.close()">Annuler</button>
+          <button class="btn-primary" (click)="upload()" [disabled]="!selectedFile || isUploading">Importer</button>
+        }
+      </div>
+    </div>
   `
 })
 export class ImportDialogComponent {

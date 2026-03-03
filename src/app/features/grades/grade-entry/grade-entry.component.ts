@@ -107,8 +107,8 @@ interface GradeRow extends NotePrepopuleeDTO {
               <ng-container matColumnDef="note">
                 <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase !w-28">Note /{{ evaluation?.noteMax || 20 }}</th>
                 <td mat-cell *matCellDef="let row">
-                  <input type="number" class="input-field w-20 px-2.5 py-1.5 text-center"
-                    [class.bg-gray-50]="row.absent"
+                  <input type="number" class="inline-input input-note"
+                    [class.bg-gray-100]="row.absent"
                     [disabled]="row.absent"
                     [(ngModel)]="row.valeur"
                     [min]="0" [max]="evaluation?.noteMax || 20"
@@ -124,7 +124,7 @@ interface GradeRow extends NotePrepopuleeDTO {
               <ng-container matColumnDef="commentaire">
                 <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Commentaire</th>
                 <td mat-cell *matCellDef="let row">
-                  <input type="text" class="input-field w-full px-2.5 py-1.5"
+                  <input type="text" class="inline-input"
                     [(ngModel)]="row.commentaire" placeholder="Optionnel">
                 </td>
               </ng-container>

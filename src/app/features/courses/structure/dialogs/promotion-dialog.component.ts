@@ -14,30 +14,36 @@ import { FiliereResponse, NiveauResponse, PromotionResponse } from '../../../../
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
   template: `
-    <h2 mat-dialog-title class="!text-lg !font-semibold">{{ data.mode === 'create' ? 'Nouvelle promotion' : 'Modifier la promotion' }}</h2>
-    <mat-dialog-content>
-      <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
-        <mat-form-field appearance="outline">
-          <mat-label>Filière</mat-label>
-          <mat-select formControlName="filiereId" (selectionChange)="onFiliereChange($event.value)">
-            @for (f of filieres; track f.id) {
-              <mat-option [value]="f.id">{{ f.nom }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Niveau</mat-label>
-          <mat-select formControlName="niveauId">
-            @for (n of niveaux; track n.id) {
-              <mat-option [value]="n.id">{{ n.nom }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <h2 class="dialog-title">{{ dialogTitle }}</h2>
+        <p class="dialog-subtitle">Renseignez les informations de la promotion</p>
+      </div>
+
+      <form [formGroup]="form" class="dialog-content">
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Filière</mat-label>
+            <mat-select formControlName="filiereId" (selectionChange)="onFiliereChange($event.value)">
+              @for (f of filieres; track f.id) {
+                <mat-option [value]="f.id">{{ f.nom }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Niveau</mat-label>
+            <mat-select formControlName="niveauId">
+              @for (n of niveaux; track n.id) {
+                <mat-option [value]="n.id">{{ n.nom }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
         <mat-form-field appearance="outline">
           <mat-label>Année universitaire</mat-label>
-          <input matInput formControlName="anneeUniversitaire" placeholder="2024-2025">
+          <input matInput formControlName="anneeUniversitaire" placeholder="Ex: 2024-2025">
         </mat-form-field>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="form-grid-2">
           <mat-form-field appearance="outline">
             <mat-label>Date début</mat-label>
             <input matInput type="date" formControlName="dateDebut">
@@ -48,19 +54,24 @@ import { FiliereResponse, NiveauResponse, PromotionResponse } from '../../../../
           </mat-form-field>
         </div>
       </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!pt-4">
-      <button mat-stroked-button (click)="onCancel()">Annuler</button>
-      <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit()">
-        {{ data.mode === 'create' ? 'Créer' : 'Enregistrer' }}
-      </button>
-    </mat-dialog-actions>
+
+      <div class="dialog-actions">
+        <button class="btn-secondary" (click)="onCancel()">Annuler</button>
+        <button class="btn-primary" [disabled]="form.invalid" (click)="onSubmit()">
+          {{ data.mode === 'create' ? 'Créer' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
   `
 })
 export class PromotionDialogComponent implements OnInit {
   form: FormGroup;
   filieres: FiliereResponse[] = [];
   niveaux: NiveauResponse[] = [];
+
+  get dialogTitle(): string {
+    return this.data.mode === 'create' ? 'Nouvelle promotion' : 'Modifier la promotion';
+  }
 
   constructor(
     private fb: FormBuilder,

@@ -16,14 +16,18 @@ export interface ConfirmDialogData {
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatButtonModule],
   template: `
-    <h2 mat-dialog-title class="!text-lg !font-semibold">{{ data.title }}</h2>
-    <mat-dialog-content>
-      <p class="text-gray-600">{{ data.message }}</p>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!pt-4">
-      <button mat-stroked-button (click)="onCancel()">{{ data.cancelText || 'Annuler' }}</button>
-      <button mat-raised-button [color]="data.color || 'warn'" (click)="onConfirm()">{{ data.confirmText || 'Confirmer' }}</button>
-    </mat-dialog-actions>
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <h2 class="dialog-title">{{ data.title }}</h2>
+      </div>
+      <div class="dialog-content">
+        <p class="text-sm text-gray-600">{{ data.message }}</p>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn-secondary" (click)="onCancel()">{{ data.cancelText || 'Annuler' }}</button>
+        <button [class]="data.color === 'warn' ? 'btn-danger' : 'btn-primary'" (click)="onConfirm()">{{ data.confirmText || 'Confirmer' }}</button>
+      </div>
+    </div>
   `
 })
 export class ConfirmDialogComponent {

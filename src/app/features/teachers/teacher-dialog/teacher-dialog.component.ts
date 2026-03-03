@@ -18,39 +18,89 @@ export interface TeacherDialogData {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
   template: `
-    <h2 mat-dialog-title class="!text-lg !font-semibold">{{ data.mode === 'create' ? 'Ajouter un enseignant' : 'Modifier l\\'enseignant' }}</h2>
-    <mat-dialog-content class="!pt-2">
-      <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
-        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Nom</mat-label><input matInput formControlName="nom"><mat-error>Requis</mat-error></mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Prénom</mat-label><input matInput formControlName="prenom"><mat-error>Requis</mat-error></mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Email</mat-label><input matInput type="email" formControlName="email"><mat-error>Email invalide</mat-error></mat-form-field>
-        @if (data.mode === 'create') {
-          <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Mot de passe</mat-label><input matInput type="password" formControlName="motDePasse"><mat-error>Min 8 caractères</mat-error></mat-form-field>
-        }
-        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Téléphone</mat-label><input matInput formControlName="telephone"></mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Spécialité</mat-label><input matInput formControlName="specialite"><mat-error>Requis</mat-error></mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Grade</mat-label>
-          <mat-select formControlName="grade">
-            <mat-option value="Professeur">Professeur</mat-option>
-            <mat-option value="Maître de conférences">Maître de conférences</mat-option>
-            <mat-option value="Docteur">Docteur</mat-option>
-            <mat-option value="Assistant">Assistant</mat-option>
-            <mat-option value="Vacataire">Vacataire</mat-option>
-          </mat-select>
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <h2 class="dialog-title">{{ dialogTitle }}</h2>
+        <p class="dialog-subtitle">{{ data.mode === 'create' ? 'Renseignez les informations du nouvel enseignant' : 'Modifiez les informations de l\\'enseignant' }}</p>
+      </div>
+
+      <form [formGroup]="form" class="dialog-content">
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Nom</mat-label>
+            <input matInput formControlName="nom" placeholder="Ex: Traoré">
+            <mat-error>Requis</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Prénom</mat-label>
+            <input matInput formControlName="prenom" placeholder="Ex: Ousmane">
+            <mat-error>Requis</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="Ex: enseignant@academiq.sn">
+            <mat-error>Email invalide</mat-error>
+          </mat-form-field>
+          @if (data.mode === 'create') {
+            <mat-form-field appearance="outline">
+              <mat-label>Mot de passe</mat-label>
+              <input matInput type="password" formControlName="motDePasse" placeholder="Minimum 8 caractères">
+              <mat-error>Min 8 caractères</mat-error>
+            </mat-form-field>
+          }
+        </div>
+
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Spécialité</mat-label>
+            <input matInput formControlName="specialite" placeholder="Ex: Informatique">
+            <mat-error>Requis</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Grade</mat-label>
+            <mat-select formControlName="grade">
+              <mat-option value="Professeur">Professeur</mat-option>
+              <mat-option value="Maître de conférences">Maître de conférences</mat-option>
+              <mat-option value="Docteur">Docteur</mat-option>
+              <mat-option value="Assistant">Assistant</mat-option>
+              <mat-option value="Vacataire">Vacataire</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Département</mat-label>
+            <input matInput formControlName="departement" placeholder="Ex: Sciences et Technologies">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Bureau</mat-label>
+            <input matInput formControlName="bureau" placeholder="Ex: B-204">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Téléphone</mat-label>
+          <input matInput formControlName="telephone" placeholder="Ex: +221 77 000 00 00">
         </mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Département</mat-label><input matInput formControlName="departement"></mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Bureau</mat-label><input matInput formControlName="bureau"></mat-form-field>
       </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!pt-4">
-      <button mat-stroked-button (click)="dialogRef.close()">Annuler</button>
-      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">Enregistrer</button>
-    </mat-dialog-actions>
+
+      <div class="dialog-actions">
+        <button class="btn-secondary" (click)="dialogRef.close()">Annuler</button>
+        <button class="btn-primary" (click)="onSubmit()" [disabled]="form.invalid">Enregistrer</button>
+      </div>
+    </div>
   `
 })
 export class TeacherDialogComponent implements OnInit {
   form!: FormGroup;
+
+  get dialogTitle(): string {
+    return this.data.mode === 'create' ? 'Ajouter un enseignant' : 'Modifier l\'enseignant';
+  }
 
   constructor(
     private fb: FormBuilder,

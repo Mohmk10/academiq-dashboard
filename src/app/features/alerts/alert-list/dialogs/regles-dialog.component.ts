@@ -23,83 +23,88 @@ import { RegleAlerteResponse, TypeAlerte } from '../../../../core/models/alerte.
     MatIconModule, MatSlideToggleModule, MatProgressSpinnerModule
   ],
   template: `
-    <h2 mat-dialog-title class="!text-lg !font-semibold">Gérer les règles d'alerte</h2>
-    <mat-dialog-content class="!min-w-[600px]">
-      <!-- Formulaire ajout/édition -->
-      <div class="bg-gray-50 rounded-lg p-4 mb-4">
-        <h4 class="text-sm font-semibold text-gray-700 mb-3">{{ editingId ? 'Modifier la règle' : 'Nouvelle règle' }}</h4>
-        <form [formGroup]="form" (ngSubmit)="onSubmitRule()" class="grid grid-cols-3 gap-3 items-end">
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Type</mat-label>
-            <mat-select formControlName="type">
-              @for (t of types; track t.value) {
-                <mat-option [value]="t.value">{{ t.label }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Seuil</mat-label>
-            <input matInput type="number" formControlName="seuil">
-          </mat-form-field>
-          <div class="flex gap-2">
-            <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid" class="flex-1">
-              {{ editingId ? 'Modifier' : 'Ajouter' }}
-            </button>
-            @if (editingId) {
-              <button mat-stroked-button type="button" (click)="cancelEdit()">Annuler</button>
-            }
-          </div>
-        </form>
-        <mat-form-field appearance="outline" class="w-full mt-2" subscriptSizing="dynamic">
-          <mat-label>Description</mat-label>
-          <input matInput [formControl]="$any(form.get('description'))">
-        </mat-form-field>
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <h2 class="dialog-title">Gérer les règles d'alerte</h2>
+        <p class="dialog-subtitle">Configurez les seuils de déclenchement</p>
       </div>
 
-      <!-- Table des règles -->
-      @if (isLoading) {
-        <div class="flex justify-center py-8"><mat-spinner diameter="32"></mat-spinner></div>
-      } @else if (regles.length === 0) {
-        <p class="text-center text-gray-400 py-8">Aucune règle configurée</p>
-      } @else {
-        <div class="overflow-x-auto">
-          <table mat-table [dataSource]="regles" class="w-full">
-            <ng-container matColumnDef="type">
-              <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Type</th>
-              <td mat-cell *matCellDef="let row">{{ getTypeLabel(row.type) }}</td>
-            </ng-container>
-            <ng-container matColumnDef="seuil">
-              <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Seuil</th>
-              <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.seuil }}</td>
-            </ng-container>
-            <ng-container matColumnDef="description">
-              <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Description</th>
-              <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ row.description || '—' }}</td>
-            </ng-container>
-            <ng-container matColumnDef="actif">
-              <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Actif</th>
-              <td mat-cell *matCellDef="let row">
-                <mat-slide-toggle [checked]="row.actif" (change)="toggleRegle(row)" color="primary"></mat-slide-toggle>
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef class="!w-20"></th>
-              <td mat-cell *matCellDef="let row">
-                <div class="flex gap-1">
-                  <button mat-icon-button (click)="startEdit(row)"><mat-icon class="!text-lg text-gray-400">edit</mat-icon></button>
-                  <button mat-icon-button (click)="deleteRegle(row)"><mat-icon class="!text-lg text-danger">delete</mat-icon></button>
-                </div>
-              </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="columns"></tr>
-            <tr mat-row *matRowDef="let row; columns: columns" class="hover:bg-gray-50"></tr>
-          </table>
+      <div class="dialog-content !max-h-[70vh]">
+        <div class="bg-gray-50 rounded-lg p-4">
+          <h4 class="text-sm font-semibold text-gray-700 mb-3">{{ editingId ? 'Modifier la règle' : 'Nouvelle règle' }}</h4>
+          <form [formGroup]="form" (ngSubmit)="onSubmitRule()" class="form-grid-3 items-end">
+            <mat-form-field appearance="outline">
+              <mat-label>Type</mat-label>
+              <mat-select formControlName="type">
+                @for (t of types; track t.value) {
+                  <mat-option [value]="t.value">{{ t.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Seuil</mat-label>
+              <input matInput type="number" formControlName="seuil" placeholder="Ex: 10">
+            </mat-form-field>
+            <div class="flex gap-2">
+              <button class="btn-primary flex-1" type="submit" [disabled]="form.invalid">
+                {{ editingId ? 'Modifier' : 'Ajouter' }}
+              </button>
+              @if (editingId) {
+                <button class="btn-secondary" type="button" (click)="cancelEdit()">Annuler</button>
+              }
+            </div>
+          </form>
+          <mat-form-field appearance="outline" class="w-full mt-3">
+            <mat-label>Description</mat-label>
+            <input matInput [formControl]="$any(form.get('description'))" placeholder="Ex: Alerte si moyenne < 10">
+          </mat-form-field>
         </div>
-      }
-    </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!pt-4">
-      <button mat-stroked-button (click)="dialogRef.close()">Fermer</button>
-    </mat-dialog-actions>
+
+        @if (isLoading) {
+          <div class="flex justify-center py-8"><mat-spinner diameter="32"></mat-spinner></div>
+        } @else if (regles.length === 0) {
+          <p class="text-center text-gray-400 py-8">Aucune règle configurée</p>
+        } @else {
+          <div class="overflow-x-auto">
+            <table mat-table [dataSource]="regles" class="w-full">
+              <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef>Type</th>
+                <td mat-cell *matCellDef="let row">{{ getTypeLabel(row.type) }}</td>
+              </ng-container>
+              <ng-container matColumnDef="seuil">
+                <th mat-header-cell *matHeaderCellDef>Seuil</th>
+                <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.seuil }}</td>
+              </ng-container>
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ row.description || '—' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="actif">
+                <th mat-header-cell *matHeaderCellDef>Actif</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.actif" (change)="toggleRegle(row)" color="primary"></mat-slide-toggle>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef class="!w-20"></th>
+                <td mat-cell *matCellDef="let row">
+                  <div class="flex gap-1">
+                    <button mat-icon-button (click)="startEdit(row)"><mat-icon class="!text-lg text-gray-400">edit</mat-icon></button>
+                    <button mat-icon-button (click)="deleteRegle(row)"><mat-icon class="!text-lg text-danger">delete</mat-icon></button>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="columns"></tr>
+              <tr mat-row *matRowDef="let row; columns: columns" class="hover:bg-gray-50"></tr>
+            </table>
+          </div>
+        }
+      </div>
+
+      <div class="dialog-actions">
+        <button class="btn-secondary" (click)="dialogRef.close()">Fermer</button>
+      </div>
+    </div>
   `
 })
 export class ReglesDialogComponent implements OnInit {

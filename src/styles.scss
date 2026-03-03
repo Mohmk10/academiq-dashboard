@@ -45,128 +45,260 @@ $academiq-dashboard-theme: mat.define-theme((
   }
 }
 
-// ─── Material Overrides (un-layered for proper cascade priority) ─────────────
+// ============================================================
+// FORMULAIRES — Design premium avec floating labels animes
+// ============================================================
+
+$input-bg: #F9FAFB;
+$input-border: #D1D5DB;
+$input-border-hover: #9CA3AF;
+$input-border-focus: #2563EB;
+$input-focus-glow: rgba(37, 99, 235, 0.12);
+$input-error: #DC2626;
+$input-error-glow: rgba(220, 38, 38, 0.1);
+$input-radius: 10px;
+$input-text: #111827;
+$input-label: #6B7280;
+$input-label-focus: #2563EB;
 
 .mat-mdc-form-field {
-  // Wrapper background: soft gray tint → white on focus
-  .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
-    background-color: #F9FAFB !important;
-    border-radius: 0.625rem;
-    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+
+  .mdc-text-field--outlined {
+    background-color: $input-bg !important;
+    border-radius: $input-radius !important;
+
+    .mdc-text-field__input {
+      color: $input-text !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 14px !important;
+      padding: 12px 16px !important;
+      caret-color: $input-border-focus;
+    }
+
+    .mdc-notched-outline {
+      .mdc-notched-outline__leading {
+        border-color: $input-border !important;
+        border-radius: $input-radius 0 0 $input-radius !important;
+        border-width: 1px !important;
+      }
+      .mdc-notched-outline__notch {
+        border-color: $input-border !important;
+        border-width: 1px 0 !important;
+
+        .mdc-floating-label {
+          color: $input-label !important;
+          font-family: 'Inter', sans-serif !important;
+          font-size: 14px !important;
+          font-weight: 400 !important;
+        }
+
+        .mdc-floating-label--float-above {
+          color: $input-label !important;
+          font-size: 12px !important;
+          font-weight: 500 !important;
+          transform: translateY(-130%) scale(1) !important;
+        }
+      }
+      .mdc-notched-outline__trailing {
+        border-color: $input-border !important;
+        border-radius: 0 $input-radius $input-radius 0 !important;
+        border-width: 1px !important;
+      }
+    }
+
+    &:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover {
+      .mdc-notched-outline {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: $input-border-hover !important;
+        }
+      }
+    }
+
+    &.mdc-text-field--focused {
+      .mdc-notched-outline {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: $input-border-focus !important;
+          border-width: 1.5px !important;
+        }
+      }
+
+      box-shadow: 0 0 0 3px $input-focus-glow !important;
+
+      .mdc-notched-outline .mdc-notched-outline__notch .mdc-floating-label {
+        color: $input-label-focus !important;
+      }
+    }
+
+    &.mdc-text-field--disabled {
+      background-color: #F3F4F6 !important;
+      opacity: 0.7;
+      .mdc-notched-outline {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: #E5E7EB !important;
+        }
+      }
+    }
+
+    &.mdc-text-field--invalid {
+      .mdc-notched-outline {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: $input-error !important;
+          border-width: 1.5px !important;
+        }
+      }
+      &.mdc-text-field--focused {
+        box-shadow: 0 0 0 3px $input-error-glow !important;
+      }
+      .mdc-notched-outline .mdc-notched-outline__notch .mdc-floating-label {
+        color: $input-error !important;
+      }
+    }
   }
 
-  // Default border: light gray (#E5E7EB)
-  .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading,
-  .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__notch,
-  .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing {
-    border-color: #E5E7EB !important;
-    transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  .mat-mdc-form-field-subscript-wrapper {
+    .mat-mdc-form-field-error {
+      color: $input-error !important;
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      font-family: 'Inter', sans-serif !important;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      &::before {
+        content: '\26A0';
+        font-size: 11px;
+      }
+    }
+
+    .mat-mdc-form-field-hint {
+      color: #9CA3AF !important;
+      font-size: 12px !important;
+      font-family: 'Inter', sans-serif !important;
+    }
   }
 
-  // Border radius 10px
-  .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading {
-    border-radius: 0.625rem 0 0 0.625rem !important;
+  .mat-mdc-form-field-icon-prefix,
+  .mat-mdc-form-field-icon-suffix {
+    color: $input-label !important;
+    padding: 0 8px !important;
   }
-  .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing {
-    border-radius: 0 0.625rem 0.625rem 0 !important;
+}
+
+// ============================================================
+// SELECT
+// ============================================================
+
+.mat-mdc-select {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  color: $input-text !important;
+
+  .mat-mdc-select-arrow {
+    color: $input-label !important;
+  }
+}
+
+.mat-mdc-select-panel {
+  border-radius: 10px !important;
+  border: 1px solid #E5E7EB !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  padding: 4px !important;
+
+  .mat-mdc-option {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    border-radius: 6px !important;
+    min-height: 40px !important;
+    padding: 0 12px !important;
+    margin: 2px 0 !important;
+
+    &:hover:not(.mdc-list-item--disabled) {
+      background-color: #F3F4F6 !important;
+    }
+
+    &.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+      background-color: #EFF6FF !important;
+      color: #2563EB !important;
+      font-weight: 500 !important;
+    }
+  }
+}
+
+// ============================================================
+// CHECKBOX
+// ============================================================
+
+.mat-mdc-checkbox {
+  .mdc-checkbox {
+    .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+      background-color: #2563EB !important;
+      border-color: #2563EB !important;
+    }
+    .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
+      border-color: $input-border !important;
+      border-radius: 4px !important;
+    }
+  }
+  .mdc-label {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    color: $input-text !important;
+  }
+}
+
+// ============================================================
+// DATE PICKER
+// ============================================================
+
+.mat-datepicker-content {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #E5E7EB !important;
+}
+
+// ============================================================
+// TEXTAREA
+// ============================================================
+
+.mat-mdc-form-field textarea.mdc-text-field__input {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  resize: vertical;
+  min-height: 80px;
+}
+
+// ============================================================
+// TRANSITIONS GLOBALES
+// ============================================================
+
+.mdc-text-field--outlined {
+  transition: box-shadow 0.2s ease, background-color 0.2s ease !important;
+
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    transition: border-color 0.2s ease, border-width 0.15s ease !important;
   }
 
-  // Hover: slightly darker border
-  .mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__leading,
-  .mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__notch,
-  .mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__trailing {
-    border-color: #D1D5DB !important;
-  }
-
-  // Focus: white bg, primary border, soft blue glow
-  .mat-mdc-text-field-wrapper.mdc-text-field--outlined.mdc-text-field--focused {
-    background-color: #FFFFFF !important;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
-    border-radius: 0.625rem;
-  }
-  .mdc-text-field--outlined.mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__leading,
-  .mdc-text-field--outlined.mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__notch,
-  .mdc-text-field--outlined.mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__trailing {
-    border-color: #2563EB !important;
-    border-width: 1.5px;
-  }
-
-  // Floating label: gray default → primary on focus
   .mdc-floating-label {
-    color: #9CA3AF !important;
-    transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .mdc-text-field--focused .mdc-floating-label {
-    color: #2563EB !important;
-  }
-
-  // Prefix icon: gray → primary on focus
-  .mat-mdc-form-field-icon-prefix .mat-icon,
-  [matPrefix] {
-    color: #9CA3AF !important;
-    transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  &.mat-focused .mat-mdc-form-field-icon-prefix .mat-icon,
-  &.mat-focused [matPrefix] {
-    color: #2563EB !important;
-  }
-
-  // Suffix icon: muted
-  .mat-mdc-form-field-icon-suffix .mat-icon {
-    color: #9CA3AF !important;
-  }
-
-  // Input text styling
-  .mat-mdc-input-element {
-    font-size: 0.875rem !important;
-    color: #1F2937 !important;
-    &::placeholder {
-      color: #D1D5DB !important;
-    }
-  }
-
-  // Disabled state
-  .mat-mdc-text-field-wrapper.mdc-text-field--outlined.mdc-text-field--disabled {
-    background-color: #F3F4F6 !important;
-    border-radius: 0.625rem;
-    opacity: 0.7;
-  }
-
-  // Error state: subtle red border + red glow
-  &.mat-form-field-invalid {
-    .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading,
-    .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__notch,
-    .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing {
-      border-color: #FCA5A5 !important;
-    }
-    .mat-mdc-text-field-wrapper.mdc-text-field--outlined.mdc-text-field--focused {
-      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.06);
-    }
-    .mdc-floating-label {
-      color: #EF4444 !important;
-    }
-  }
-
-  // Mat-error: subtle with icon support
-  .mat-mdc-form-field-error-wrapper {
-    padding: 0 4px;
-  }
-  mat-error, .mat-mdc-form-field-error {
-    font-size: 0.75rem !important;
-    color: #EF4444 !important;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+    transition: color 0.2s ease, transform 0.2s ease, font-size 0.2s ease !important;
   }
 }
 
-// Select dropdown arrow color
-.mat-mdc-select-arrow {
-  color: #9CA3AF !important;
-}
-.mat-mdc-select-panel .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
-  background-color: #EFF6FF !important;
-}
+// ============================================================
+// BOUTONS MATERIAL
+// ============================================================
 
 .mat-mdc-raised-button.mat-primary {
   background-color: #2563EB !important;
@@ -196,6 +328,10 @@ $academiq-dashboard-theme: mat.define-theme((
   }
 }
 
+// ============================================================
+// TABLES
+// ============================================================
+
 .mat-mdc-table {
   background-color: #FFFFFF !important;
   .mat-mdc-header-row {
@@ -222,9 +358,15 @@ $academiq-dashboard-theme: mat.define-theme((
   }
 }
 
+// ============================================================
+// DIALOGS
+// ============================================================
+
 .mat-mdc-dialog-container .mdc-dialog__surface {
-  border-radius: 1rem !important;
+  border-radius: 16px !important;
   box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.15), 0 8px 20px -8px rgba(0, 0, 0, 0.1) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 
 [mat-dialog-title] {
@@ -237,11 +379,9 @@ $academiq-dashboard-theme: mat.define-theme((
   padding-top: 1rem !important;
 }
 
-.mat-mdc-select-panel {
-  border-radius: 0.625rem !important;
-  border: 1px solid #E5E7EB !important;
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08) !important;
-}
+// ============================================================
+// MENUS
+// ============================================================
 
 .mat-mdc-menu-panel {
   border-radius: 0.75rem !important;
@@ -249,9 +389,9 @@ $academiq-dashboard-theme: mat.define-theme((
   box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.1) !important;
 }
 
-.mat-mdc-option:hover:not(.mdc-list-item--disabled) {
-  background-color: #F9FAFB !important;
-}
+// ============================================================
+// DIVERS MATERIAL
+// ============================================================
 
 .mat-mdc-snack-bar-container {
   border-radius: 0.75rem !important;
@@ -266,10 +406,14 @@ $academiq-dashboard-theme: mat.define-theme((
   font-size: 0.875rem !important;
 }
 
-.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
-  background-color: #2563EB !important;
-  border-color: #2563EB !important;
+.mat-mdc-slide-toggle.mat-primary {
+  --mdc-switch-selected-handle-color: #2563EB !important;
+  --mdc-switch-selected-track-color: #93C5FD !important;
 }
+
+// ============================================================
+// COMPOSANTS TAILWIND
+// ============================================================
 
 @layer components {
   .page-container {
@@ -337,7 +481,7 @@ $academiq-dashboard-theme: mat.define-theme((
   }
 
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-lg
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-lg
            shadow-btn hover:bg-primary-hover hover:shadow-btn-hover transition-all duration-200;
     &:active {
       transform: scale(0.98);
@@ -348,7 +492,7 @@ $academiq-dashboard-theme: mat.define-theme((
   }
 
   .btn-secondary {
-    @apply inline-flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg
            hover:bg-gray-50 hover:border-gray-400 transition-all duration-200;
     &:active {
       transform: scale(0.98);
@@ -356,7 +500,7 @@ $academiq-dashboard-theme: mat.define-theme((
   }
 
   .btn-danger {
-    @apply inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white text-sm font-medium rounded-lg
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 text-white text-sm font-medium rounded-lg
            shadow-btn hover:bg-red-700 transition-all duration-200;
     &:active {
       transform: scale(0.98);
@@ -378,21 +522,22 @@ $academiq-dashboard-theme: mat.define-theme((
   .input-field {
     @apply text-sm outline-none;
     background-color: #F9FAFB;
-    border: 1px solid #E5E7EB;
-    border-radius: 0.625rem;
-    padding: 0.625rem 1rem;
-    color: #1F2937;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #D1D5DB;
+    border-radius: 10px;
+    padding: 10px 16px;
+    color: #111827;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
     &::placeholder {
-      color: #D1D5DB;
+      color: #9CA3AF;
     }
     &:hover:not(:disabled):not(:focus) {
-      border-color: #D1D5DB;
+      border-color: #9CA3AF;
     }
     &:focus {
       background-color: #FFFFFF;
       border-color: #2563EB;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
     }
     &:disabled {
       background-color: #F3F4F6;
@@ -401,7 +546,109 @@ $academiq-dashboard-theme: mat.define-theme((
       opacity: 0.7;
     }
   }
+
+  // Grilles de formulaire
+  .form-grid {
+    @apply grid gap-5;
+  }
+
+  .form-grid-2 {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-5;
+  }
+
+  .form-grid-3 {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-5;
+  }
+
+  .form-section {
+    @apply space-y-5;
+  }
+
+  .form-section-title {
+    @apply text-sm font-semibold text-gray-900 pb-2 border-b border-gray-100;
+  }
+
+  .form-actions {
+    @apply flex items-center justify-end gap-3 pt-5;
+  }
+
+  // Layout dialog custom
+  .dialog-container {
+    @apply p-6;
+  }
+
+  .dialog-header {
+    @apply mb-5;
+  }
+
+  .dialog-title {
+    @apply text-lg font-semibold text-gray-900;
+  }
+
+  .dialog-subtitle {
+    @apply text-sm text-gray-500 mt-1;
+  }
+
+  .dialog-content {
+    @apply space-y-5;
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+
+  .dialog-actions {
+    @apply flex items-center justify-end gap-3 pt-5 mt-2 border-t border-gray-100;
+  }
+
+  // Inputs inline (tables de saisie)
+  .inline-input {
+    @apply w-full text-sm rounded-lg border border-gray-200 bg-gray-50 transition-all duration-200;
+    padding: 8px 12px;
+    font-family: 'Inter', sans-serif;
+
+    &:hover:not(:focus):not(:disabled) {
+      @apply border-gray-300;
+    }
+
+    &:focus {
+      @apply outline-none border-blue-500 bg-white;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+
+    &:disabled {
+      @apply bg-gray-100 text-gray-400 cursor-not-allowed;
+    }
+
+    &.input-error {
+      @apply border-red-400;
+      &:focus {
+        @apply border-red-500;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+      }
+    }
+
+    &.input-note {
+      @apply w-20 text-center font-medium;
+    }
+  }
+
+  // Filtres compacts
+  .filter-field {
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none !important;
+    }
+    .mdc-text-field--outlined .mdc-text-field__input {
+      padding: 8px 12px !important;
+      font-size: 13px !important;
+    }
+    .mdc-text-field--outlined {
+      min-height: 40px !important;
+    }
+  }
 }
+
+// ============================================================
+// SNACKBARS
+// ============================================================
 
 .snackbar-success .mdc-snackbar__surface {
   background-color: #059669 !important;
@@ -422,6 +669,10 @@ $academiq-dashboard-theme: mat.define-theme((
   background-color: #2563EB !important;
   border-radius: 0.75rem !important;
 }
+
+// ============================================================
+// ANIMATIONS
+// ============================================================
 
 .fade-in { animation: fadeIn 0.3s ease-out; }
 .fade-in-up { animation: fadeInUp 0.4s ease-out; }

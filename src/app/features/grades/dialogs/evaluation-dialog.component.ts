@@ -15,15 +15,20 @@ import { EvaluationResponse, TypeEvaluation } from '../../../core/models/note.mo
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
   template: `
-    <h2 mat-dialog-title class="!text-lg !font-semibold">{{ data.mode === 'create' ? 'Nouvelle évaluation' : 'Modifier l\'évaluation' }}</h2>
-    <mat-dialog-content>
-      <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <h2 class="dialog-title">{{ dialogTitle }}</h2>
+        <p class="dialog-subtitle">Renseignez les informations de l'évaluation</p>
+      </div>
+
+      <form [formGroup]="form" class="dialog-content">
+        <mat-form-field appearance="outline">
           <mat-label>Nom de l'évaluation</mat-label>
           <input matInput formControlName="nom" placeholder="Ex: Examen final">
         </mat-form-field>
-        <div class="grid grid-cols-2 gap-4">
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
             <mat-label>Module</mat-label>
             <mat-select formControlName="moduleId">
               @for (m of modules; track m.id) {
@@ -31,7 +36,7 @@ import { EvaluationResponse, TypeEvaluation } from '../../../core/models/note.mo
               }
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline">
             <mat-label>Promotion</mat-label>
             <mat-select formControlName="promotionId">
               @for (p of promotions; track p.id) {
@@ -40,8 +45,9 @@ import { EvaluationResponse, TypeEvaluation } from '../../../core/models/note.mo
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
             <mat-label>Type</mat-label>
             <mat-select formControlName="type">
               @for (t of types; track t.value) {
@@ -49,29 +55,31 @@ import { EvaluationResponse, TypeEvaluation } from '../../../core/models/note.mo
               }
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline">
             <mat-label>Coefficient</mat-label>
-            <input matInput type="number" formControlName="coefficient">
+            <input matInput type="number" formControlName="coefficient" placeholder="Ex: 2">
           </mat-form-field>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
             <mat-label>Note maximale</mat-label>
-            <input matInput type="number" formControlName="noteMax">
+            <input matInput type="number" formControlName="noteMax" placeholder="Ex: 20">
           </mat-form-field>
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline">
             <mat-label>Date</mat-label>
             <input matInput type="date" formControlName="date">
           </mat-form-field>
         </div>
       </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!pt-4">
-      <button mat-stroked-button (click)="onCancel()">Annuler</button>
-      <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit()">
-        {{ data.mode === 'create' ? 'Créer' : 'Enregistrer' }}
-      </button>
-    </mat-dialog-actions>
+
+      <div class="dialog-actions">
+        <button class="btn-secondary" (click)="onCancel()">Annuler</button>
+        <button class="btn-primary" [disabled]="form.invalid" (click)="onSubmit()">
+          {{ data.mode === 'create' ? 'Créer' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
   `
 })
 export class EvaluationDialogComponent implements OnInit {
@@ -85,6 +93,10 @@ export class EvaluationDialogComponent implements OnInit {
     { value: 'PROJET', label: 'Projet' },
     { value: 'RATTRAPAGE', label: 'Rattrapage' }
   ];
+
+  get dialogTitle(): string {
+    return this.data.mode === 'create' ? 'Nouvelle évaluation' : 'Modifier l\'évaluation';
+  }
 
   constructor(
     private fb: FormBuilder,

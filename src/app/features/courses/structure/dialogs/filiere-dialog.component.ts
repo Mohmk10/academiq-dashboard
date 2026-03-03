@@ -12,39 +12,48 @@ import { FiliereResponse } from '../../../../core/models/structure.model';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   template: `
-    <h2 mat-dialog-title class="!text-lg !font-semibold">{{ data.mode === 'create' ? 'Nouvelle filière' : 'Modifier la filière' }}</h2>
-    <mat-dialog-content>
-      <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
-        <div class="grid grid-cols-2 gap-4">
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <h2 class="dialog-title">{{ dialogTitle }}</h2>
+        <p class="dialog-subtitle">Renseignez les informations de la filière</p>
+      </div>
+
+      <form [formGroup]="form" class="dialog-content">
+        <div class="form-grid-2">
           <mat-form-field appearance="outline">
             <mat-label>Nom</mat-label>
-            <input matInput formControlName="nom">
+            <input matInput formControlName="nom" placeholder="Ex: Informatique">
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Code</mat-label>
-            <input matInput formControlName="code">
+            <input matInput formControlName="code" placeholder="Ex: INFO">
           </mat-form-field>
         </div>
         <mat-form-field appearance="outline">
           <mat-label>Département</mat-label>
-          <input matInput formControlName="departement">
+          <input matInput formControlName="departement" placeholder="Ex: Sciences et Technologies">
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description" rows="3"></textarea>
+          <textarea matInput formControlName="description" rows="3" placeholder="Description de la filière"></textarea>
         </mat-form-field>
       </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!pt-4">
-      <button mat-stroked-button (click)="onCancel()">Annuler</button>
-      <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit()">
-        {{ data.mode === 'create' ? 'Créer' : 'Enregistrer' }}
-      </button>
-    </mat-dialog-actions>
+
+      <div class="dialog-actions">
+        <button class="btn-secondary" (click)="onCancel()">Annuler</button>
+        <button class="btn-primary" [disabled]="form.invalid" (click)="onSubmit()">
+          {{ data.mode === 'create' ? 'Créer' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
   `
 })
 export class FiliereDialogComponent {
   form: FormGroup;
+
+  get dialogTitle(): string {
+    return this.data.mode === 'create' ? 'Nouvelle filière' : 'Modifier la filière';
+  }
 
   constructor(
     private fb: FormBuilder,

@@ -24,59 +24,79 @@ export interface StudentDialogData {
     MatButtonModule, MatDatepickerModule, MatNativeDateModule
   ],
   template: `
-    <h2 mat-dialog-title class="!text-lg !font-semibold">{{ data.mode === 'create' ? 'Ajouter un étudiant' : 'Modifier l\\'étudiant' }}</h2>
-    <mat-dialog-content class="!pt-2">
-      <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Nom</mat-label>
-          <input matInput formControlName="nom">
-          <mat-error>Requis</mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Prénom</mat-label>
-          <input matInput formControlName="prenom">
-          <mat-error>Requis</mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email">
-          <mat-error>Email invalide</mat-error>
-        </mat-form-field>
-        @if (data.mode === 'create') {
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Mot de passe</mat-label>
-            <input matInput type="password" formControlName="motDePasse">
-            <mat-error>Minimum 8 caractères</mat-error>
+    <div class="dialog-container">
+      <div class="dialog-header">
+        <h2 class="dialog-title">{{ dialogTitle }}</h2>
+        <p class="dialog-subtitle">{{ data.mode === 'create' ? 'Renseignez les informations du nouvel étudiant' : 'Modifiez les informations de l\\'étudiant' }}</p>
+      </div>
+
+      <form [formGroup]="form" class="dialog-content">
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Nom</mat-label>
+            <input matInput formControlName="nom" placeholder="Ex: Kouyaté">
+            <mat-error>Requis</mat-error>
           </mat-form-field>
-        }
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Téléphone</mat-label>
-          <input matInput formControlName="telephone">
-        </mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Date de naissance</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="dateNaissance">
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Nom du tuteur</mat-label>
-          <input matInput formControlName="nomTuteur">
-        </mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Numéro du tuteur</mat-label>
-          <input matInput formControlName="numeroTuteur">
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Prénom</mat-label>
+            <input matInput formControlName="prenom" placeholder="Ex: Makan">
+            <mat-error>Requis</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="Ex: etudiant@academiq.sn">
+            <mat-error>Email invalide</mat-error>
+          </mat-form-field>
+          @if (data.mode === 'create') {
+            <mat-form-field appearance="outline">
+              <mat-label>Mot de passe</mat-label>
+              <input matInput type="password" formControlName="motDePasse" placeholder="Minimum 8 caractères">
+              <mat-error>Minimum 8 caractères</mat-error>
+            </mat-form-field>
+          }
+        </div>
+
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Téléphone</mat-label>
+            <input matInput formControlName="telephone" placeholder="Ex: +221 77 000 00 00">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Date de naissance</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="dateNaissance">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="form-grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Nom du tuteur</mat-label>
+            <input matInput formControlName="nomTuteur" placeholder="Ex: Diallo">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Numéro du tuteur</mat-label>
+            <input matInput formControlName="numeroTuteur" placeholder="Ex: +221 70 000 00 00">
+          </mat-form-field>
+        </div>
       </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end" class="!pt-4">
-      <button mat-stroked-button (click)="onCancel()">Annuler</button>
-      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">Enregistrer</button>
-    </mat-dialog-actions>
+
+      <div class="dialog-actions">
+        <button class="btn-secondary" (click)="onCancel()">Annuler</button>
+        <button class="btn-primary" (click)="onSubmit()" [disabled]="form.invalid">Enregistrer</button>
+      </div>
+    </div>
   `
 })
 export class StudentDialogComponent implements OnInit {
   form!: FormGroup;
+
+  get dialogTitle(): string {
+    return this.data.mode === 'create' ? 'Ajouter un étudiant' : 'Modifier l\'étudiant';
+  }
 
   constructor(
     private fb: FormBuilder,
