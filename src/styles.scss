@@ -40,3 +40,19 @@ $academiq-dashboard-theme: mat.define-theme((
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.snackbar-success .mdc-snackbar__surface {
+  background-color: #10B981 !important;
+}
+
+.snackbar-error .mdc-snackbar__surface {
+  background-color: #EF4444 !important;
+}
+
+.snackbar-warning .mdc-snackbar__surface {
+  background-color: #F97316 !important;
+}
+
+.snackbar-info .mdc-snackbar__surface {
+  background-color: #1E40AF !important;
+}
