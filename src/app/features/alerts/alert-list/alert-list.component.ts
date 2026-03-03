@@ -28,16 +28,16 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
     MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
-    <div class="space-y-6">
+    <div class="space-y-6 fade-in-up">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-bold text-primary">Alertes pédagogiques</h1>
+          <h1 class="page-title">Alertes pédagogiques</h1>
           <p class="text-sm text-gray-500 mt-1">Suivi et traitement des alertes académiques</p>
         </div>
         <div class="flex gap-2">
           @if (isAdmin) {
-            <button mat-stroked-button (click)="openRegles()">
+            <button class="btn-secondary" (click)="openRegles()">
               <i class="fas fa-cog mr-2"></i> Gérer les règles
             </button>
           }
@@ -46,34 +46,26 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
 
       <!-- Stats cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-red-50 rounded-xl p-4 border border-red-200">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center"><i class="fas fa-circle-exclamation text-danger"></i></div>
-            <div><p class="text-2xl font-bold text-danger">{{ stats.critiques }}</p><p class="text-xs text-gray-500">Critiques</p></div>
-          </div>
+        <div class="stat-card">
+          <div class="stat-icon bg-red-50 text-red-600"><i class="fas fa-circle-exclamation"></i></div>
+          <div><p class="stat-value text-red-600">{{ stats.critiques }}</p><p class="stat-label">Critiques</p></div>
         </div>
-        <div class="bg-orange-50 rounded-xl p-4 border border-orange-200">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center"><i class="fas fa-triangle-exclamation text-warning"></i></div>
-            <div><p class="text-2xl font-bold text-warning">{{ stats.attention }}</p><p class="text-xs text-gray-500">Attention</p></div>
-          </div>
+        <div class="stat-card">
+          <div class="stat-icon bg-amber-50 text-amber-600"><i class="fas fa-triangle-exclamation"></i></div>
+          <div><p class="stat-value text-amber-600">{{ stats.attention }}</p><p class="stat-label">Attention</p></div>
         </div>
-        <div class="bg-green-50 rounded-xl p-4 border border-green-200">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center"><i class="fas fa-check-circle text-success"></i></div>
-            <div><p class="text-2xl font-bold text-success">{{ stats.traitees }}</p><p class="text-xs text-gray-500">Traitées</p></div>
-          </div>
+        <div class="stat-card">
+          <div class="stat-icon bg-emerald-50 text-emerald-600"><i class="fas fa-check-circle"></i></div>
+          <div><p class="stat-value text-emerald-600">{{ stats.traitees }}</p><p class="stat-label">Traitées</p></div>
         </div>
-        <div class="bg-blue-50 rounded-xl p-4 border border-blue-200">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center"><i class="fas fa-chart-bar text-secondary"></i></div>
-            <div><p class="text-2xl font-bold text-secondary">{{ stats.total }}</p><p class="text-xs text-gray-500">Total actives</p></div>
-          </div>
+        <div class="stat-card">
+          <div class="stat-icon bg-blue-50 text-blue-600"><i class="fas fa-chart-bar"></i></div>
+          <div><p class="stat-value text-primary">{{ stats.total }}</p><p class="stat-label">Total actives</p></div>
         </div>
       </div>
 
       <!-- Filters -->
-      <div class="bg-white rounded-xl shadow-sm p-4">
+      <div class="filter-bar">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Statut</mat-label>
@@ -114,7 +106,7 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
       </div>
 
       <!-- Table -->
-      <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div class="card !p-0 overflow-hidden">
         @if (isLoading) {
           <div class="flex items-center justify-center h-48"><mat-spinner diameter="40"></mat-spinner></div>
         } @else if (filteredAlertes.length === 0) {
@@ -126,35 +118,35 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
           <div class="overflow-x-auto">
             <table mat-table [dataSource]="filteredAlertes" matSort class="w-full">
               <ng-container matColumnDef="niveau">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase !w-16">Niv.</th>
+                <th mat-header-cell *matHeaderCellDef class="!w-16">Niv.</th>
                 <td mat-cell *matCellDef="let row">
                   <i class="fas fa-circle text-xs" [class]="getNiveauClass(row)"></i>
                 </td>
               </ng-container>
               <ng-container matColumnDef="type">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Type</th>
+                <th mat-header-cell *matHeaderCellDef>Type</th>
                 <td mat-cell *matCellDef="let row">
                   <span class="text-xs px-2 py-0.5 rounded-full font-medium" [class]="getTypeBadgeClass(row.type)">{{ getTypeLabel(row.type) }}</span>
                 </td>
               </ng-container>
               <ng-container matColumnDef="etudiant">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Étudiant</th>
+                <th mat-header-cell *matHeaderCellDef>Étudiant</th>
                 <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.etudiantNom }}</td>
               </ng-container>
               <ng-container matColumnDef="matricule">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Matricule</th>
+                <th mat-header-cell *matHeaderCellDef>Matricule</th>
                 <td mat-cell *matCellDef="let row"><span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.etudiantMatricule }}</span></td>
               </ng-container>
               <ng-container matColumnDef="message">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Message</th>
+                <th mat-header-cell *matHeaderCellDef>Message</th>
                 <td mat-cell *matCellDef="let row" class="text-sm text-gray-600 max-w-xs truncate">{{ row.message }}</td>
               </ng-container>
               <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="!text-gray-500 !text-xs !font-semibold uppercase">Date</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
                 <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ formatDate(row.createdAt) }}</td>
               </ng-container>
               <ng-container matColumnDef="statut">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="!text-gray-500 !text-xs !font-semibold uppercase">Statut</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Statut</th>
                 <td mat-cell *matCellDef="let row">
                   <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getStatutBadge(row.statut)">{{ row.statut }}</span>
                 </td>
@@ -164,10 +156,10 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
                 <td mat-cell *matCellDef="let row">
                   <div class="flex gap-1">
                     @if (row.statut === 'ACTIVE') {
-                      <button mat-stroked-button class="!text-xs !py-0 !h-8 !min-w-0 !px-3" (click)="traiterAlerte(row); $event.stopPropagation()">Traiter</button>
-                      <button mat-stroked-button class="!text-xs !py-0 !h-8 !min-w-0 !px-3 !text-gray-400" (click)="ignorerAlerte(row); $event.stopPropagation()">Ignorer</button>
+                      <button class="btn-secondary !py-1 !px-3 !text-xs" (click)="traiterAlerte(row); $event.stopPropagation()">Traiter</button>
+                      <button class="btn-secondary !py-1 !px-3 !text-xs !text-gray-400 !border-gray-200" (click)="ignorerAlerte(row); $event.stopPropagation()">Ignorer</button>
                     } @else if (row.statut === 'TRAITEE') {
-                      <button mat-stroked-button class="!text-xs !py-0 !h-8 !min-w-0 !px-3 !text-success" (click)="resoudreAlerte(row); $event.stopPropagation()">Résoudre</button>
+                      <button class="btn-secondary !py-1 !px-3 !text-xs !text-emerald-600 !border-emerald-200" (click)="resoudreAlerte(row); $event.stopPropagation()">Résoudre</button>
                     }
                   </div>
                 </td>
@@ -314,7 +306,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
   getNiveauClass(a: AlerteResponse): string {
     if (this.isCritique(a)) return 'text-danger';
     if (a.type === 'MOYENNE_FAIBLE' || a.type === 'ABSENCE_NOTE') return 'text-warning';
-    return 'text-secondary';
+    return 'text-blue-500';
   }
 
   getTypeLabel(type: string): string {
@@ -328,7 +320,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
   }
 
   getStatutBadge(statut: string): string {
-    const classes: Record<string, string> = { ACTIVE: 'bg-red-50 text-danger', TRAITEE: 'bg-blue-50 text-secondary', RESOLUE: 'bg-green-50 text-success', IGNOREE: 'bg-gray-100 text-gray-500' };
+    const classes: Record<string, string> = { ACTIVE: 'bg-red-50 text-danger', TRAITEE: 'bg-blue-50 text-blue-600', RESOLUE: 'bg-green-50 text-success', IGNOREE: 'bg-gray-100 text-gray-500' };
     return classes[statut] || 'bg-gray-100 text-gray-500';
   }
 

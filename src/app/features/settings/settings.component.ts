@@ -32,9 +32,9 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
-    <div class="space-y-6">
+    <div class="space-y-6 fade-in-up">
       <div>
-        <h1 class="text-2xl font-bold text-primary">Paramètres</h1>
+        <h1 class="page-title">Paramètres</h1>
         <p class="text-sm text-gray-500 mt-1">Configuration et administration du système</p>
       </div>
 
@@ -46,8 +46,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
             <!-- Stats rapides -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
               @for (stat of userStats; track stat.role) {
-                <div class="bg-white rounded-xl shadow-sm p-4 text-center">
-                  <p class="text-2xl font-bold text-primary">{{ stat.count }}</p>
+                <div class="card text-center">
+                  <p class="text-2xl font-bold text-gray-900">{{ stat.count }}</p>
                   <p class="text-xs text-gray-500">{{ stat.label }}</p>
                 </div>
               }
@@ -75,7 +75,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
             @if (usersLoading) {
               <div class="flex justify-center py-8"><mat-spinner diameter="40"></mat-spinner></div>
             } @else {
-              <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div class="card !p-0 overflow-hidden">
                 <div class="overflow-x-auto">
                   <table mat-table [dataSource]="users" class="w-full">
                     <ng-container matColumnDef="nom">
@@ -133,7 +133,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                 <p class="font-medium">Aucune règle configurée</p>
               </div>
             } @else {
-              <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div class="card !p-0 overflow-hidden">
                 <div class="overflow-x-auto">
                   <table mat-table [dataSource]="regles" class="w-full">
                     <ng-container matColumnDef="type">
@@ -173,8 +173,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
         <mat-tab>
           <ng-template mat-tab-label><i class="fas fa-server mr-2"></i> Système</ng-template>
           <div class="pt-6 space-y-6">
-            <div class="bg-white rounded-xl shadow-sm p-6">
-              <h3 class="text-lg font-semibold text-primary mb-4">Informations système</h3>
+            <div class="card">
+              <h3 class="section-title">Informations système</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                 <div><span class="text-xs text-gray-400 uppercase">Version</span><p class="font-medium">1.0.0</p></div>
                 <div><span class="text-xs text-gray-400 uppercase">Base de données</span><p class="font-medium">PostgreSQL (Neon)</p></div>
@@ -184,8 +184,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
               </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm p-6">
-              <h3 class="text-lg font-semibold text-primary mb-4">Maintenance</h3>
+            <div class="card">
+              <h3 class="section-title">Maintenance</h3>
               <div class="flex flex-wrap gap-3">
                 <button mat-raised-button color="primary" [disabled]="isAnalyzing" (click)="analyserPromotions()">
                   @if (isAnalyzing) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
@@ -348,7 +348,7 @@ export default class SettingsComponent implements OnInit, OnDestroy {
   }
 
   getRoleBadge(role: string): string {
-    const classes: Record<string, string> = { ADMIN: 'bg-primary/10 text-primary', ENSEIGNANT: 'bg-secondary/10 text-secondary', ETUDIANT: 'bg-accent/10 text-amber-700', RESPONSABLE_PEDAGOGIQUE: 'bg-green-50 text-success' };
+    const classes: Record<string, string> = { ADMIN: 'bg-primary/10 text-primary', ENSEIGNANT: 'bg-emerald-50 text-emerald-700', ETUDIANT: 'bg-accent/10 text-amber-700', RESPONSABLE_PEDAGOGIQUE: 'bg-green-50 text-success' };
     return classes[role] || 'bg-gray-100 text-gray-600';
   }
 

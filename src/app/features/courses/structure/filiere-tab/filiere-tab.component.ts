@@ -18,7 +18,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   template: `
     <div class="space-y-4">
       <div class="flex justify-end">
-        <button mat-raised-button class="!bg-secondary !text-white" (click)="openCreate()">
+        <button class="btn-primary" (click)="openCreate()">
           <i class="fas fa-plus mr-2"></i> Nouvelle filière
         </button>
       </div>
@@ -33,7 +33,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
       } @else {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           @for (filiere of filieres; track filiere.id) {
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+            <div class="card hover:shadow-md transition-shadow">
               <div class="flex items-start justify-between">
                 <div>
                   <div class="flex items-center gap-2 mb-1">

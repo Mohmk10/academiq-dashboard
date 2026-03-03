@@ -54,7 +54,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
             </mat-select>
           </mat-form-field>
         </div>
-        <button mat-raised-button class="!bg-secondary !text-white sm:self-center" (click)="openCreate()">
+        <button class="btn-primary sm:self-center" (click)="openCreate()">
           <i class="fas fa-plus mr-2"></i> Nouveau module
         </button>
       </div>
@@ -67,7 +67,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
           <p class="font-medium">Aucun module trouvé</p>
         </div>
       } @else {
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="card !p-0 overflow-hidden">
           <div class="overflow-x-auto">
             <table mat-table [dataSource]="modules" class="w-full">
               <ng-container matColumnDef="code">

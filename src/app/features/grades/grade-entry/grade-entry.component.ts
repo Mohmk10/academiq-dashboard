@@ -27,14 +27,14 @@ interface GradeRow extends NotePrepopuleeDTO {
     MatInputModule, MatFormFieldModule, MatCheckboxModule, MatProgressSpinnerModule, MatIconModule
   ],
   template: `
-    <div class="space-y-6">
+    <div class="space-y-6 fade-in-up">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center gap-4">
-          <a routerLink="/notes" class="text-gray-400 hover:text-primary transition-colors"><i class="fas fa-arrow-left text-lg"></i></a>
+          <a routerLink="/notes" class="text-gray-400 hover:text-gray-900 transition-colors"><i class="fas fa-arrow-left text-lg"></i></a>
           <div>
             @if (evaluation) {
-              <h1 class="text-2xl font-bold text-primary">{{ evaluation.nom }}</h1>
+              <h1 class="page-title !mb-0">{{ evaluation.nom }}</h1>
               <p class="text-sm text-gray-500 mt-0.5">
                 <span class="font-mono bg-gray-100 px-2 py-0.5 rounded">{{ evaluation.moduleCode }}</span>
                 <span class="ml-2">{{ evaluation.moduleNom }}</span>
@@ -42,7 +42,7 @@ interface GradeRow extends NotePrepopuleeDTO {
                 <span>{{ evaluation.promotionNom }}</span>
               </p>
             } @else {
-              <h1 class="text-2xl font-bold text-primary">Saisie des notes</h1>
+              <h1 class="page-title !mb-0">Saisie des notes</h1>
             }
           </div>
         </div>
@@ -61,7 +61,7 @@ interface GradeRow extends NotePrepopuleeDTO {
 
       @if (evaluation) {
         <!-- Info bar -->
-        <div class="bg-white rounded-xl shadow-sm p-4 flex flex-wrap gap-6">
+        <div class="card flex flex-wrap gap-6">
           <div>
             <span class="text-xs text-gray-400 uppercase">Type</span>
             <p class="font-medium text-sm">{{ getTypeLabel(evaluation.type) }}</p>
@@ -89,7 +89,7 @@ interface GradeRow extends NotePrepopuleeDTO {
           <p class="font-medium">Aucun étudiant inscrit</p>
         </div>
       } @else {
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="card !p-0 overflow-hidden">
           <div class="overflow-x-auto">
             <table mat-table [dataSource]="rows" class="w-full grade-entry-table">
               <ng-container matColumnDef="index">

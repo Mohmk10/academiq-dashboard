@@ -34,7 +34,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
             }
           </mat-select>
         </mat-form-field>
-        <button mat-raised-button class="!bg-secondary !text-white" (click)="openCreate()">
+        <button class="btn-primary" (click)="openCreate()">
           <i class="fas fa-plus mr-2"></i> Nouvelle promotion
         </button>
       </div>
@@ -47,7 +47,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
           <p class="font-medium">Aucune promotion trouvée</p>
         </div>
       } @else {
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="card !p-0 overflow-hidden">
           <div class="overflow-x-auto">
             <table mat-table [dataSource]="filteredPromotions" class="w-full">
               <ng-container matColumnDef="annee">

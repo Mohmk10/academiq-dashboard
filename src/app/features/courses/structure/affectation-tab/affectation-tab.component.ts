@@ -54,7 +54,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
           <p class="font-medium">Aucune affectation enregistrée</p>
         </div>
       } @else {
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="card !p-0 overflow-hidden">
           <div class="overflow-x-auto">
             <table mat-table [dataSource]="affectations" class="w-full">
               <ng-container matColumnDef="enseignant">

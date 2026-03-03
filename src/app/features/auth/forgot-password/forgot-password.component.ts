@@ -14,35 +14,32 @@ import { MatIconModule } from '@angular/material/icon';
   template: `
     <div class="min-h-screen flex flex-col lg:flex-row">
       <!-- Branding Panel -->
-      <div class="lg:w-1/2 bg-primary text-white flex flex-col justify-center items-center p-8 lg:p-16 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10">
-          <div class="absolute top-10 left-10 w-40 h-40 border-2 border-white rounded-full"></div>
-          <div class="absolute bottom-20 right-10 w-64 h-64 border-2 border-white rounded-full"></div>
-          <div class="absolute top-1/2 left-1/4 w-24 h-24 border-2 border-accent rotate-45"></div>
-        </div>
+      <div class="lg:w-1/2 bg-sidebar text-white flex flex-col justify-center items-center p-8 lg:p-16 relative overflow-hidden">
         <div class="relative z-10 text-center fade-in">
-          <div class="flex items-center justify-center gap-3 mb-6">
-            <i class="fas fa-graduation-cap text-accent text-5xl"></i>
-            <h1 class="text-5xl font-bold tracking-tight">AcademiQ</h1>
+          <div class="mb-8">
+            <div class="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-graduation-cap text-accent text-2xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight text-white">AcademiQ</h1>
+            <p class="text-sm text-gray-400 mt-2 max-w-sm leading-relaxed">
+              Plateforme de gestion des notes et suivi pedagogique
+            </p>
           </div>
-          <p class="text-lg text-gray-300 max-w-md leading-relaxed">
-            Plateforme intelligente de gestion des notes et suivi pédagogique
-          </p>
         </div>
       </div>
 
       <!-- Form Panel -->
       <div class="lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-white">
-        <div class="w-full max-w-md fade-in">
+        <div class="w-full max-w-md fade-in-up">
           <div class="lg:hidden flex items-center gap-2 mb-6">
-            <i class="fas fa-graduation-cap text-secondary text-2xl"></i>
-            <span class="text-2xl font-bold text-primary">AcademiQ</span>
+            <i class="fas fa-graduation-cap text-primary text-xl"></i>
+            <span class="text-xl font-semibold text-gray-900">AcademiQ</span>
           </div>
 
           @if (!emailSent) {
             <div class="mb-8">
-              <h2 class="text-3xl font-bold text-primary">Mot de passe oublié</h2>
-              <p class="text-gray-500 mt-2">Entrez votre adresse email pour recevoir un lien de réinitialisation</p>
+              <h2 class="text-xl font-semibold text-gray-900">Mot de passe oublie</h2>
+              <p class="text-sm text-gray-500 mt-1">Entrez votre adresse email pour recevoir un lien de reinitialisation</p>
             </div>
 
             <form (ngSubmit)="onSubmit()" class="space-y-5">
@@ -58,31 +55,31 @@ import { MatIconModule } from '@angular/material/icon';
                 }
               </mat-form-field>
 
-              <button mat-raised-button type="submit" class="w-full !bg-secondary !text-white h-12 text-base font-semibold" [disabled]="emailControl.invalid">
-                Envoyer le lien de réinitialisation
+              <button type="submit" class="btn-primary w-full justify-center !py-3" [disabled]="emailControl.invalid">
+                Envoyer le lien de reinitialisation
               </button>
             </form>
           } @else {
             <div class="text-center">
-              <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-check text-2xl text-success"></i>
+              <div class="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-2xl text-emerald-600"></i>
               </div>
-              <h2 class="text-2xl font-bold text-primary mb-2">Email envoyé</h2>
+              <h2 class="text-xl font-semibold text-gray-900 mb-2">Email envoye</h2>
               <p class="text-gray-500 mb-6">
-                Si un compte existe avec l'adresse <strong>{{ emailControl.value }}</strong>, un lien de réinitialisation a été envoyé.
+                Si un compte existe avec l'adresse <strong>{{ emailControl.value }}</strong>, un lien de reinitialisation a ete envoye.
               </p>
-              <p class="text-sm text-gray-400">Vérifiez votre boîte de réception et vos spams.</p>
+              <p class="text-sm text-gray-400">Verifiez votre boite de reception et vos spams.</p>
             </div>
           }
 
           <div class="mt-8 text-center">
-            <a routerLink="/login" class="text-sm text-secondary hover:text-secondary/80 font-medium transition-colors">
-              <i class="fas fa-arrow-left mr-1"></i> Retour à la connexion
+            <a routerLink="/login" class="text-sm text-primary hover:text-primary-hover font-medium transition-colors">
+              <i class="fas fa-arrow-left mr-1"></i> Retour a la connexion
             </a>
           </div>
 
-          <p class="mt-8 text-center text-sm text-gray-400">
-            &copy; {{ currentYear }} AcademiQ — Tous droits réservés
+          <p class="mt-8 text-center text-xs text-gray-400">
+            &copy; {{ currentYear }} AcademiQ — Tous droits reserves
           </p>
         </div>
       </div>

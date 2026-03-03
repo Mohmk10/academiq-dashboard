@@ -14,18 +14,18 @@ import { ImportResult } from '../../../core/models/note.model';
     <h2 mat-dialog-title class="!text-lg !font-semibold">Importer des étudiants</h2>
     <mat-dialog-content>
       @if (!result && !isUploading) {
-        <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-secondary transition-colors"
+        <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors"
              (click)="fileInput.click()"
              (dragover)="$event.preventDefault(); dragOver = true"
              (dragleave)="dragOver = false"
              (drop)="onDrop($event)"
-             [class.border-secondary]="dragOver"
+             [class.border-primary]="dragOver"
              [class.bg-blue-50]="dragOver">
           <i class="fas fa-cloud-arrow-up text-4xl text-gray-400 mb-3"></i>
           <p class="text-gray-600 font-medium">Glissez votre fichier CSV ici</p>
           <p class="text-sm text-gray-400 mt-1">ou cliquez pour parcourir</p>
           @if (selectedFile) {
-            <p class="mt-3 text-sm text-secondary font-medium"><i class="fas fa-file-csv mr-1"></i> {{ selectedFile.name }}</p>
+            <p class="mt-3 text-sm text-primary font-medium"><i class="fas fa-file-csv mr-1"></i> {{ selectedFile.name }}</p>
           }
         </div>
         <input #fileInput type="file" accept=".csv,.xlsx" class="hidden" (change)="onFileSelected($event)">

@@ -1,22 +1,22 @@
-<div class="space-y-6">
+<div class="space-y-6 fade-in-up">
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-primary">Gestion des étudiants</h1>
+      <h1 class="page-title">Gestion des étudiants</h1>
       <p class="text-sm text-gray-500 mt-1">{{ totalElements }} étudiants au total</p>
     </div>
     <div class="flex gap-2">
-      <button mat-stroked-button (click)="openImportDialog()">
+      <button class="btn-secondary" (click)="openImportDialog()">
         <i class="fas fa-file-import mr-2"></i> Importer CSV
       </button>
-      <button mat-raised-button class="!bg-secondary !text-white" (click)="openCreateDialog()">
+      <button class="btn-primary" (click)="openCreateDialog()">
         <i class="fas fa-plus mr-2"></i> Ajouter un étudiant
       </button>
     </div>
   </div>
 
   <!-- Filters -->
-  <div class="bg-white rounded-xl shadow-sm p-4">
+  <div class="filter-bar">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
         <mat-icon matPrefix class="mr-2 !text-gray-400">search</mat-icon>
@@ -45,7 +45,7 @@
   </div>
 
   <!-- Table -->
-  <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+  <div class="card !p-0 overflow-hidden">
     @if (isLoading) {
       <div class="flex items-center justify-center h-48">
         <mat-spinner diameter="40"></mat-spinner>
@@ -60,34 +60,34 @@
       <div class="overflow-x-auto">
         <table mat-table [dataSource]="students" matSort class="w-full">
           <ng-container matColumnDef="matricule">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header class="!text-gray-500 !text-xs !font-semibold uppercase">Matricule</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Matricule</th>
             <td mat-cell *matCellDef="let row">
               <span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.matricule || '—' }}</span>
             </td>
           </ng-container>
 
           <ng-container matColumnDef="nom">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header class="!text-gray-500 !text-xs !font-semibold uppercase">Nom & Prénom</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Nom & Prénom</th>
             <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.nom }} {{ row.prenom }}</td>
           </ng-container>
 
           <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Email</th>
+            <th mat-header-cell *matHeaderCellDef>Email</th>
             <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ row.email }}</td>
           </ng-container>
 
           <ng-container matColumnDef="niveau">
-            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Niveau</th>
+            <th mat-header-cell *matHeaderCellDef>Niveau</th>
             <td mat-cell *matCellDef="let row" class="text-sm">—</td>
           </ng-container>
 
           <ng-container matColumnDef="filiere">
-            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Filière</th>
+            <th mat-header-cell *matHeaderCellDef>Filière</th>
             <td mat-cell *matCellDef="let row" class="text-sm">—</td>
           </ng-container>
 
           <ng-container matColumnDef="statut">
-            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Statut</th>
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
             <td mat-cell *matCellDef="let row">
               <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getStatutBadge(row.actif).class">
                 {{ getStatutBadge(row.actif).text }}
@@ -96,7 +96,7 @@
           </ng-container>
 
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase !w-16">Actions</th>
+            <th mat-header-cell *matHeaderCellDef class="!w-16">Actions</th>
             <td mat-cell *matCellDef="let row">
               <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
                 <mat-icon>more_vert</mat-icon>

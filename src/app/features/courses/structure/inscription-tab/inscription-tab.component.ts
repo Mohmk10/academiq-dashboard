@@ -65,7 +65,7 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
             <p class="text-sm mt-1">Sélectionnez une promotion pour voir les inscriptions</p>
           </div>
         } @else {
-          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div class="card !p-0 overflow-hidden">
             <div class="overflow-x-auto">
               <table mat-table [dataSource]="inscriptions" class="w-full">
                 <ng-container matColumnDef="matricule">

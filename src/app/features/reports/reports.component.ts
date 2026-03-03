@@ -24,16 +24,16 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
     MatSelectModule, MatButtonModule, MatProgressSpinnerModule, MatAutocompleteModule
   ],
   template: `
-    <div class="space-y-6">
+    <div class="space-y-6 fade-in-up">
       <div>
-        <h1 class="text-2xl font-bold text-primary">{{ role === 'ETUDIANT' ? 'Mes documents' : 'Rapports & Documents' }}</h1>
+        <h1 class="page-title">{{ role === 'ETUDIANT' ? 'Mes documents' : 'Rapports & Documents' }}</h1>
         <p class="text-sm text-gray-500 mt-1">{{ role === 'ETUDIANT' ? 'Téléchargez vos relevés et attestations' : 'Générez et téléchargez les documents académiques' }}</p>
       </div>
 
       @if (role === 'ETUDIANT') {
         <!-- Vue étudiant -->
-        <div class="bg-white rounded-xl shadow-sm p-6">
-          <h3 class="text-lg font-semibold text-primary mb-4"><i class="fas fa-file-alt mr-2"></i> Mes documents</h3>
+        <div class="card">
+          <h3 class="section-title"><i class="fas fa-file-alt mr-2"></i> Mes documents</h3>
           <div class="space-y-4">
             <mat-form-field appearance="outline" class="w-full sm:w-80" subscriptSizing="dynamic">
               <mat-label>Promotion</mat-label>
@@ -60,8 +60,8 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
 
         @if (role !== 'ENSEIGNANT') {
           <!-- Documents individuels -->
-          <div class="bg-white rounded-xl shadow-sm p-6">
-            <h3 class="text-lg font-semibold text-primary mb-4"><i class="fas fa-user mr-2"></i> Documents individuels</h3>
+          <div class="card">
+            <h3 class="section-title"><i class="fas fa-user mr-2"></i> Documents individuels</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <mat-form-field appearance="outline" subscriptSizing="dynamic">
                 <mat-label>Rechercher un étudiant</mat-label>
@@ -94,8 +94,8 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
           </div>
 
           <!-- Documents collectifs -->
-          <div class="bg-white rounded-xl shadow-sm p-6">
-            <h3 class="text-lg font-semibold text-primary mb-4"><i class="fas fa-users mr-2"></i> Documents collectifs</h3>
+          <div class="card">
+            <h3 class="section-title"><i class="fas fa-users mr-2"></i> Documents collectifs</h3>
             <div class="mb-4">
               <mat-form-field appearance="outline" class="w-full sm:w-80" subscriptSizing="dynamic">
                 <mat-label>Promotion</mat-label>
@@ -120,8 +120,8 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
         }
 
         <!-- Export par module -->
-        <div class="bg-white rounded-xl shadow-sm p-6">
-          <h3 class="text-lg font-semibold text-primary mb-4"><i class="fas fa-book mr-2"></i> Export par module</h3>
+        <div class="card">
+          <h3 class="section-title"><i class="fas fa-book mr-2"></i> Export par module</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Promotion</mat-label>

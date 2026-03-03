@@ -16,70 +16,80 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   template: `
-    <div class="space-y-6 max-w-3xl mx-auto">
+    <div class="space-y-6 max-w-3xl mx-auto fade-in-up">
       @if (isLoading) {
         <div class="flex items-center justify-center h-48"><mat-spinner diameter="40"></mat-spinner></div>
       } @else {
         <!-- Profil -->
-        <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="card">
           <div class="flex items-center gap-5 mb-6">
             <div class="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold text-white" [class]="avatarClass">
               {{ initials }}
             </div>
             <div>
-              <h2 class="text-xl font-bold text-primary">{{ user?.prenom }} {{ user?.nom }}</h2>
-              <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-secondary/10 text-secondary">{{ roleLabel }}</span>
+              <h2 class="text-xl font-bold text-gray-900">{{ user?.prenom }} {{ user?.nom }}</h2>
+              <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">{{ roleLabel }}</span>
               @if (user?.createdAt) {
                 <p class="text-xs text-gray-400 mt-1">Membre depuis {{ formatDate(user!.createdAt!) }}</p>
               }
             </div>
           </div>
 
-          <h3 class="text-lg font-semibold text-primary mb-4">Informations personnelles</h3>
-          <form [formGroup]="profileForm">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-              <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Email</mat-label>
-                <input matInput formControlName="email" [readonly]="true" class="!text-gray-400">
-              </mat-form-field>
-              <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Téléphone</mat-label>
-                <input matInput formControlName="telephone" [readonly]="!editMode">
-              </mat-form-field>
-              <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Nom</mat-label>
-                <input matInput formControlName="nom" [readonly]="!editMode">
-              </mat-form-field>
-              <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Prénom</mat-label>
-                <input matInput formControlName="prenom" [readonly]="!editMode">
-              </mat-form-field>
-              <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Date de naissance</mat-label>
-                <input matInput type="date" formControlName="dateNaissance" [readonly]="!editMode">
-              </mat-form-field>
-              <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Adresse</mat-label>
-                <input matInput formControlName="adresse" [readonly]="!editMode">
-              </mat-form-field>
+          <h3 class="section-title">Informations personnelles</h3>
+          @if (!editMode) {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+              <div><span class="text-xs text-gray-400 uppercase">Email</span><p class="font-medium text-gray-400">{{ user?.email }}</p></div>
+              <div><span class="text-xs text-gray-400 uppercase">Téléphone</span><p class="text-sm">{{ user?.telephone || '—' }}</p></div>
+              <div><span class="text-xs text-gray-400 uppercase">Nom</span><p class="text-sm">{{ user?.nom }}</p></div>
+              <div><span class="text-xs text-gray-400 uppercase">Prénom</span><p class="text-sm">{{ user?.prenom }}</p></div>
+              <div><span class="text-xs text-gray-400 uppercase">Date de naissance</span><p class="text-sm">{{ user?.dateNaissance ? formatDate(user!.dateNaissance!) : '—' }}</p></div>
+              <div><span class="text-xs text-gray-400 uppercase">Adresse</span><p class="text-sm">{{ user?.adresse || '—' }}</p></div>
             </div>
-          </form>
-          <div class="flex justify-end gap-3 mt-4">
-            @if (!editMode) {
+            <div class="flex justify-end gap-3 mt-4">
               <button mat-raised-button color="primary" (click)="editMode = true"><i class="fas fa-pen mr-2"></i> Modifier</button>
-            } @else {
+            </div>
+          } @else {
+            <form [formGroup]="profileForm">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email" [readonly]="true" class="!text-gray-400">
+                </mat-form-field>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <mat-label>Téléphone</mat-label>
+                  <input matInput formControlName="telephone">
+                </mat-form-field>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <mat-label>Nom</mat-label>
+                  <input matInput formControlName="nom">
+                </mat-form-field>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <mat-label>Prénom</mat-label>
+                  <input matInput formControlName="prenom">
+                </mat-form-field>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <mat-label>Date de naissance</mat-label>
+                  <input matInput type="date" formControlName="dateNaissance">
+                </mat-form-field>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <mat-label>Adresse</mat-label>
+                  <input matInput formControlName="adresse">
+                </mat-form-field>
+              </div>
+            </form>
+            <div class="flex justify-end gap-3 mt-4">
               <button mat-stroked-button (click)="cancelEdit()">Annuler</button>
               <button mat-raised-button color="primary" [disabled]="profileForm.invalid || isSaving" (click)="saveProfile()">
                 @if (isSaving) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                 Enregistrer
               </button>
-            }
-          </div>
+            </div>
+          }
         </div>
 
         <!-- Sécurité -->
-        <div class="bg-white rounded-xl shadow-sm p-6">
-          <h3 class="text-lg font-semibold text-primary mb-4"><i class="fas fa-shield-halved mr-2"></i> Sécurité</h3>
+        <div class="card">
+          <h3 class="section-title"><i class="fas fa-shield-halved mr-2"></i> Sécurité</h3>
           <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="space-y-4 max-w-md">
             <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
               <mat-label>Ancien mot de passe</mat-label>
@@ -116,8 +126,8 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
 
         <!-- Informations spécifiques -->
         @if (user?.etudiant || user?.enseignant || user?.admin) {
-          <div class="bg-white rounded-xl shadow-sm p-6">
-            <h3 class="text-lg font-semibold text-primary mb-4"><i class="fas fa-id-card mr-2"></i> Informations spécifiques</h3>
+          <div class="card">
+            <h3 class="section-title"><i class="fas fa-id-card mr-2"></i> Informations spécifiques</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
               @if (user?.etudiant; as etu) {
                 <div><span class="text-xs text-gray-400 uppercase">Matricule</span><p class="font-medium">{{ etu.matricule }}</p></div>
@@ -161,7 +171,7 @@ export default class ProfileComponent implements OnInit {
 
   initials = '';
   roleLabel = '';
-  avatarClass = 'bg-secondary';
+  avatarClass = 'bg-primary';
 
   constructor(
     private fb: FormBuilder,
@@ -218,8 +228,8 @@ export default class ProfileComponent implements OnInit {
   private setRoleDisplay(): void {
     const labels: Record<string, string> = { ADMIN: 'Administrateur', ENSEIGNANT: 'Enseignant', ETUDIANT: 'Étudiant', RESPONSABLE_PEDAGOGIQUE: 'Responsable pédagogique' };
     this.roleLabel = labels[this.user?.role ?? ''] || '';
-    const colors: Record<string, string> = { ADMIN: 'bg-primary', ENSEIGNANT: 'bg-secondary', ETUDIANT: 'bg-accent', RESPONSABLE_PEDAGOGIQUE: 'bg-success' };
-    this.avatarClass = colors[this.user?.role ?? ''] || 'bg-secondary';
+    const colors: Record<string, string> = { ADMIN: 'bg-primary', ENSEIGNANT: 'bg-emerald-600', ETUDIANT: 'bg-accent', RESPONSABLE_PEDAGOGIQUE: 'bg-success' };
+    this.avatarClass = colors[this.user?.role ?? ''] || 'bg-primary';
   }
 
   cancelEdit(): void {

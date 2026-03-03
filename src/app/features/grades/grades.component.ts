@@ -25,14 +25,14 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     MatProgressSpinnerModule, MatExpansionModule, MatChipsModule, MatDialogModule
   ],
   template: `
-    <div class="space-y-6">
+    <div class="space-y-6 fade-in-up">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-bold text-primary">{{ role === 'ETUDIANT' ? 'Mes notes' : 'Gestion des notes' }}</h1>
+          <h1 class="page-title">{{ role === 'ETUDIANT' ? 'Mes notes' : 'Gestion des notes' }}</h1>
           <p class="text-sm text-gray-500 mt-1">{{ role === 'ETUDIANT' ? 'Consultez vos résultats par module' : 'Gérez les évaluations et saisissez les notes' }}</p>
         </div>
         @if (role !== 'ETUDIANT') {
-          <button mat-raised-button class="!bg-secondary !text-white" (click)="openCreateEvaluation()">
+          <button class="btn-primary" (click)="openCreateEvaluation()">
             <i class="fas fa-plus mr-2"></i> Nouvelle évaluation
           </button>
         }
@@ -98,7 +98,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
             <p class="font-medium">Aucune évaluation trouvée</p>
           </div>
         } @else {
-          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div class="card !p-0 overflow-hidden">
             <div class="overflow-x-auto">
               <table mat-table [dataSource]="evaluations" class="w-full">
                 <ng-container matColumnDef="nom">

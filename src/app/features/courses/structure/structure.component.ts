@@ -14,7 +14,7 @@ import { AffectationTabComponent } from './affectation-tab/affectation-tab.compo
   template: `
     <div class="space-y-6">
       <div>
-        <h1 class="text-2xl font-bold text-primary">Structure académique</h1>
+        <h1 class="page-title">Structure académique</h1>
         <p class="text-sm text-gray-500 mt-1">Gérez les filières, promotions, modules et affectations</p>
       </div>
 
