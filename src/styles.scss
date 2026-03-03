@@ -61,115 +61,114 @@ $input-text: #111827;
 $input-label: #6B7280;
 $input-label-focus: #2563EB;
 
+// Override des CSS custom properties MDC (source de verite pour Material)
 .mat-mdc-form-field {
   width: 100%;
 
+  // Variables MDC — couleurs des bordures
+  --mdc-outlined-text-field-outline-color: #{$input-border};
+  --mdc-outlined-text-field-hover-outline-color: #{$input-border-hover};
+  --mdc-outlined-text-field-focus-outline-color: #{$input-border-focus};
+  --mdc-outlined-text-field-error-outline-color: #{$input-error};
+  --mdc-outlined-text-field-error-hover-outline-color: #{$input-error};
+  --mdc-outlined-text-field-error-focus-outline-color: #{$input-error};
+  --mdc-outlined-text-field-disabled-outline-color: #E5E7EB;
+
+  // Variables MDC — couleurs des labels
+  --mdc-outlined-text-field-label-text-color: #{$input-label};
+  --mdc-outlined-text-field-hover-label-text-color: #{$input-label};
+  --mdc-outlined-text-field-focus-label-text-color: #{$input-label-focus};
+  --mdc-outlined-text-field-error-label-text-color: #{$input-error};
+  --mdc-outlined-text-field-error-hover-label-text-color: #{$input-error};
+  --mdc-outlined-text-field-error-focus-label-text-color: #{$input-error};
+  --mdc-outlined-text-field-disabled-label-text-color: #9CA3AF;
+
+  // Variables MDC — texte input
+  --mdc-outlined-text-field-input-text-color: #{$input-text};
+  --mdc-outlined-text-field-disabled-input-text-color: #9CA3AF;
+  --mdc-outlined-text-field-input-text-placeholder-color: #9CA3AF;
+
+  // Variables MDC — forme et epaisseur
+  --mdc-outlined-text-field-container-shape: #{$input-radius};
+  --mdc-outlined-text-field-outline-width: 1px;
+  --mdc-outlined-text-field-focus-outline-width: 1.5px;
+
+  // Variables MDC — typographie
+  --mdc-outlined-text-field-label-text-font: 'Inter', sans-serif;
+  --mdc-outlined-text-field-label-text-size: 14px;
+  --mdc-outlined-text-field-label-text-weight: 400;
+
+  // Variables MDC — caret
+  --mdc-outlined-text-field-caret-color: #{$input-border-focus};
+  --mdc-outlined-text-field-error-caret-color: #{$input-error};
+
+  // Variables Angular Material
+  --mat-form-field-container-text-font: 'Inter', sans-serif;
+  --mat-form-field-container-text-size: 14px;
+  --mat-form-field-container-text-weight: 400;
+  --mat-form-field-subscript-text-font: 'Inter', sans-serif;
+  --mat-form-field-subscript-text-size: 12px;
+  --mat-form-field-error-text-color: #{$input-error};
+  --mat-form-field-leading-icon-color: #{$input-label};
+  --mat-form-field-trailing-icon-color: #{$input-label};
+  --mat-form-field-enabled-select-arrow-color: #{$input-label};
+  --mat-form-field-focus-select-arrow-color: #{$input-border-focus};
+  --mat-form-field-hover-state-layer-opacity: 0;
+  --mat-form-field-focus-state-layer-opacity: 0;
+  --mat-form-field-outlined-label-text-populated-size: 12px;
+
+  // Overrides directs pour ce que les variables ne couvrent pas
   .mdc-text-field--outlined {
     background-color: $input-bg !important;
     border-radius: $input-radius !important;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease !important;
 
     .mdc-text-field__input {
-      color: $input-text !important;
-      font-family: 'Inter', sans-serif !important;
-      font-size: 14px !important;
       padding: 12px 16px !important;
       caret-color: $input-border-focus;
     }
 
     .mdc-notched-outline {
       .mdc-notched-outline__leading {
-        border-color: $input-border !important;
         border-radius: $input-radius 0 0 $input-radius !important;
-        border-width: 1px !important;
-      }
-      .mdc-notched-outline__notch {
-        border-color: $input-border !important;
-        border-width: 1px 0 !important;
-
-        .mdc-floating-label {
-          color: $input-label !important;
-          font-family: 'Inter', sans-serif !important;
-          font-size: 14px !important;
-          font-weight: 400 !important;
-        }
-
-        .mdc-floating-label--float-above {
-          color: $input-label !important;
-          font-size: 12px !important;
-          font-weight: 500 !important;
-          transform: translateY(-130%) scale(1) !important;
-        }
       }
       .mdc-notched-outline__trailing {
-        border-color: $input-border !important;
         border-radius: 0 $input-radius $input-radius 0 !important;
-        border-width: 1px !important;
+      }
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        transition: border-color 0.2s ease, border-width 0.15s ease !important;
+      }
+      .mdc-notched-outline__notch .mdc-floating-label {
+        transition: color 0.2s ease, transform 0.2s ease, font-size 0.2s ease !important;
+      }
+      .mdc-notched-outline__notch .mdc-floating-label--float-above {
+        font-weight: 500 !important;
+        transform: translateY(-130%) scale(1) !important;
       }
     }
 
-    &:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover {
-      .mdc-notched-outline {
-        .mdc-notched-outline__leading,
-        .mdc-notched-outline__notch,
-        .mdc-notched-outline__trailing {
-          border-color: $input-border-hover !important;
-        }
-      }
-    }
-
+    // Focus glow
     &.mdc-text-field--focused {
-      .mdc-notched-outline {
-        .mdc-notched-outline__leading,
-        .mdc-notched-outline__notch,
-        .mdc-notched-outline__trailing {
-          border-color: $input-border-focus !important;
-          border-width: 1.5px !important;
-        }
-      }
-
       box-shadow: 0 0 0 3px $input-focus-glow !important;
-
-      .mdc-notched-outline .mdc-notched-outline__notch .mdc-floating-label {
-        color: $input-label-focus !important;
-      }
+      background-color: #FFFFFF !important;
     }
 
+    // Disabled
     &.mdc-text-field--disabled {
       background-color: #F3F4F6 !important;
       opacity: 0.7;
-      .mdc-notched-outline {
-        .mdc-notched-outline__leading,
-        .mdc-notched-outline__notch,
-        .mdc-notched-outline__trailing {
-          border-color: #E5E7EB !important;
-        }
-      }
     }
 
-    &.mdc-text-field--invalid {
-      .mdc-notched-outline {
-        .mdc-notched-outline__leading,
-        .mdc-notched-outline__notch,
-        .mdc-notched-outline__trailing {
-          border-color: $input-error !important;
-          border-width: 1.5px !important;
-        }
-      }
-      &.mdc-text-field--focused {
-        box-shadow: 0 0 0 3px $input-error-glow !important;
-      }
-      .mdc-notched-outline .mdc-notched-outline__notch .mdc-floating-label {
-        color: $input-error !important;
-      }
+    // Error + focus
+    &.mdc-text-field--invalid.mdc-text-field--focused {
+      box-shadow: 0 0 0 3px $input-error-glow !important;
     }
   }
 
   .mat-mdc-form-field-subscript-wrapper {
     .mat-mdc-form-field-error {
-      color: $input-error !important;
-      font-size: 12px !important;
-      font-weight: 400 !important;
-      font-family: 'Inter', sans-serif !important;
       display: flex;
       align-items: center;
       gap: 4px;
@@ -179,17 +178,10 @@ $input-label-focus: #2563EB;
         font-size: 11px;
       }
     }
-
-    .mat-mdc-form-field-hint {
-      color: #9CA3AF !important;
-      font-size: 12px !important;
-      font-family: 'Inter', sans-serif !important;
-    }
   }
 
   .mat-mdc-form-field-icon-prefix,
   .mat-mdc-form-field-icon-suffix {
-    color: $input-label !important;
     padding: 0 8px !important;
   }
 }
@@ -199,36 +191,39 @@ $input-label-focus: #2563EB;
 // ============================================================
 
 .mat-mdc-select {
-  font-family: 'Inter', sans-serif !important;
-  font-size: 14px !important;
-  color: $input-text !important;
-
-  .mat-mdc-select-arrow {
-    color: $input-label !important;
-  }
+  --mat-select-trigger-text-font: 'Inter', sans-serif;
+  --mat-select-trigger-text-size: 14px;
+  --mat-select-enabled-trigger-text-color: #{$input-text};
+  --mat-select-enabled-arrow-color: #{$input-label};
+  --mat-select-focused-arrow-color: #{$input-border-focus};
+  --mat-select-invalid-arrow-color: #{$input-error};
+  --mat-select-disabled-trigger-text-color: #9CA3AF;
+  --mat-select-disabled-arrow-color: #D1D5DB;
+  --mat-select-placeholder-text-color: #9CA3AF;
 }
 
 .mat-mdc-select-panel {
+  --mat-select-panel-background-color: #FFFFFF;
+  --mat-option-label-text-font: 'Inter', sans-serif;
+  --mat-option-label-text-size: 14px;
+  --mat-option-label-text-color: #{$input-text};
+  --mat-option-hover-state-layer-color: #F3F4F6;
+  --mat-option-focus-state-layer-color: #F3F4F6;
+  --mat-option-selected-state-layer-color: #EFF6FF;
+  --mat-option-selected-state-label-text-color: #2563EB;
+
   border-radius: 10px !important;
   border: 1px solid #E5E7EB !important;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -5px rgba(0, 0, 0, 0.04) !important;
   padding: 4px !important;
 
   .mat-mdc-option {
-    font-family: 'Inter', sans-serif !important;
-    font-size: 14px !important;
     border-radius: 6px !important;
     min-height: 40px !important;
     padding: 0 12px !important;
     margin: 2px 0 !important;
 
-    &:hover:not(.mdc-list-item--disabled) {
-      background-color: #F3F4F6 !important;
-    }
-
     &.mdc-list-item--selected:not(.mdc-list-item--disabled) {
-      background-color: #EFF6FF !important;
-      color: #2563EB !important;
       font-weight: 500 !important;
     }
   }
@@ -239,21 +234,16 @@ $input-label-focus: #2563EB;
 // ============================================================
 
 .mat-mdc-checkbox {
-  .mdc-checkbox {
-    .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
-      background-color: #2563EB !important;
-      border-color: #2563EB !important;
-    }
-    .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
-      border-color: $input-border !important;
-      border-radius: 4px !important;
-    }
-  }
-  .mdc-label {
-    font-family: 'Inter', sans-serif !important;
-    font-size: 14px !important;
-    color: $input-text !important;
-  }
+  --mdc-checkbox-selected-icon-color: #2563EB;
+  --mdc-checkbox-selected-hover-icon-color: #1D4ED8;
+  --mdc-checkbox-selected-focus-icon-color: #2563EB;
+  --mdc-checkbox-selected-checkmark-color: #FFFFFF;
+  --mdc-checkbox-unselected-icon-color: #{$input-border};
+  --mdc-checkbox-unselected-hover-icon-color: #{$input-border-hover};
+  --mdc-checkbox-unselected-focus-icon-color: #{$input-border};
+  --mat-checkbox-label-text-color: #{$input-text};
+  --mat-checkbox-label-text-font: 'Inter', sans-serif;
+  --mat-checkbox-label-text-size: 14px;
 }
 
 // ============================================================
@@ -278,23 +268,7 @@ $input-label-focus: #2563EB;
   min-height: 80px;
 }
 
-// ============================================================
-// TRANSITIONS GLOBALES
-// ============================================================
-
-.mdc-text-field--outlined {
-  transition: box-shadow 0.2s ease, background-color 0.2s ease !important;
-
-  .mdc-notched-outline__leading,
-  .mdc-notched-outline__notch,
-  .mdc-notched-outline__trailing {
-    transition: border-color 0.2s ease, border-width 0.15s ease !important;
-  }
-
-  .mdc-floating-label {
-    transition: color 0.2s ease, transform 0.2s ease, font-size 0.2s ease !important;
-  }
-}
+// (Transitions globales integrees dans le bloc .mat-mdc-form-field ci-dessus)
 
 // ============================================================
 // BOUTONS MATERIAL
