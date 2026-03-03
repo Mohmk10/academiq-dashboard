@@ -53,7 +53,7 @@ export class AdminDashboardComponent implements OnInit {
     }
   };
 
-  private chartColors = ['#1E40AF', '#F59E0B', '#10B981', '#EF4444', '#8B5CF6', '#06B6D4', '#EC4899', '#F97316'];
+  private chartColors = ['#2563EB', '#059669', '#8B5CF6', '#D97706', '#DC2626', '#06B6D4', '#EC4899', '#F97316'];
 
   constructor(private analyticsService: AnalyticsService) {}
 
@@ -102,7 +102,7 @@ export class AdminDashboardComponent implements OnInit {
     const repartition = this.data.repartitionEtudiants;
     const labels = repartition.map(r => r.label);
     const values = repartition.map(() => Math.round(50 + Math.random() * 45));
-    const colors = values.map(v => v >= 70 ? '#10B981' : v >= 50 ? '#F59E0B' : '#EF4444');
+    const colors = values.map(v => v >= 70 ? '#059669' : v >= 50 ? '#D97706' : '#DC2626');
 
     this.barData = {
       labels,

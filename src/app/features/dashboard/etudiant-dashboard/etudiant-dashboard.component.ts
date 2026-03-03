@@ -95,15 +95,9 @@ export class EtudiantDashboardComponent implements OnInit {
   }
 
   getMoyenneClass(moyenne: number): string {
-    if (moyenne >= 12) return 'text-success';
-    if (moyenne >= 10) return 'text-secondary';
-    return 'text-danger';
-  }
-
-  getMoyenneBg(moyenne: number): string {
-    if (moyenne >= 12) return 'bg-success/10 border-success/20';
-    if (moyenne >= 10) return 'bg-blue-50 border-blue-100';
-    return 'bg-red-50 border-red-100';
+    if (moyenne >= 12) return 'text-primary';
+    if (moyenne >= 10) return 'text-amber-600';
+    return 'text-red-600';
   }
 
   getCreditPercent(): number {
@@ -112,9 +106,9 @@ export class EtudiantDashboardComponent implements OnInit {
   }
 
   getNoteClass(note: number): string {
-    if (note >= 14) return 'text-success font-bold';
-    if (note >= 10) return 'text-primary';
-    return 'text-danger font-bold';
+    if (note >= 14) return 'text-emerald-600';
+    if (note >= 10) return 'text-gray-900';
+    return 'text-red-600';
   }
 
   formatDate(date: string): string {
@@ -138,7 +132,7 @@ export class EtudiantDashboardComponent implements OnInit {
 
   private buildBarChart(modules: ResultatModuleDTO[]): void {
     const colors = modules.map(m =>
-      m.moyenne >= 12 ? '#10B981' : m.moyenne >= 10 ? '#1E40AF' : '#EF4444'
+      m.moyenne >= 12 ? '#059669' : m.moyenne >= 10 ? '#2563EB' : '#DC2626'
     );
 
     this.barData = {
@@ -160,11 +154,11 @@ export class EtudiantDashboardComponent implements OnInit {
       labels: evolution.map(e => e.periode),
       datasets: [{
         data: evolution.map(e => e.valeur),
-        borderColor: '#1E40AF',
-        backgroundColor: 'rgba(30, 64, 175, 0.1)',
+        borderColor: '#2563EB',
+        backgroundColor: 'rgba(37, 99, 235, 0.08)',
         fill: true,
         tension: 0.4,
-        pointBackgroundColor: '#1E40AF',
+        pointBackgroundColor: '#2563EB',
         pointRadius: 5,
         pointHoverRadius: 7
       }]

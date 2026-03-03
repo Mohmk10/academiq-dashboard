@@ -110,7 +110,7 @@ export class EnseignantDashboardComponent implements OnInit {
 
   private buildBarChart(modules: ModuleEnseignantDTO[]): void {
     const colors = modules.map(m =>
-      m.moyenneClasse >= 12 ? '#10B981' : m.moyenneClasse >= 10 ? '#F59E0B' : '#EF4444'
+      m.moyenneClasse >= 12 ? '#059669' : m.moyenneClasse >= 10 ? '#D97706' : '#DC2626'
     );
 
     this.barData = {
