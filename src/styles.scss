@@ -48,20 +48,50 @@ $academiq-dashboard-theme: mat.define-theme((
     .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading,
     .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__notch,
     .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing {
-      @apply border-gray-200;
+      @apply border-gray-300 transition-all duration-200;
+    }
+    .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading {
+      border-radius: 0.5rem 0 0 0.5rem !important;
+    }
+    .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing {
+      border-radius: 0 0.5rem 0.5rem 0 !important;
     }
     .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline .mdc-notched-outline__leading,
     .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline .mdc-notched-outline__notch,
     .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline .mdc-notched-outline__trailing {
       @apply border-gray-400;
     }
+    .mat-mdc-text-field-wrapper.mdc-text-field--outlined.mdc-text-field--focused {
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      border-radius: 0.5rem;
+    }
+    .mat-mdc-text-field-wrapper.mdc-text-field--outlined.mdc-text-field--disabled {
+      background-color: #F9FAFB;
+      border-radius: 0.5rem;
+    }
   }
 
   .mat-mdc-raised-button.mat-primary {
-    @apply shadow-none rounded-lg;
+    @apply shadow-btn rounded-lg transition-all duration-200;
     background-color: #2563EB !important;
     &:hover {
       background-color: #1D4ED8 !important;
+      box-shadow: 0 4px 12px -2px rgba(37, 99, 235, 0.3);
+    }
+  }
+
+  .mat-mdc-unelevated-button.mat-primary {
+    @apply rounded-lg transition-all duration-200;
+    background-color: #2563EB !important;
+    &:hover {
+      background-color: #1D4ED8 !important;
+    }
+  }
+
+  .mat-mdc-stroked-button {
+    @apply rounded-lg transition-all duration-200;
+    &:hover {
+      @apply bg-gray-50;
     }
   }
 
@@ -86,6 +116,32 @@ $academiq-dashboard-theme: mat.define-theme((
 
   .mat-mdc-dialog-container .mdc-dialog__surface {
     @apply rounded-2xl;
+    box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.15), 0 8px 20px -8px rgba(0, 0, 0, 0.1);
+  }
+
+  [mat-dialog-title] {
+    @apply border-b border-gray-100;
+    padding-bottom: 1rem !important;
+  }
+
+  .mat-mdc-dialog-actions {
+    @apply border-t border-gray-100;
+    padding-top: 1rem !important;
+  }
+
+  .mat-mdc-select-panel {
+    border-radius: 0.75rem !important;
+    border: 1px solid #E5E7EB;
+  }
+
+  .mat-mdc-menu-panel {
+    border-radius: 0.75rem !important;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.1);
+  }
+
+  .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+    @apply bg-gray-50;
   }
 
   .mat-mdc-snack-bar-container {
@@ -119,15 +175,15 @@ $academiq-dashboard-theme: mat.define-theme((
   }
 
   .card {
-    @apply bg-white border border-gray-200 rounded-xl p-6;
+    @apply bg-white border border-gray-200 rounded-xl p-6 shadow-card;
   }
 
   .card-hover {
-    @apply bg-white border border-gray-200 rounded-xl p-6 transition-all duration-200 hover:shadow-card-hover hover:border-gray-300;
+    @apply bg-white border border-gray-200 rounded-xl p-6 shadow-card transition-all duration-200 hover:shadow-card-hover hover:border-gray-300 hover:-translate-y-0.5;
   }
 
   .stat-card {
-    @apply bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4;
+    @apply bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4 shadow-card transition-all duration-200 hover:shadow-card-hover;
   }
 
   .stat-icon {
@@ -168,15 +224,18 @@ $academiq-dashboard-theme: mat.define-theme((
 
   .btn-primary {
     @apply inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-lg
-           hover:bg-primary-hover transition-all duration-200;
+           shadow-btn hover:bg-primary-hover hover:shadow-btn-hover transition-all duration-200;
     &:active {
       transform: scale(0.98);
+    }
+    &:disabled {
+      @apply opacity-50 shadow-none cursor-not-allowed;
     }
   }
 
   .btn-secondary {
     @apply inline-flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg
-           hover:bg-gray-50 transition-all duration-200;
+           hover:bg-gray-50 hover:border-gray-400 transition-all duration-200;
     &:active {
       transform: scale(0.98);
     }
@@ -184,14 +243,14 @@ $academiq-dashboard-theme: mat.define-theme((
 
   .btn-danger {
     @apply inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white text-sm font-medium rounded-lg
-           hover:bg-red-700 transition-all duration-200;
+           shadow-btn hover:bg-red-700 transition-all duration-200;
     &:active {
       transform: scale(0.98);
     }
   }
 
   .filter-bar {
-    @apply bg-white border border-gray-200 rounded-xl flex flex-wrap items-center gap-4 mb-6 p-4;
+    @apply bg-white border border-gray-200 rounded-xl flex flex-wrap items-center gap-4 mb-6 p-4 shadow-card;
   }
 
   .section-title {
@@ -200,6 +259,14 @@ $academiq-dashboard-theme: mat.define-theme((
 
   .divider {
     @apply border-t border-gray-100 my-6;
+  }
+
+  .input-field {
+    @apply border border-gray-300 rounded-lg text-sm bg-white
+           focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all duration-200;
+    &:disabled {
+      @apply bg-gray-50 text-gray-400 cursor-not-allowed;
+    }
   }
 }
 

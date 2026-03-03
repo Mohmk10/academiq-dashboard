@@ -29,7 +29,7 @@ import { AlerteResponse } from '../../../../core/models/alerte.model';
             </div>
           }
         </div>
-        <mat-form-field appearance="outline" class="w-full">
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
           <mat-label>Commentaire de traitement</mat-label>
           <textarea matInput [formControl]="commentaire" rows="3" placeholder="Décrivez les actions entreprises..."></textarea>
         </mat-form-field>

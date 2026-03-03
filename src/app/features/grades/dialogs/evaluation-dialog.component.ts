@@ -18,12 +18,12 @@ import { EvaluationResponse, TypeEvaluation } from '../../../core/models/note.mo
     <h2 mat-dialog-title class="!text-lg !font-semibold">{{ data.mode === 'create' ? 'Nouvelle évaluation' : 'Modifier l\'évaluation' }}</h2>
     <mat-dialog-content>
       <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Nom de l'évaluation</mat-label>
           <input matInput formControlName="nom" placeholder="Ex: Examen final">
         </mat-form-field>
         <div class="grid grid-cols-2 gap-4">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Module</mat-label>
             <mat-select formControlName="moduleId">
               @for (m of modules; track m.id) {
@@ -31,7 +31,7 @@ import { EvaluationResponse, TypeEvaluation } from '../../../core/models/note.mo
               }
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Promotion</mat-label>
             <mat-select formControlName="promotionId">
               @for (p of promotions; track p.id) {
@@ -41,7 +41,7 @@ import { EvaluationResponse, TypeEvaluation } from '../../../core/models/note.mo
           </mat-form-field>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Type</mat-label>
             <mat-select formControlName="type">
               @for (t of types; track t.value) {
@@ -49,17 +49,17 @@ import { EvaluationResponse, TypeEvaluation } from '../../../core/models/note.mo
               }
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Coefficient</mat-label>
             <input matInput type="number" formControlName="coefficient">
           </mat-form-field>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Note maximale</mat-label>
             <input matInput type="number" formControlName="noteMax">
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Date</mat-label>
             <input matInput type="date" formControlName="date">
           </mat-form-field>

@@ -26,44 +26,44 @@ export interface StudentDialogData {
   template: `
     <h2 mat-dialog-title class="!text-lg !font-semibold">{{ data.mode === 'create' ? 'Ajouter un étudiant' : 'Modifier l\\'étudiant' }}</h2>
     <mat-dialog-content class="!pt-2">
-      <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1">
-        <mat-form-field appearance="outline">
+      <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Nom</mat-label>
           <input matInput formControlName="nom">
           <mat-error>Requis</mat-error>
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Prénom</mat-label>
           <input matInput formControlName="prenom">
           <mat-error>Requis</mat-error>
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Email</mat-label>
           <input matInput type="email" formControlName="email">
           <mat-error>Email invalide</mat-error>
         </mat-form-field>
         @if (data.mode === 'create') {
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Mot de passe</mat-label>
             <input matInput type="password" formControlName="motDePasse">
             <mat-error>Minimum 8 caractères</mat-error>
           </mat-form-field>
         }
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Téléphone</mat-label>
           <input matInput formControlName="telephone">
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Date de naissance</mat-label>
           <input matInput [matDatepicker]="picker" formControlName="dateNaissance">
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Nom du tuteur</mat-label>
           <input matInput formControlName="nomTuteur">
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Numéro du tuteur</mat-label>
           <input matInput formControlName="numeroTuteur">
         </mat-form-field>

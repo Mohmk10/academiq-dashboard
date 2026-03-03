@@ -20,16 +20,16 @@ export interface TeacherDialogData {
   template: `
     <h2 mat-dialog-title class="!text-lg !font-semibold">{{ data.mode === 'create' ? 'Ajouter un enseignant' : 'Modifier l\\'enseignant' }}</h2>
     <mat-dialog-content class="!pt-2">
-      <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1">
-        <mat-form-field appearance="outline"><mat-label>Nom</mat-label><input matInput formControlName="nom"><mat-error>Requis</mat-error></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Prénom</mat-label><input matInput formControlName="prenom"><mat-error>Requis</mat-error></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput type="email" formControlName="email"><mat-error>Email invalide</mat-error></mat-form-field>
+      <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Nom</mat-label><input matInput formControlName="nom"><mat-error>Requis</mat-error></mat-form-field>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Prénom</mat-label><input matInput formControlName="prenom"><mat-error>Requis</mat-error></mat-form-field>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Email</mat-label><input matInput type="email" formControlName="email"><mat-error>Email invalide</mat-error></mat-form-field>
         @if (data.mode === 'create') {
-          <mat-form-field appearance="outline"><mat-label>Mot de passe</mat-label><input matInput type="password" formControlName="motDePasse"><mat-error>Min 8 caractères</mat-error></mat-form-field>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Mot de passe</mat-label><input matInput type="password" formControlName="motDePasse"><mat-error>Min 8 caractères</mat-error></mat-form-field>
         }
-        <mat-form-field appearance="outline"><mat-label>Téléphone</mat-label><input matInput formControlName="telephone"></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Spécialité</mat-label><input matInput formControlName="specialite"><mat-error>Requis</mat-error></mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Téléphone</mat-label><input matInput formControlName="telephone"></mat-form-field>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Spécialité</mat-label><input matInput formControlName="specialite"><mat-error>Requis</mat-error></mat-form-field>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Grade</mat-label>
           <mat-select formControlName="grade">
             <mat-option value="Professeur">Professeur</mat-option>
@@ -39,8 +39,8 @@ export interface TeacherDialogData {
             <mat-option value="Vacataire">Vacataire</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Département</mat-label><input matInput formControlName="departement"></mat-form-field>
-        <mat-form-field appearance="outline"><mat-label>Bureau</mat-label><input matInput formControlName="bureau"></mat-form-field>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Département</mat-label><input matInput formControlName="departement"></mat-form-field>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>Bureau</mat-label><input matInput formControlName="bureau"></mat-form-field>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end" class="!pt-4">
