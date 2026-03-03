@@ -209,7 +209,7 @@ export default class GradesComponent implements OnInit {
   }
 
   openCreateEvaluation(): void {
-    const ref = this.dialog.open(EvaluationDialogComponent, { width: '600px', data: { mode: 'create' } });
+    const ref = this.dialog.open(EvaluationDialogComponent, { width: '600px', maxWidth: '95vw', data: { mode: 'create' } });
     ref.afterClosed().subscribe(result => {
       if (result) this.noteService.createEvaluation(result).subscribe({
         next: () => { this.notification.success('Évaluation créée'); this.loadEvaluations(); },
@@ -219,7 +219,7 @@ export default class GradesComponent implements OnInit {
   }
 
   openEditEvaluation(evaluation: EvaluationResponse): void {
-    const ref = this.dialog.open(EvaluationDialogComponent, { width: '600px', data: { mode: 'edit', evaluation } });
+    const ref = this.dialog.open(EvaluationDialogComponent, { width: '600px', maxWidth: '95vw', data: { mode: 'edit', evaluation } });
     ref.afterClosed().subscribe(result => {
       if (result) this.noteService.updateEvaluation(evaluation.id, result).subscribe({
         next: () => { this.notification.success('Évaluation modifiée'); this.loadEvaluations(); },
@@ -237,7 +237,7 @@ export default class GradesComponent implements OnInit {
 
   deleteEvaluation(evaluation: EvaluationResponse): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px', data: { title: 'Supprimer l\'évaluation', message: `Supprimer « ${evaluation.nom} » ?`, confirmText: 'Supprimer' }
+      width: '400px', maxWidth: '95vw', data: { title: 'Supprimer l\'évaluation', message: `Supprimer « ${evaluation.nom} » ?`, confirmText: 'Supprimer' }
     });
     ref.afterClosed().subscribe(ok => {
       if (ok) this.noteService.deleteEvaluation(evaluation.id).subscribe({

@@ -55,12 +55,12 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 
             <!-- Recherche + actions -->
             <div class="flex flex-col sm:flex-row gap-4 items-end">
-              <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+              <mat-form-field appearance="outline" class="filter-field flex-1" subscriptSizing="dynamic">
                 <mat-icon matPrefix class="mr-2 !text-gray-400">search</mat-icon>
                 <mat-label>Rechercher</mat-label>
                 <input matInput [formControl]="userSearch">
               </mat-form-field>
-              <mat-form-field appearance="outline" class="w-40" subscriptSizing="dynamic">
+              <mat-form-field appearance="outline" class="filter-field w-40" subscriptSizing="dynamic">
                 <mat-label>Rôle</mat-label>
                 <mat-select [formControl]="roleFilter">
                   <mat-option value="">Tous</mat-option>
@@ -306,7 +306,7 @@ export default class SettingsComponent implements OnInit, OnDestroy {
 
   deleteUser(user: UtilisateurSummary): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px', data: { title: 'Supprimer l\'utilisateur', message: `Supprimer ${user.prenom} ${user.nom} ?`, confirmText: 'Supprimer' }
+      width: '400px', maxWidth: '95vw', data: { title: 'Supprimer l\'utilisateur', message: `Supprimer ${user.prenom} ${user.nom} ?`, confirmText: 'Supprimer' }
     });
     ref.afterClosed().subscribe(ok => {
       if (ok) this.utilisateurService.delete(user.id).subscribe({

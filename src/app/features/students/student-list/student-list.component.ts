@@ -106,7 +106,7 @@ export default class StudentListComponent implements OnInit, OnDestroy {
 
   openCreateDialog(): void {
     const ref = this.dialog.open(StudentDialogComponent, {
-      width: '650px',
+      width: '650px', maxWidth: '95vw',
       data: { mode: 'create' }
     });
     ref.afterClosed().subscribe(result => {
@@ -122,7 +122,7 @@ export default class StudentListComponent implements OnInit, OnDestroy {
   openEditDialog(student: UtilisateurSummary): void {
     this.utilisateurService.getById(student.id).subscribe(res => {
       const ref = this.dialog.open(StudentDialogComponent, {
-        width: '650px',
+        width: '650px', maxWidth: '95vw',
         data: { mode: 'edit', student: res.data }
       });
       ref.afterClosed().subscribe(result => {
@@ -139,7 +139,7 @@ export default class StudentListComponent implements OnInit, OnDestroy {
   toggleActivation(student: UtilisateurSummary): void {
     const action = student.actif ? 'désactiver' : 'activer';
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
+      width: '400px', maxWidth: '95vw',
       data: { title: `${student.actif ? 'Désactiver' : 'Activer'} l'étudiant`, message: `Voulez-vous ${action} ${student.prenom} ${student.nom} ?` }
     });
     ref.afterClosed().subscribe(confirmed => {
@@ -154,7 +154,7 @@ export default class StudentListComponent implements OnInit, OnDestroy {
 
   deleteStudent(student: UtilisateurSummary): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
+      width: '400px', maxWidth: '95vw',
       data: { title: 'Supprimer l\'étudiant', message: `Êtes-vous sûr de vouloir supprimer ${student.prenom} ${student.nom} ? Cette action est irréversible.`, confirmText: 'Supprimer' }
     });
     ref.afterClosed().subscribe(confirmed => {
@@ -168,7 +168,7 @@ export default class StudentListComponent implements OnInit, OnDestroy {
   }
 
   openImportDialog(): void {
-    const ref = this.dialog.open(ImportDialogComponent, { width: '500px' });
+    const ref = this.dialog.open(ImportDialogComponent, { width: '500px', maxWidth: '95vw' });
     ref.afterClosed().subscribe(result => { if (result) this.loadStudents(); });
   }
 

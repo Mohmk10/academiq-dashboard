@@ -25,7 +25,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   template: `
     <div class="space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <mat-form-field appearance="outline" class="w-full sm:w-64" subscriptSizing="dynamic">
+        <mat-form-field appearance="outline" class="filter-field w-full sm:w-64" subscriptSizing="dynamic">
           <mat-label>Filtrer par filière</mat-label>
           <mat-select [formControl]="filiereFilter">
             <mat-option [value]="null">Toutes</mat-option>
@@ -132,7 +132,7 @@ export class PromotionTabComponent implements OnInit {
   }
 
   openCreate(): void {
-    const ref = this.dialog.open(PromotionDialogComponent, { width: '550px', data: { mode: 'create', filieres: this.filieres } });
+    const ref = this.dialog.open(PromotionDialogComponent, { width: '550px', maxWidth: '95vw', data: { mode: 'create', filieres: this.filieres } });
     ref.afterClosed().subscribe(result => {
       if (result) this.structureService.createPromotion(result).subscribe({
         next: () => { this.notification.success('Promotion créée'); this.loadData(); },
@@ -142,7 +142,7 @@ export class PromotionTabComponent implements OnInit {
   }
 
   openEdit(promotion: PromotionResponse): void {
-    const ref = this.dialog.open(PromotionDialogComponent, { width: '550px', data: { mode: 'edit', promotion, filieres: this.filieres } });
+    const ref = this.dialog.open(PromotionDialogComponent, { width: '550px', maxWidth: '95vw', data: { mode: 'edit', promotion, filieres: this.filieres } });
     ref.afterClosed().subscribe(result => {
       if (result) this.structureService.updatePromotion(promotion.id, result).subscribe({
         next: () => { this.notification.success('Promotion modifiée'); this.loadData(); },
@@ -153,7 +153,7 @@ export class PromotionTabComponent implements OnInit {
 
   deletePromotion(p: PromotionResponse): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px', data: { title: 'Supprimer la promotion', message: `Supprimer la promotion ${p.anneeUniversitaire} — ${p.niveauNom} ?`, confirmText: 'Supprimer' }
+      width: '400px', maxWidth: '95vw', data: { title: 'Supprimer la promotion', message: `Supprimer la promotion ${p.anneeUniversitaire} — ${p.niveauNom} ?`, confirmText: 'Supprimer' }
     });
     ref.afterClosed().subscribe(ok => {
       if (ok) this.structureService.deletePromotion(p.id).subscribe({

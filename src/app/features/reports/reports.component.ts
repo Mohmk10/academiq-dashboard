@@ -35,7 +35,7 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
         <div class="card">
           <h3 class="section-title"><i class="fas fa-file-alt mr-2"></i> Mes documents</h3>
           <div class="space-y-4">
-            <mat-form-field appearance="outline" class="w-full sm:w-80" subscriptSizing="dynamic">
+            <mat-form-field appearance="outline" class="filter-field w-full sm:w-80" subscriptSizing="dynamic">
               <mat-label>Promotion</mat-label>
               <mat-select [formControl]="promotionControl">
                 @for (p of promotions; track p.id) {
@@ -63,7 +63,7 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
           <div class="card">
             <h3 class="section-title"><i class="fas fa-user mr-2"></i> Documents individuels</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
                 <mat-label>Rechercher un étudiant</mat-label>
                 <input matInput [formControl]="etudiantSearch" [matAutocomplete]="auto" placeholder="Nom ou matricule">
                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEtudiant" (optionSelected)="onEtudiantSelected($event.option.value)">
@@ -72,7 +72,7 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
                   }
                 </mat-autocomplete>
               </mat-form-field>
-              <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
                 <mat-label>Promotion</mat-label>
                 <mat-select [formControl]="promotionControl">
                   @for (p of promotions; track p.id) {
@@ -97,7 +97,7 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
           <div class="card">
             <h3 class="section-title"><i class="fas fa-users mr-2"></i> Documents collectifs</h3>
             <div class="mb-4">
-              <mat-form-field appearance="outline" class="w-full sm:w-80" subscriptSizing="dynamic">
+              <mat-form-field appearance="outline" class="filter-field w-full sm:w-80" subscriptSizing="dynamic">
                 <mat-label>Promotion</mat-label>
                 <mat-select [formControl]="promotionCollectifControl">
                   @for (p of promotions; track p.id) {
@@ -123,7 +123,7 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
         <div class="card">
           <h3 class="section-title"><i class="fas fa-book mr-2"></i> Export par module</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
               <mat-label>Promotion</mat-label>
               <mat-select [formControl]="promotionModuleControl">
                 @for (p of promotions; track p.id) {
@@ -131,7 +131,7 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
                 }
               </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
               <mat-label>Module</mat-label>
               <mat-select [formControl]="moduleControl">
                 @for (m of modules; track m.id) {

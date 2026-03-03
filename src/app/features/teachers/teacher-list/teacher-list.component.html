@@ -13,12 +13,12 @@
   <!-- Filters -->
   <div class="filter-bar">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline" class="filter-field w-full" subscriptSizing="dynamic">
         <mat-icon matPrefix class="mr-2 !text-gray-400">search</mat-icon>
         <mat-label>Rechercher</mat-label>
         <input matInput [formControl]="searchControl" placeholder="Nom, prénom ou matricule">
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline" class="filter-field w-full" subscriptSizing="dynamic">
         <mat-label>Statut</mat-label>
         <mat-select [formControl]="statutFilter">
           <mat-option value="">Tous</mat-option>

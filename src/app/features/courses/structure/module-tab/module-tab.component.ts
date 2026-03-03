@@ -26,7 +26,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
     <div class="space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-end gap-4">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
             <mat-label>Filière</mat-label>
             <mat-select [formControl]="filiereFilter" (selectionChange)="onFiliereChange($event.value)">
               <mat-option [value]="null">Toutes</mat-option>
@@ -35,7 +35,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
               }
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
             <mat-label>Niveau</mat-label>
             <mat-select [formControl]="niveauFilter" (selectionChange)="onNiveauChange($event.value)">
               <mat-option [value]="null">Tous</mat-option>
@@ -44,7 +44,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
               }
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
             <mat-label>UE</mat-label>
             <mat-select [formControl]="ueFilter" (selectionChange)="onUeChange()">
               <mat-option [value]="null">Toutes</mat-option>
@@ -174,7 +174,7 @@ export class ModuleTabComponent implements OnInit {
   }
 
   openCreate(): void {
-    const ref = this.dialog.open(ModuleDialogComponent, { width: '550px', data: { mode: 'create', ues: this.ues } });
+    const ref = this.dialog.open(ModuleDialogComponent, { width: '550px', maxWidth: '95vw', data: { mode: 'create', ues: this.ues } });
     ref.afterClosed().subscribe(result => {
       if (result) this.structureService.createModule(result).subscribe({
         next: () => { this.notification.success('Module créé'); this.loadModules(); },
@@ -184,7 +184,7 @@ export class ModuleTabComponent implements OnInit {
   }
 
   openEdit(mod: ModuleResponse): void {
-    const ref = this.dialog.open(ModuleDialogComponent, { width: '550px', data: { mode: 'edit', module: mod, ues: this.ues } });
+    const ref = this.dialog.open(ModuleDialogComponent, { width: '550px', maxWidth: '95vw', data: { mode: 'edit', module: mod, ues: this.ues } });
     ref.afterClosed().subscribe(result => {
       if (result) this.structureService.updateModule(mod.id, result).subscribe({
         next: () => { this.notification.success('Module modifié'); this.loadModules(); },
@@ -195,7 +195,7 @@ export class ModuleTabComponent implements OnInit {
 
   deleteModule(mod: ModuleResponse): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px', data: { title: 'Supprimer le module', message: `Supprimer « ${mod.nom} » ?`, confirmText: 'Supprimer' }
+      width: '400px', maxWidth: '95vw', data: { title: 'Supprimer le module', message: `Supprimer « ${mod.nom} » ?`, confirmText: 'Supprimer' }
     });
     ref.afterClosed().subscribe(ok => {
       if (ok) this.structureService.deleteModule(mod.id).subscribe({

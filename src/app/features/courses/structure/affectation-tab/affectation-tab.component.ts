@@ -140,7 +140,7 @@ export class AffectationTabComponent implements OnInit {
 
   deleteAffectation(aff: AffectationResponse): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px', data: { title: 'Retirer l\'affectation', message: `Retirer ${aff.enseignantNom} du module ${aff.moduleNom} ?`, confirmText: 'Retirer' }
+      width: '400px', maxWidth: '95vw', data: { title: 'Retirer l\'affectation', message: `Retirer ${aff.enseignantNom} du module ${aff.moduleNom} ?`, confirmText: 'Retirer' }
     });
     ref.afterClosed().subscribe(ok => {
       if (ok) this.structureService.deleteAffectation(aff.id).subscribe({

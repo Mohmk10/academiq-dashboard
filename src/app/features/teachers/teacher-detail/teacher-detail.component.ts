@@ -38,7 +38,7 @@ export default class TeacherDetailComponent implements OnInit {
 
   openEditDialog(): void {
     if (!this.teacher) return;
-    const ref = this.dialog.open(TeacherDialogComponent, { width: '650px', data: { mode: 'edit', teacher: this.teacher } });
+    const ref = this.dialog.open(TeacherDialogComponent, { width: '650px', maxWidth: '95vw', data: { mode: 'edit', teacher: this.teacher } });
     ref.afterClosed().subscribe(result => {
       if (result && this.teacher) {
         this.utilisateurService.update(this.teacher.id, result).subscribe({

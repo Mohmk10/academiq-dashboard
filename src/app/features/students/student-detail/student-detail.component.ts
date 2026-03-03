@@ -56,7 +56,7 @@ export default class StudentDetailComponent implements OnInit {
   openEditDialog(): void {
     if (!this.student) return;
     const ref = this.dialog.open(StudentDialogComponent, {
-      width: '650px',
+      width: '650px', maxWidth: '95vw',
       data: { mode: 'edit', student: this.student }
     });
     ref.afterClosed().subscribe(result => {

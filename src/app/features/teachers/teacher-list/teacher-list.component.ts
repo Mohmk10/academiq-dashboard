@@ -77,7 +77,7 @@ export default class TeacherListComponent implements OnInit, OnDestroy {
   viewTeacher(id: number): void { this.router.navigate(['/enseignants', id]); }
 
   openCreateDialog(): void {
-    const ref = this.dialog.open(TeacherDialogComponent, { width: '650px', data: { mode: 'create' } });
+    const ref = this.dialog.open(TeacherDialogComponent, { width: '650px', maxWidth: '95vw', data: { mode: 'create' } });
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.utilisateurService.create({ ...result, role: 'ENSEIGNANT' }).subscribe({
@@ -90,7 +90,7 @@ export default class TeacherListComponent implements OnInit, OnDestroy {
 
   openEditDialog(teacher: UtilisateurSummary): void {
     this.utilisateurService.getById(teacher.id).subscribe(res => {
-      const ref = this.dialog.open(TeacherDialogComponent, { width: '650px', data: { mode: 'edit', teacher: res.data } });
+      const ref = this.dialog.open(TeacherDialogComponent, { width: '650px', maxWidth: '95vw', data: { mode: 'edit', teacher: res.data } });
       ref.afterClosed().subscribe(result => {
         if (result) {
           this.utilisateurService.update(teacher.id, result).subscribe({
@@ -105,14 +105,14 @@ export default class TeacherListComponent implements OnInit, OnDestroy {
   toggleActivation(t: UtilisateurSummary): void {
     const action = t.actif ? 'désactiver' : 'activer';
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px', data: { title: `${t.actif ? 'Désactiver' : 'Activer'} l'enseignant`, message: `Voulez-vous ${action} ${t.prenom} ${t.nom} ?` }
+      width: '400px', maxWidth: '95vw', data: { title: `${t.actif ? 'Désactiver' : 'Activer'} l'enseignant`, message: `Voulez-vous ${action} ${t.prenom} ${t.nom} ?` }
     });
     ref.afterClosed().subscribe(ok => { if (ok) this.utilisateurService.toggleActivation(t.id).subscribe({ next: () => { this.notification.success(`Enseignant ${action === 'activer' ? 'activé' : 'désactivé'}`); this.loadTeachers(); }, error: () => {} }); });
   }
 
   deleteTeacher(t: UtilisateurSummary): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px', data: { title: 'Supprimer l\'enseignant', message: `Êtes-vous sûr de vouloir supprimer ${t.prenom} ${t.nom} ?`, confirmText: 'Supprimer' }
+      width: '400px', maxWidth: '95vw', data: { title: 'Supprimer l\'enseignant', message: `Êtes-vous sûr de vouloir supprimer ${t.prenom} ${t.nom} ?`, confirmText: 'Supprimer' }
     });
     ref.afterClosed().subscribe(ok => { if (ok) this.utilisateurService.delete(t.id).subscribe({ next: () => { this.notification.success('Enseignant supprimé'); this.loadTeachers(); }, error: () => {} }); });
   }

@@ -99,7 +99,7 @@ export class FiliereTabComponent implements OnInit {
   }
 
   openCreate(): void {
-    const ref = this.dialog.open(FiliereDialogComponent, { width: '550px', data: { mode: 'create' } });
+    const ref = this.dialog.open(FiliereDialogComponent, { width: '550px', maxWidth: '95vw', data: { mode: 'create' } });
     ref.afterClosed().subscribe(result => {
       if (result) this.structureService.createFiliere(result).subscribe({
         next: () => { this.notification.success('Filière créée'); this.loadFilieres(); },
@@ -109,7 +109,7 @@ export class FiliereTabComponent implements OnInit {
   }
 
   openEdit(filiere: FiliereResponse): void {
-    const ref = this.dialog.open(FiliereDialogComponent, { width: '550px', data: { mode: 'edit', filiere } });
+    const ref = this.dialog.open(FiliereDialogComponent, { width: '550px', maxWidth: '95vw', data: { mode: 'edit', filiere } });
     ref.afterClosed().subscribe(result => {
       if (result) this.structureService.updateFiliere(filiere.id, result).subscribe({
         next: () => { this.notification.success('Filière modifiée'); this.loadFilieres(); },
@@ -120,7 +120,7 @@ export class FiliereTabComponent implements OnInit {
 
   deleteFiliere(filiere: FiliereResponse): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px', data: { title: 'Supprimer la filière', message: `Êtes-vous sûr de vouloir supprimer « ${filiere.nom} » ?`, confirmText: 'Supprimer' }
+      width: '400px', maxWidth: '95vw', data: { title: 'Supprimer la filière', message: `Êtes-vous sûr de vouloir supprimer « ${filiere.nom} » ?`, confirmText: 'Supprimer' }
     });
     ref.afterClosed().subscribe(ok => {
       if (ok) this.structureService.deleteFiliere(filiere.id).subscribe({

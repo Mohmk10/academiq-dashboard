@@ -67,7 +67,7 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
       <!-- Filters -->
       <div class="filter-bar">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
             <mat-label>Statut</mat-label>
             <mat-select [formControl]="statutFilter">
               <mat-option value="">Tous</mat-option>
@@ -77,7 +77,7 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
               <mat-option value="IGNOREE">Ignorées</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
             <mat-label>Niveau</mat-label>
             <mat-select [formControl]="niveauFilter">
               <mat-option value="">Tous</mat-option>
@@ -86,7 +86,7 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
               <mat-option value="info">Info</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
             <mat-label>Type</mat-label>
             <mat-select [formControl]="typeFilter">
               <mat-option value="">Tous</mat-option>
@@ -97,7 +97,7 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
               <mat-option value="CUSTOM">Personnalisée</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
             <mat-icon matPrefix class="mr-2 !text-gray-400">search</mat-icon>
             <mat-label>Rechercher un étudiant</mat-label>
             <input matInput [formControl]="searchControl">
@@ -269,7 +269,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
   }
 
   traiterAlerte(alerte: AlerteResponse): void {
-    const ref = this.dialog.open(TraiterAlerteDialogComponent, { width: '500px', data: { alerte, action: 'traiter' } });
+    const ref = this.dialog.open(TraiterAlerteDialogComponent, { width: '500px', maxWidth: '95vw', data: { alerte, action: 'traiter' } });
     ref.afterClosed().subscribe(result => {
       if (result) this.alerteService.traiterAlerte(alerte.id, result).subscribe({
         next: () => { this.notification.success('Alerte traitée'); this.loadAlertes(); this.loadStats(); },
@@ -279,7 +279,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
   }
 
   ignorerAlerte(alerte: AlerteResponse): void {
-    const ref = this.dialog.open(TraiterAlerteDialogComponent, { width: '500px', data: { alerte, action: 'ignorer' } });
+    const ref = this.dialog.open(TraiterAlerteDialogComponent, { width: '500px', maxWidth: '95vw', data: { alerte, action: 'ignorer' } });
     ref.afterClosed().subscribe(result => {
       if (result) this.alerteService.ignorerAlerte(alerte.id).subscribe({
         next: () => { this.notification.success('Alerte ignorée'); this.loadAlertes(); this.loadStats(); },
@@ -296,7 +296,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
   }
 
   openRegles(): void {
-    this.dialog.open(ReglesDialogComponent, { width: '750px' });
+    this.dialog.open(ReglesDialogComponent, { width: '750px', maxWidth: '95vw' });
   }
 
   isCritique(a: AlerteResponse): boolean {
