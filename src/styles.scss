@@ -46,26 +46,258 @@ $academiq-dashboard-theme: mat.define-theme((
 }
 
 // ============================================================
-// FORMULAIRES — Design premium avec floating labels animes
+// VARIABLES DESIGN
 // ============================================================
 
 $input-bg: #F9FAFB;
 $input-border: #D1D5DB;
 $input-border-hover: #9CA3AF;
 $input-border-focus: #2563EB;
-$input-focus-glow: rgba(37, 99, 235, 0.12);
+$input-focus-glow: rgba(37, 99, 235, 0.1);
 $input-error: #DC2626;
-$input-error-glow: rgba(220, 38, 38, 0.1);
+$input-error-glow: rgba(220, 38, 38, 0.08);
 $input-radius: 10px;
 $input-text: #111827;
 $input-label: #6B7280;
 $input-label-focus: #2563EB;
 
-// Override des CSS custom properties MDC (source de verite pour Material)
+// ============================================================
+// OVERRIDE AGRESSIF — FORMULAIRES ANGULAR MATERIAL
+// On utilise "body" comme ancetre pour battre la specificite MDC
+// ============================================================
+
+body {
+  // ---- OUTLINED TEXT FIELD ----
+  .mdc-text-field--outlined {
+    background: $input-bg !important;
+    border-radius: $input-radius !important;
+    overflow: hidden !important;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease !important;
+
+    .mdc-text-field__input {
+      font-family: 'Inter', sans-serif !important;
+      font-size: 14px !important;
+      color: $input-text !important;
+      padding: 12px 16px !important;
+      caret-color: $input-border-focus !important;
+    }
+
+    // BORDURES — forcer les 3 segments
+    .mdc-notched-outline__leading {
+      border-color: $input-border !important;
+      border-width: 1.5px !important;
+      border-radius: $input-radius 0 0 $input-radius !important;
+    }
+    .mdc-notched-outline__notch {
+      border-color: $input-border !important;
+      border-top-width: 1.5px !important;
+      border-bottom-width: 1.5px !important;
+    }
+    .mdc-notched-outline__trailing {
+      border-color: $input-border !important;
+      border-width: 1.5px !important;
+      border-radius: 0 $input-radius $input-radius 0 !important;
+    }
+
+    // LABEL par defaut (dans le champ)
+    .mdc-floating-label {
+      font-family: 'Inter', sans-serif !important;
+      font-size: 14px !important;
+      color: #9CA3AF !important;
+      font-weight: 400 !important;
+    }
+
+    // LABEL flotte (au dessus)
+    .mdc-floating-label--float-above {
+      font-size: 12px !important;
+      font-weight: 500 !important;
+      color: $input-label !important;
+      transform: translateY(-106%) scale(1) !important;
+    }
+
+    // Le NOTCH ouvert (quand label flotte) — la coupure dans la bordure top
+    .mdc-notched-outline--notched .mdc-notched-outline__notch {
+      border-top: none !important;
+      padding: 0 4px !important;
+    }
+  }
+
+  // HOVER
+  .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--disabled):hover {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: $input-border-hover !important;
+    }
+  }
+
+  // FOCUS
+  .mdc-text-field--outlined.mdc-text-field--focused {
+    box-shadow: 0 0 0 3px $input-focus-glow !important;
+    background: #FFFFFF !important;
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: $input-border-focus !important;
+      border-width: 2px !important;
+    }
+
+    .mdc-floating-label,
+    .mdc-floating-label--float-above {
+      color: $input-border-focus !important;
+    }
+  }
+
+  // DISABLED
+  .mdc-text-field--outlined.mdc-text-field--disabled {
+    background: #F3F4F6 !important;
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #E5E7EB !important;
+    }
+    .mdc-text-field__input {
+      color: #9CA3AF !important;
+    }
+  }
+
+  // INVALID / ERREUR
+  .mdc-text-field--outlined.mdc-text-field--invalid {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: $input-error !important;
+    }
+    .mdc-floating-label,
+    .mdc-floating-label--float-above {
+      color: $input-error !important;
+    }
+    &.mdc-text-field--focused {
+      box-shadow: 0 0 0 3px $input-error-glow !important;
+    }
+  }
+
+  // MESSAGES D'ERREUR
+  .mat-mdc-form-field-error {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12px !important;
+    color: $input-error !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    &::before {
+      content: '\26A0' !important;
+      font-size: 11px !important;
+    }
+  }
+
+  // HINT
+  .mat-mdc-form-field-hint {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12px !important;
+    color: #9CA3AF !important;
+  }
+
+  // SELECT
+  .mat-mdc-select {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    color: $input-text !important;
+  }
+  .mat-mdc-select-arrow {
+    color: #9CA3AF !important;
+  }
+
+  // SELECT PANEL (dropdown)
+  .mat-mdc-select-panel {
+    border-radius: 10px !important;
+    border: 1px solid #E5E7EB !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08) !important;
+    padding: 4px !important;
+    background: white !important;
+
+    .mat-mdc-option {
+      font-family: 'Inter', sans-serif !important;
+      font-size: 14px !important;
+      border-radius: 6px !important;
+      min-height: 40px !important;
+      margin: 1px 4px !important;
+
+      &:hover:not(.mdc-list-item--disabled) {
+        background-color: #F3F4F6 !important;
+      }
+      &.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+        background-color: #EFF6FF !important;
+        color: #2563EB !important;
+        font-weight: 500 !important;
+      }
+    }
+  }
+
+  // CHECKBOX
+  .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+    background-color: #2563EB !important;
+    border-color: #2563EB !important;
+  }
+  .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
+    border-color: $input-border !important;
+    border-radius: 4px !important;
+  }
+  .mdc-checkbox .mdc-checkbox__ripple {
+    display: none !important;
+  }
+
+  // DATEPICKER
+  .mat-datepicker-content {
+    border-radius: 12px !important;
+    border: 1px solid #E5E7EB !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  // DIALOG
+  .mdc-dialog__surface {
+    border-radius: 16px !important;
+  }
+
+  // Supprimer les ripple effects partout sur les inputs
+  .mat-mdc-form-field .mat-mdc-form-field-focus-overlay {
+    display: none !important;
+  }
+  .mdc-text-field--outlined .mdc-text-field__ripple {
+    display: none !important;
+  }
+
+  // TRANSITIONS
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    transition: border-color 0.2s ease, border-width 0.15s ease !important;
+  }
+  .mdc-floating-label {
+    transition: color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), font-size 0.2s ease !important;
+  }
+  .mdc-text-field--outlined {
+    transition: box-shadow 0.2s ease, background-color 0.2s ease !important;
+  }
+
+  // TEXTAREA
+  .mat-mdc-form-field textarea.mdc-text-field__input {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    resize: vertical;
+    min-height: 80px;
+  }
+}
+
+// ============================================================
+// CSS CUSTOM PROPERTIES — couche complementaire
+// ============================================================
+
 .mat-mdc-form-field {
   width: 100%;
 
-  // Variables MDC — couleurs des bordures
   --mdc-outlined-text-field-outline-color: #{$input-border};
   --mdc-outlined-text-field-hover-outline-color: #{$input-border-hover};
   --mdc-outlined-text-field-focus-outline-color: #{$input-border-focus};
@@ -74,7 +306,6 @@ $input-label-focus: #2563EB;
   --mdc-outlined-text-field-error-focus-outline-color: #{$input-error};
   --mdc-outlined-text-field-disabled-outline-color: #E5E7EB;
 
-  // Variables MDC — couleurs des labels
   --mdc-outlined-text-field-label-text-color: #{$input-label};
   --mdc-outlined-text-field-hover-label-text-color: #{$input-label};
   --mdc-outlined-text-field-focus-label-text-color: #{$input-label-focus};
@@ -83,26 +314,21 @@ $input-label-focus: #2563EB;
   --mdc-outlined-text-field-error-focus-label-text-color: #{$input-error};
   --mdc-outlined-text-field-disabled-label-text-color: #9CA3AF;
 
-  // Variables MDC — texte input
   --mdc-outlined-text-field-input-text-color: #{$input-text};
   --mdc-outlined-text-field-disabled-input-text-color: #9CA3AF;
   --mdc-outlined-text-field-input-text-placeholder-color: #9CA3AF;
 
-  // Variables MDC — forme et epaisseur
   --mdc-outlined-text-field-container-shape: #{$input-radius};
-  --mdc-outlined-text-field-outline-width: 1px;
-  --mdc-outlined-text-field-focus-outline-width: 1.5px;
+  --mdc-outlined-text-field-outline-width: 1.5px;
+  --mdc-outlined-text-field-focus-outline-width: 2px;
 
-  // Variables MDC — typographie
   --mdc-outlined-text-field-label-text-font: 'Inter', sans-serif;
   --mdc-outlined-text-field-label-text-size: 14px;
   --mdc-outlined-text-field-label-text-weight: 400;
 
-  // Variables MDC — caret
   --mdc-outlined-text-field-caret-color: #{$input-border-focus};
   --mdc-outlined-text-field-error-caret-color: #{$input-error};
 
-  // Variables Angular Material
   --mat-form-field-container-text-font: 'Inter', sans-serif;
   --mat-form-field-container-text-size: 14px;
   --mat-form-field-container-text-weight: 400;
@@ -117,69 +343,6 @@ $input-label-focus: #2563EB;
   --mat-form-field-focus-state-layer-opacity: 0;
   --mat-form-field-outlined-label-text-populated-size: 12px;
 
-  // Overrides directs pour ce que les variables ne couvrent pas
-  .mdc-text-field--outlined {
-    background-color: $input-bg !important;
-    border-radius: $input-radius !important;
-    transition: box-shadow 0.2s ease, background-color 0.2s ease !important;
-
-    .mdc-text-field__input {
-      padding: 12px 16px !important;
-      caret-color: $input-border-focus;
-    }
-
-    .mdc-notched-outline {
-      .mdc-notched-outline__leading {
-        border-radius: $input-radius 0 0 $input-radius !important;
-      }
-      .mdc-notched-outline__trailing {
-        border-radius: 0 $input-radius $input-radius 0 !important;
-      }
-      .mdc-notched-outline__leading,
-      .mdc-notched-outline__notch,
-      .mdc-notched-outline__trailing {
-        transition: border-color 0.2s ease, border-width 0.15s ease !important;
-      }
-      .mdc-notched-outline__notch .mdc-floating-label {
-        transition: color 0.2s ease, transform 0.2s ease, font-size 0.2s ease !important;
-      }
-      .mdc-notched-outline__notch .mdc-floating-label--float-above {
-        font-weight: 500 !important;
-        transform: translateY(-130%) scale(1) !important;
-      }
-    }
-
-    // Focus glow
-    &.mdc-text-field--focused {
-      box-shadow: 0 0 0 3px $input-focus-glow !important;
-      background-color: #FFFFFF !important;
-    }
-
-    // Disabled
-    &.mdc-text-field--disabled {
-      background-color: #F3F4F6 !important;
-      opacity: 0.7;
-    }
-
-    // Error + focus
-    &.mdc-text-field--invalid.mdc-text-field--focused {
-      box-shadow: 0 0 0 3px $input-error-glow !important;
-    }
-  }
-
-  .mat-mdc-form-field-subscript-wrapper {
-    .mat-mdc-form-field-error {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-
-      &::before {
-        content: '\26A0';
-        font-size: 11px;
-      }
-    }
-  }
-
   .mat-mdc-form-field-icon-prefix,
   .mat-mdc-form-field-icon-suffix {
     padding: 0 8px !important;
@@ -187,7 +350,7 @@ $input-label-focus: #2563EB;
 }
 
 // ============================================================
-// SELECT
+// SELECT — CSS custom properties
 // ============================================================
 
 .mat-mdc-select {
@@ -211,26 +374,10 @@ $input-label-focus: #2563EB;
   --mat-option-focus-state-layer-color: #F3F4F6;
   --mat-option-selected-state-layer-color: #EFF6FF;
   --mat-option-selected-state-label-text-color: #2563EB;
-
-  border-radius: 10px !important;
-  border: 1px solid #E5E7EB !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  padding: 4px !important;
-
-  .mat-mdc-option {
-    border-radius: 6px !important;
-    min-height: 40px !important;
-    padding: 0 12px !important;
-    margin: 2px 0 !important;
-
-    &.mdc-list-item--selected:not(.mdc-list-item--disabled) {
-      font-weight: 500 !important;
-    }
-  }
 }
 
 // ============================================================
-// CHECKBOX
+// CHECKBOX — CSS custom properties
 // ============================================================
 
 .mat-mdc-checkbox {
@@ -245,30 +392,6 @@ $input-label-focus: #2563EB;
   --mat-checkbox-label-text-font: 'Inter', sans-serif;
   --mat-checkbox-label-text-size: 14px;
 }
-
-// ============================================================
-// DATE PICKER
-// ============================================================
-
-.mat-datepicker-content {
-  border-radius: 12px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
-  border: 1px solid #E5E7EB !important;
-}
-
-// ============================================================
-// TEXTAREA
-// ============================================================
-
-.mat-mdc-form-field textarea.mdc-text-field__input {
-  font-family: 'Inter', sans-serif !important;
-  font-size: 14px !important;
-  line-height: 1.6 !important;
-  resize: vertical;
-  min-height: 80px;
-}
-
-// (Transitions globales integrees dans le bloc .mat-mdc-form-field ci-dessus)
 
 // ============================================================
 // BOUTONS MATERIAL
