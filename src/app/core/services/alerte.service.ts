@@ -1,0 +1,68 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ApiService } from './api.service';
+import { ApiResponse, PageResponse } from '../models/api-response.model';
+import {
+  AlerteResponse,
+  TraiterAlerteRequest,
+  RegleAlerteRequest, RegleAlerteResponse,
+  StatistiquesAlertesDTO,
+  StatutAlerte
+} from '../models/alerte.model';
+
+@Injectable({ providedIn: 'root' })
+export class AlerteService {
+
+  constructor(private api: ApiService) {}
+
+  // --- Alertes ---
+  getAlertes(page: number, size: number, statut?: StatutAlerte): Observable<ApiResponse<PageResponse<AlerteResponse>>> {
+    return this.api.getPage<AlerteResponse>('alertes', page, size, 'createdAt', 'desc', statut ? { statut } : undefined);
+  }
+
+  getAlerte(id: number): Observable<ApiResponse<AlerteResponse>> {
+    return this.api.get<AlerteResponse>(`alertes/${id}`);
+  }
+
+  traiterAlerte(id: number, request: TraiterAlerteRequest): Observable<ApiResponse<AlerteResponse>> {
+    return this.api.patch<AlerteResponse>(`alertes/${id}/traiter`, request);
+  }
+
+  resoudreAlerte(id: number): Observable<ApiResponse<AlerteResponse>> {
+    return this.api.patch<AlerteResponse>(`alertes/${id}/resoudre`);
+  }
+
+  ignorerAlerte(id: number): Observable<ApiResponse<AlerteResponse>> {
+    return this.api.patch<AlerteResponse>(`alertes/${id}/ignorer`);
+  }
+
+  getAlertesEtudiant(etudiantId: number): Observable<ApiResponse<AlerteResponse[]>> {
+    return this.api.get<AlerteResponse[]>(`alertes/etudiant/${etudiantId}`);
+  }
+
+  // --- Statistiques ---
+  getStatistiques(): Observable<ApiResponse<StatistiquesAlertesDTO>> {
+    return this.api.get<StatistiquesAlertesDTO>('alertes/statistiques');
+  }
+
+  // --- Règles d'alerte ---
+  getRegles(): Observable<ApiResponse<RegleAlerteResponse[]>> {
+    return this.api.get<RegleAlerteResponse[]>('alertes/regles');
+  }
+
+  createRegle(request: RegleAlerteRequest): Observable<ApiResponse<RegleAlerteResponse>> {
+    return this.api.post<RegleAlerteResponse>('alertes/regles', request);
+  }
+
+  updateRegle(id: number, request: RegleAlerteRequest): Observable<ApiResponse<RegleAlerteResponse>> {
+    return this.api.put<RegleAlerteResponse>(`alertes/regles/${id}`, request);
+  }
+
+  deleteRegle(id: number): Observable<ApiResponse<void>> {
+    return this.api.delete<void>(`alertes/regles/${id}`);
+  }
+
+  toggleRegle(id: number): Observable<ApiResponse<RegleAlerteResponse>> {
+    return this.api.patch<RegleAlerteResponse>(`alertes/regles/${id}/toggle`);
+  }
+}
