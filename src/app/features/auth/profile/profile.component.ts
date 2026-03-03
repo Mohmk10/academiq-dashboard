@@ -89,37 +89,58 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
 
         <!-- Sécurité -->
         <div class="card">
-          <h3 class="section-title"><i class="fas fa-shield-halved mr-2"></i> Sécurité</h3>
-          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="space-y-4 max-w-md">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <i class="fas fa-shield-halved text-primary"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold text-gray-900">Sécurité</h3>
+              <p class="text-xs text-gray-400">Modifier votre mot de passe</p>
+            </div>
+          </div>
+          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="space-y-5 max-w-md">
             <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
               <mat-label>Ancien mot de passe</mat-label>
-              <input matInput [type]="showOld ? 'text' : 'password'" formControlName="ancienMotDePasse">
+              <mat-icon matPrefix class="mr-2">lock_outline</mat-icon>
+              <input matInput [type]="showOld ? 'text' : 'password'" formControlName="ancienMotDePasse" placeholder="Entrez votre mot de passe actuel">
               <button mat-icon-button matSuffix type="button" (click)="showOld = !showOld"><mat-icon>{{ showOld ? 'visibility_off' : 'visibility' }}</mat-icon></button>
             </mat-form-field>
             <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
               <mat-label>Nouveau mot de passe</mat-label>
-              <input matInput [type]="showNew ? 'text' : 'password'" formControlName="nouveauMotDePasse">
+              <mat-icon matPrefix class="mr-2">lock</mat-icon>
+              <input matInput [type]="showNew ? 'text' : 'password'" formControlName="nouveauMotDePasse" placeholder="Minimum 8 caractères">
               <button mat-icon-button matSuffix type="button" (click)="showNew = !showNew"><mat-icon>{{ showNew ? 'visibility_off' : 'visibility' }}</mat-icon></button>
             </mat-form-field>
             @if (passwordForm.get('nouveauMotDePasse')?.value) {
-              <div class="flex items-center gap-2">
-                <div class="flex-1 h-2 rounded-full bg-gray-200">
-                  <div class="h-2 rounded-full transition-all" [style.width.%]="passwordStrength.percent" [class]="passwordStrength.class"></div>
+              <div class="space-y-2">
+                <div class="flex gap-1.5">
+                  <div class="flex-1 h-1.5 rounded-full transition-all duration-300"
+                    [class]="passwordStrength.percent >= 33 ? passwordStrength.barClass : 'bg-gray-200'"></div>
+                  <div class="flex-1 h-1.5 rounded-full transition-all duration-300"
+                    [class]="passwordStrength.percent >= 66 ? passwordStrength.barClass : 'bg-gray-200'"></div>
+                  <div class="flex-1 h-1.5 rounded-full transition-all duration-300"
+                    [class]="passwordStrength.percent >= 100 ? passwordStrength.barClass : 'bg-gray-200'"></div>
                 </div>
-                <span class="text-xs font-medium" [class]="passwordStrength.textClass">{{ passwordStrength.label }}</span>
+                <p class="text-xs font-medium" [class]="passwordStrength.textClass">
+                  <i class="fas" [class]="passwordStrength.icon"></i>
+                  {{ passwordStrength.label }}
+                </p>
               </div>
             }
             <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
               <mat-label>Confirmer le mot de passe</mat-label>
-              <input matInput [type]="showConfirm ? 'text' : 'password'" formControlName="confirmationMotDePasse">
+              <mat-icon matPrefix class="mr-2">lock_outline</mat-icon>
+              <input matInput [type]="showConfirm ? 'text' : 'password'" formControlName="confirmationMotDePasse" placeholder="Retapez le nouveau mot de passe">
               <button mat-icon-button matSuffix type="button" (click)="showConfirm = !showConfirm"><mat-icon>{{ showConfirm ? 'visibility_off' : 'visibility' }}</mat-icon></button>
               @if (passwordForm.hasError('mismatch')) {
-                <mat-error>Les mots de passe ne correspondent pas</mat-error>
+                <mat-error><i class="fas fa-circle-exclamation mr-1"></i> Les mots de passe ne correspondent pas</mat-error>
               }
             </mat-form-field>
-            <button mat-raised-button color="primary" type="submit" [disabled]="passwordForm.invalid || isChangingPassword">
-              @if (isChangingPassword) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
-              Changer le mot de passe
+            <button type="submit" class="btn-primary w-full justify-center !py-3" [disabled]="passwordForm.invalid || isChangingPassword">
+              @if (isChangingPassword) {
+                <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner>
+              }
+              <i class="fas fa-key mr-2"></i> Mettre à jour le mot de passe
             </button>
           </form>
         </div>
@@ -272,7 +293,7 @@ export default class ProfileComponent implements OnInit {
     });
   }
 
-  get passwordStrength(): { percent: number; label: string; class: string; textClass: string } {
+  get passwordStrength(): { percent: number; label: string; barClass: string; textClass: string; icon: string } {
     const pwd = this.passwordForm.get('nouveauMotDePasse')?.value || '';
     let score = 0;
     if (pwd.length >= 8) score++;
@@ -280,9 +301,9 @@ export default class ProfileComponent implements OnInit {
     if (/[A-Z]/.test(pwd)) score++;
     if (/[0-9]/.test(pwd)) score++;
     if (/[^a-zA-Z0-9]/.test(pwd)) score++;
-    if (score <= 2) return { percent: 33, label: 'Faible', class: 'bg-danger', textClass: 'text-danger' };
-    if (score <= 3) return { percent: 66, label: 'Moyen', class: 'bg-warning', textClass: 'text-warning' };
-    return { percent: 100, label: 'Fort', class: 'bg-success', textClass: 'text-success' };
+    if (score <= 2) return { percent: 33, label: 'Faible', barClass: 'bg-red-400', textClass: 'text-red-500', icon: 'fa-circle-xmark' };
+    if (score <= 3) return { percent: 66, label: 'Moyen', barClass: 'bg-amber-400', textClass: 'text-amber-600', icon: 'fa-circle-minus' };
+    return { percent: 100, label: 'Fort', barClass: 'bg-emerald-400', textClass: 'text-emerald-600', icon: 'fa-circle-check' };
   }
 
   formatDate(date: string): string { return new Date(date).toLocaleDateString('fr-FR'); }

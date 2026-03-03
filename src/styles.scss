@@ -45,29 +45,115 @@ $academiq-dashboard-theme: mat.define-theme((
   }
 
   .mat-mdc-form-field {
+    // Wrapper background: soft gray tint → white on focus
+    .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+      background-color: #F9FAFB;
+      border-radius: 0.625rem;
+      transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    // Default border: light gray (#E5E7EB)
     .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading,
     .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__notch,
     .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing {
-      @apply border-gray-300 transition-all duration-200;
+      border-color: #E5E7EB !important;
+      transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    // Border radius 10px
     .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading {
-      border-radius: 0.5rem 0 0 0.5rem !important;
+      border-radius: 0.625rem 0 0 0.625rem !important;
     }
     .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing {
-      border-radius: 0 0.5rem 0.5rem 0 !important;
+      border-radius: 0 0.625rem 0.625rem 0 !important;
     }
-    .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline .mdc-notched-outline__leading,
-    .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline .mdc-notched-outline__notch,
-    .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline .mdc-notched-outline__trailing {
-      @apply border-gray-400;
+
+    // Hover: slightly darker border
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__leading,
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__notch,
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__trailing {
+      border-color: #D1D5DB !important;
     }
+
+    // Focus: white bg, primary border, soft blue glow
     .mat-mdc-text-field-wrapper.mdc-text-field--outlined.mdc-text-field--focused {
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-      border-radius: 0.5rem;
+      background-color: #FFFFFF;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+      border-radius: 0.625rem;
     }
+    .mdc-text-field--outlined.mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__leading,
+    .mdc-text-field--outlined.mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__notch,
+    .mdc-text-field--outlined.mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__trailing {
+      border-color: #2563EB !important;
+      border-width: 1.5px;
+    }
+
+    // Floating label: gray default → primary on focus
+    .mdc-floating-label {
+      color: #9CA3AF !important;
+      transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mdc-text-field--focused .mdc-floating-label {
+      color: #2563EB !important;
+    }
+
+    // Prefix icon: gray → primary on focus
+    .mat-mdc-form-field-icon-prefix .mat-icon,
+    [matPrefix] {
+      color: #9CA3AF !important;
+      transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    &.mat-focused .mat-mdc-form-field-icon-prefix .mat-icon,
+    &.mat-focused [matPrefix] {
+      color: #2563EB !important;
+    }
+
+    // Suffix icon: muted
+    .mat-mdc-form-field-icon-suffix .mat-icon {
+      color: #9CA3AF !important;
+    }
+
+    // Input text styling
+    .mat-mdc-input-element {
+      font-size: 0.875rem;
+      color: #1F2937;
+      &::placeholder {
+        color: #D1D5DB;
+      }
+    }
+
+    // Disabled state
     .mat-mdc-text-field-wrapper.mdc-text-field--outlined.mdc-text-field--disabled {
-      background-color: #F9FAFB;
-      border-radius: 0.5rem;
+      background-color: #F3F4F6;
+      border-radius: 0.625rem;
+      opacity: 0.7;
+    }
+
+    // Error state: subtle red border + red glow
+    &.mat-form-field-invalid {
+      .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading,
+      .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__notch,
+      .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing {
+        border-color: #FCA5A5 !important;
+      }
+      .mat-mdc-text-field-wrapper.mdc-text-field--outlined.mdc-text-field--focused {
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.06);
+      }
+      .mdc-floating-label {
+        color: #EF4444 !important;
+      }
+    }
+
+    // Mat-error: subtle with icon support
+    .mat-mdc-form-field-error-wrapper {
+      padding: 0 4px;
+    }
+    mat-error, .mat-mdc-form-field-error {
+      font-size: 0.75rem;
+      color: #EF4444;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
   }
 
@@ -130,8 +216,9 @@ $academiq-dashboard-theme: mat.define-theme((
   }
 
   .mat-mdc-select-panel {
-    border-radius: 0.75rem !important;
+    border-radius: 0.625rem !important;
     border: 1px solid #E5E7EB;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
   }
 
   .mat-mdc-menu-panel {
@@ -262,10 +349,29 @@ $academiq-dashboard-theme: mat.define-theme((
   }
 
   .input-field {
-    @apply border border-gray-300 rounded-lg text-sm bg-white
-           focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all duration-200;
+    @apply text-sm outline-none;
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 0.625rem;
+    padding: 0.625rem 1rem;
+    color: #1F2937;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    &::placeholder {
+      color: #D1D5DB;
+    }
+    &:hover:not(:disabled):not(:focus) {
+      border-color: #D1D5DB;
+    }
+    &:focus {
+      background-color: #FFFFFF;
+      border-color: #2563EB;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+    }
     &:disabled {
-      @apply bg-gray-50 text-gray-400 cursor-not-allowed;
+      background-color: #F3F4F6;
+      color: #9CA3AF;
+      cursor: not-allowed;
+      opacity: 0.7;
     }
   }
 }
