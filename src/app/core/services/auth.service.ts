@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap, delay } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import {
@@ -12,6 +12,7 @@ import {
   UtilisateurResponse
 } from '../models/auth.model';
 import { Role } from '../models/user.model';
+import { MockDataService } from './mock-data.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -26,11 +27,26 @@ export class AuthService {
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {
-    this.loadUserFromToken();
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private mock: MockDataService
+  ) {
+    if (this.mock.isDevMode()) {
+      this.initDevMode('ADMIN');
+    } else {
+      this.loadUserFromToken();
+    }
   }
 
   login(request: LoginRequest): Observable<ApiResponse<AuthResponse>> {
+    if (this.mock.isDevMode()) {
+      const authResponse = this.mock.getAuthResponse('ADMIN');
+      this.storeTokens(authResponse);
+      this.currentUserSubject.next(authResponse);
+      this.isLoggedInSubject.next(true);
+      return of(this.mock.wrap(authResponse)).pipe(delay(300));
+    }
     return this.http.post<ApiResponse<AuthResponse>>(`${this.API_URL}/auth/login`, request).pipe(
       tap(response => {
         if (response.success) {
@@ -55,6 +71,9 @@ export class AuthService {
   }
 
   logout(): void {
+    if (this.mock.isDevMode()) {
+      return;
+    }
     localStorage.removeItem(this.ACCESS_TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     this.currentUserSubject.next(null);
@@ -75,11 +94,23 @@ export class AuthService {
   }
 
   getProfile(): Observable<ApiResponse<UtilisateurResponse>> {
+    if (this.mock.isDevMode()) {
+      const role = this.getCurrentUserRole() ?? 'ADMIN';
+      return of(this.mock.wrap(this.mock.getProfileByRole(role))).pipe(delay(300));
+    }
     return this.http.get<ApiResponse<UtilisateurResponse>>(`${this.API_URL}/auth/me`);
   }
 
   changePassword(request: ChangePasswordRequest): Observable<ApiResponse<void>> {
+    if (this.mock.isDevMode()) {
+      return of(this.mock.wrap(undefined as any)).pipe(delay(300));
+    }
     return this.http.put<ApiResponse<void>>(`${this.API_URL}/auth/change-password`, request);
+  }
+
+  switchRole(role: Role): void {
+    this.initDevMode(role);
+    this.router.navigate(['/dashboard']);
   }
 
   getAccessToken(): string | null {
@@ -91,6 +122,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
+    if (this.mock.isDevMode()) return true;
     const token = this.getAccessToken();
     if (!token) return false;
     return !this.isTokenExpired(token);
@@ -128,6 +160,13 @@ export class AuthService {
   hasAnyRole(roles: Role[]): boolean {
     const currentRole = this.getCurrentUserRole();
     return currentRole !== null && roles.includes(currentRole);
+  }
+
+  private initDevMode(role: Role): void {
+    const authResponse = this.mock.getAuthResponse(role);
+    this.storeTokens(authResponse);
+    this.currentUserSubject.next(authResponse);
+    this.isLoggedInSubject.next(true);
   }
 
   private decodeToken(token: string): any {

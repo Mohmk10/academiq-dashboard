@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AuthService } from '../../../core/services/auth.service';
+import { MockDataService } from '../../../core/services/mock-data.service';
 import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
@@ -38,8 +39,12 @@ export default class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private mock: MockDataService
   ) {
+    if (this.mock.isDevMode()) {
+      this.router.navigate(['/dashboard']);
+    }
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       motDePasse: ['', [Validators.required, Validators.minLength(8)]],

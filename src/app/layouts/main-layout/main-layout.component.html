@@ -54,11 +54,25 @@
 
     <!-- Header -->
     <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6 shrink-0 z-30">
-      <!-- Left: hamburger -->
+      <!-- Left: hamburger + DEV selector -->
       <div class="flex items-center gap-4">
         <button mat-icon-button (click)="toggleSidebar()" class="text-gray-500 hover:text-primary">
           <mat-icon>menu</mat-icon>
         </button>
+
+        @if (isDevMode) {
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase tracking-wide">DEV</span>
+            <select
+              class="text-sm border border-gray-300 rounded-md px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary cursor-pointer"
+              [ngModel]="selectedRole"
+              (ngModelChange)="onDevRoleChange($event)">
+              @for (r of devRoles; track r.value) {
+                <option [value]="r.value">{{ r.label }}</option>
+              }
+            </select>
+          </div>
+        }
       </div>
 
       <!-- Right: notifications + user -->
