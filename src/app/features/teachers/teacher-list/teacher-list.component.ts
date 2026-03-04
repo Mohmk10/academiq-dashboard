@@ -7,6 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { UtilisateurService } from '../../../core/services/utilisateur.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { UtilisateurSummary } from '../../../core/models/user.model';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -36,10 +37,15 @@ export default class TeacherListComponent implements OnInit, OnDestroy {
 
   constructor(
     private utilisateurService: UtilisateurService,
+    private authService: AuthService,
     private notification: NotificationService,
     private dialog: MatDialog,
     private router: Router
   ) {}
+
+  get canCreate(): boolean { return this.authService.hasAnyRole(['ADMIN']); }
+  get canEdit(): boolean { return this.authService.hasAnyRole(['ADMIN']); }
+  get canDelete(): boolean { return this.authService.hasAnyRole(['ADMIN']); }
 
   ngOnInit(): void {
     this.loadTeachers();

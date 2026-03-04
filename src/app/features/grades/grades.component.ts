@@ -28,7 +28,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
           <h1 class="page-title">{{ role === 'ETUDIANT' ? 'Mes notes' : 'Gestion des notes' }}</h1>
           <p class="text-sm text-gray-500 mt-1">{{ role === 'ETUDIANT' ? 'Consultez vos résultats par module' : 'Gérez les évaluations et saisissez les notes' }}</p>
         </div>
-        @if (role !== 'ETUDIANT') {
+        @if (canCreate) {
           <button class="btn-primary" (click)="openCreateEvaluation()">
             <i class="fas fa-plus mr-2"></i> Nouvelle évaluation
           </button>
@@ -132,12 +132,16 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                         <i class="fas fa-ellipsis-vertical"></i>
                       </button>
                       <mat-menu #menu="matMenu">
-                        <button mat-menu-item (click)="goToSaisie(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Saisir les notes</button>
-                        <button mat-menu-item (click)="openEditEvaluation(row)"><i class="fas fa-edit mr-3 text-gray-400"></i> Modifier</button>
-                        @if (!row.publiee) {
-                          <button mat-menu-item (click)="publierEvaluation(row)"><i class="fas fa-check-circle mr-3 text-success"></i> Publier</button>
+                        @if (canEdit) {
+                          <button mat-menu-item (click)="goToSaisie(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Saisir les notes</button>
+                          <button mat-menu-item (click)="openEditEvaluation(row)"><i class="fas fa-edit mr-3 text-gray-400"></i> Modifier</button>
+                          @if (!row.publiee) {
+                            <button mat-menu-item (click)="publierEvaluation(row)"><i class="fas fa-check-circle mr-3 text-success"></i> Publier</button>
+                          }
                         }
-                        <button mat-menu-item (click)="deleteEvaluation(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                        @if (canDelete) {
+                          <button mat-menu-item (click)="deleteEvaluation(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                        }
                       </mat-menu>
                     </td>
                   </tr>
@@ -167,6 +171,10 @@ export default class GradesComponent implements OnInit {
   ) {
     this.role = this.authService.getCurrentUserRole();
   }
+
+  get canCreate(): boolean { return this.authService.hasAnyRole(['ADMIN', 'ENSEIGNANT']); }
+  get canEdit(): boolean { return this.authService.hasAnyRole(['ADMIN', 'ENSEIGNANT']); }
+  get canDelete(): boolean { return this.authService.hasAnyRole(['ADMIN']); }
 
   ngOnInit(): void {
     if (this.role === 'ETUDIANT') {

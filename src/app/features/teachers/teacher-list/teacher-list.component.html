@@ -5,9 +5,11 @@
       <h1 class="page-title">Gestion des enseignants</h1>
       <p class="text-sm text-gray-500 mt-1">{{ totalElements }} enseignants au total</p>
     </div>
-    <button class="btn-primary" (click)="openCreateDialog()">
-      <i class="fas fa-plus mr-2"></i> Ajouter un enseignant
-    </button>
+    @if (canCreate) {
+      <button class="btn-primary" (click)="openCreateDialog()">
+        <i class="fas fa-plus mr-2"></i> Ajouter un enseignant
+      </button>
+    }
   </div>
 
   <!-- Filters -->
@@ -64,9 +66,13 @@
                 </button>
                 <mat-menu #menu="matMenu">
                   <button mat-menu-item (click)="viewTeacher(row.id)"><i class="fas fa-eye mr-3 text-gray-400"></i> Voir le profil</button>
-                  <button mat-menu-item (click)="openEditDialog(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Modifier</button>
-                  <button mat-menu-item (click)="toggleActivation(row)"><i class="fas mr-3" [class]="row.actif ? 'fa-lock text-warning' : 'fa-lock-open text-success'"></i> {{ row.actif ? 'Désactiver' : 'Activer' }}</button>
-                  <button mat-menu-item (click)="deleteTeacher(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                  @if (canEdit) {
+                    <button mat-menu-item (click)="openEditDialog(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Modifier</button>
+                    <button mat-menu-item (click)="toggleActivation(row)"><i class="fas mr-3" [class]="row.actif ? 'fa-lock text-warning' : 'fa-lock-open text-success'"></i> {{ row.actif ? 'Désactiver' : 'Activer' }}</button>
+                  }
+                  @if (canDelete) {
+                    <button mat-menu-item (click)="deleteTeacher(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                  }
                 </mat-menu>
               </td>
             </tr>

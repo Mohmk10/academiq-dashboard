@@ -1,0 +1,112 @@
+<div class="space-y-6 fade-in-up">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="page-title">Logs d'audit</h1>
+      <p class="text-sm text-gray-500 mt-1">{{ filteredLogs.length }} entrees dans l'historique</p>
+    </div>
+    <div class="flex items-center gap-3">
+      @for (t of types; track t.value) {
+        <div class="hidden lg:flex items-center gap-1.5 text-xs text-gray-500">
+          <i class="fas {{ t.icon }} {{ t.color }}"></i>
+          <span>{{ t.label }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+      <div class="field !mb-0">
+        <div class="field-with-icon">
+          <i class="fas fa-search field-icon-left"></i>
+          <input class="field-input" [formControl]="searchControl" placeholder="Rechercher par utilisateur ou detail">
+        </div>
+      </div>
+      <div class="field !mb-0">
+        <select class="field-input" [formControl]="typeFilter" (change)="onFilterChange()">
+          <option value="">Tous les types</option>
+          @for (t of types; track t.value) {
+            <option [value]="t.value">{{ t.label }}</option>
+          }
+        </select>
+      </div>
+      <div class="field !mb-0">
+        <input class="field-input" type="date" [formControl]="dateFilter" (change)="onFilterChange()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="data-table-wrapper">
+    @if (pagedLogs.length === 0) {
+      <div class="flex flex-col items-center justify-center py-16 text-gray-400">
+        <i class="fas fa-clipboard-list text-5xl mb-4"></i>
+        <p class="font-medium">Aucun log trouve</p>
+        <p class="text-sm mt-1">Modifiez vos filtres pour afficher les resultats</p>
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Utilisateur</th>
+            <th>Cible</th>
+            <th>Details</th>
+            <th>IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (log of pagedLogs; track log.id) {
+            <tr>
+              <td>
+                <span class="text-sm text-gray-600 whitespace-nowrap">{{ formatDate(log.date) }}</span>
+              </td>
+              <td>
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1.5" [class]="getTypeBadgeClass(log.type)">
+                  <i class="fas {{ getTypeConfig(log.type).icon }} text-[10px]"></i>
+                  {{ getTypeConfig(log.type).label }}
+                </span>
+              </td>
+              <td>
+                <div>
+                  <span class="text-sm font-medium text-gray-900">{{ log.utilisateur }}</span>
+                  <span class="text-xs text-gray-400 ml-1.5">({{ log.role }})</span>
+                </div>
+              </td>
+              <td>
+                @if (log.cible) {
+                  <span class="text-sm text-gray-700">{{ log.cible }}</span>
+                } @else {
+                  <span class="text-gray-300">—</span>
+                }
+              </td>
+              <td class="cell-secondary max-w-xs truncate">{{ log.details }}</td>
+              <td>
+                <span class="font-mono text-xs text-gray-400">{{ log.ip }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="table-pagination">
+        <div class="pagination-info">
+          <span>{{ pageIndex * pageSize + 1 }}</span>–<span>{{ min((pageIndex + 1) * pageSize, filteredLogs.length) }}</span> sur <span>{{ filteredLogs.length }}</span>
+        </div>
+        <div class="pagination-controls">
+          <button class="pagination-btn" [disabled]="pageIndex === 0" (click)="goToPage(0)"><i class="fas fa-angles-left"></i></button>
+          <button class="pagination-btn" [disabled]="pageIndex === 0" (click)="goToPage(pageIndex - 1)"><i class="fas fa-chevron-left"></i></button>
+          @for (p of visiblePages; track p) {
+            <button class="pagination-btn" [class.active]="p === pageIndex" (click)="goToPage(p)">{{ p + 1 }}</button>
+          }
+          <button class="pagination-btn" [disabled]="pageIndex >= totalPages - 1" (click)="goToPage(pageIndex + 1)"><i class="fas fa-chevron-right"></i></button>
+          <button class="pagination-btn" [disabled]="pageIndex >= totalPages - 1" (click)="goToPage(totalPages - 1)"><i class="fas fa-angles-right"></i></button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
