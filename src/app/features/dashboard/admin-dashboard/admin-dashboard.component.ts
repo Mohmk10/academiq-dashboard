@@ -6,23 +6,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { AnalyticsService } from '../../../core/services/analytics.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { DashboardAdminDTO, DerniereAlerteDTO, RepartitionDTO } from '../../../core/models/analytics.model';
-
-interface SystemStats {
-  cpuUsage: number;
-  memoryUsage: number;
-  diskUsage: number;
-  uptime: string;
-  activeUsers: number;
-  requestsToday: number;
-}
-
-interface RecentLog {
-  action: string;
-  user: string;
-  date: string;
-  type: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'ROLE_CHANGE';
-}
+import { DashboardAdminDTO, RepartitionDTO } from '../../../core/models/analytics.model';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -67,8 +51,9 @@ export class AdminDashboardComponent implements OnInit {
   };
 
   isSuperAdmin = false;
-  systemStats: SystemStats | null = null;
-  recentLogs: RecentLog[] = [];
+  userName = '';
+  systemStats: any = null;
+  recentLogs: any[] = [];
 
   private chartColors = ['#2563EB', '#059669', '#8B5CF6', '#D97706', '#DC2626', '#06B6D4', '#EC4899', '#F97316'];
 
@@ -79,53 +64,87 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.isSuperAdmin = this.authService.isExactRole('SUPER_ADMIN');
+    this.userName = this.authService.getCurrentUserName();
 
     if (this.isSuperAdmin) {
       this.loadSystemStats();
+      this.loadRecentLogs();
     }
 
     this.analyticsService.getDashboardAdmin().subscribe({
       next: (res) => {
         this.data = res.data;
-        this.buildDoughnutChart(res.data.repartitionEtudiants);
-        this.buildBarChart();
+        if (res.data.repartitionEtudiants?.length) {
+          this.buildDoughnutChart(res.data.repartitionEtudiants);
+          this.buildBarChart();
+        }
         this.isLoading = false;
       },
       error: () => {
         this.error = true;
         this.isLoading = false;
-        this.loadMockData();
+        this.data = {
+          totalEtudiants: 0, totalEnseignants: 0, totalFilieres: 0,
+          totalModules: 0, alertesActives: 0, tauxReussiteGlobal: 0,
+          moyenneGenerale: 0, repartitionEtudiants: [],
+          evolutionInscriptions: [], dernieresAlertes: []
+        };
       }
     });
   }
 
   private loadSystemStats(): void {
-    this.systemStats = {
-      cpuUsage: 34,
-      memoryUsage: 62,
-      diskUsage: 45,
-      uptime: '15j 8h 42m',
-      activeUsers: 23,
-      requestsToday: 1847
-    };
-    this.recentLogs = [
-      { action: 'Role modifie pour Diagne Abdou', user: 'Kouyate Makan', date: '2026-03-04T09:20:00', type: 'ROLE_CHANGE' },
-      { action: 'Nouvel etudiant inscrit (ETU-2025-016)', user: 'Diagne Abdou', date: '2026-03-04T10:00:00', type: 'CREATE' },
-      { action: 'Notes saisies CC2 Spring Boot', user: 'Diop Ibrahima', date: '2026-03-03T15:30:00', type: 'UPDATE' },
-      { action: 'Export releves L3 GL', user: 'Diagne Abdou', date: '2026-03-03T14:00:00', type: 'CREATE' },
-      { action: 'Connexion reussie', user: 'Diagne Abdou', date: '2026-03-03T08:30:00', type: 'LOGIN' }
-    ];
+    this.analyticsService.getSystemStats().subscribe({
+      next: (res) => this.systemStats = res.data,
+      error: () => this.systemStats = {
+        totalUtilisateurs: 0, utilisateursActifs: 0,
+        totalEtudiants: 0, totalEnseignants: 0,
+        totalEvaluations: 0, alertesActives: 0
+      }
+    });
   }
 
-  getLogIcon(type: string): string {
+  private loadRecentLogs(): void {
+    this.analyticsService.getRecentAuditLogs(10).subscribe({
+      next: (res) => this.recentLogs = res.data ?? [],
+      error: () => this.recentLogs = []
+    });
+  }
+
+  getLogIcon(action: string): string {
     const icons: Record<string, string> = {
-      'CREATE': 'fa-plus text-green-500',
-      'UPDATE': 'fa-pen text-blue-500',
-      'DELETE': 'fa-trash text-red-500',
-      'LOGIN': 'fa-right-to-bracket text-gray-400',
-      'ROLE_CHANGE': 'fa-user-shield text-purple-500'
+      'CONNEXION': 'fa-right-to-bracket text-gray-400',
+      'CREATION_UTILISATEUR': 'fa-user-plus text-green-500',
+      'MODIFICATION_UTILISATEUR': 'fa-user-pen text-blue-500',
+      'SUPPRESSION_UTILISATEUR': 'fa-user-minus text-red-500',
+      'CHANGEMENT_ROLE': 'fa-user-shield text-purple-500',
+      'DESACTIVATION_COMPTE': 'fa-user-slash text-amber-500',
+      'ACTIVATION_COMPTE': 'fa-user-check text-emerald-500',
+      'SAISIE_NOTES': 'fa-pen text-blue-500',
+      'VERROUILLAGE_EVALUATION': 'fa-lock text-gray-500',
+      'DEVERROUILLAGE_EVALUATION': 'fa-lock-open text-gray-500',
+      'GENERATION_RAPPORT': 'fa-file-export text-indigo-500',
+      'TRAITEMENT_ALERTE': 'fa-bell text-amber-500'
     };
-    return icons[type] ?? 'fa-circle text-gray-400';
+    return icons[action] ?? 'fa-circle text-gray-400';
+  }
+
+  getActionLabel(action: string): string {
+    const labels: Record<string, string> = {
+      'CONNEXION': 'Connexion',
+      'CREATION_UTILISATEUR': 'Creation utilisateur',
+      'MODIFICATION_UTILISATEUR': 'Modification utilisateur',
+      'SUPPRESSION_UTILISATEUR': 'Suppression utilisateur',
+      'CHANGEMENT_ROLE': 'Changement de role',
+      'DESACTIVATION_COMPTE': 'Desactivation compte',
+      'ACTIVATION_COMPTE': 'Activation compte',
+      'SAISIE_NOTES': 'Saisie de notes',
+      'VERROUILLAGE_EVALUATION': 'Verrouillage evaluation',
+      'DEVERROUILLAGE_EVALUATION': 'Deverrouillage evaluation',
+      'GENERATION_RAPPORT': 'Generation rapport',
+      'TRAITEMENT_ALERTE': 'Traitement alerte'
+    };
+    return labels[action] ?? action;
   }
 
   formatDateTime(date: string): string {
@@ -159,7 +178,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   private buildBarChart(): void {
-    if (!this.data) return;
+    if (!this.data?.repartitionEtudiants?.length) return;
     const repartition = this.data.repartitionEtudiants;
     const labels = repartition.map(r => r.label);
     const values = repartition.map(() => Math.round(50 + Math.random() * 45));
@@ -174,34 +193,5 @@ export class AdminDashboardComponent implements OnInit {
         barThickness: 24
       }]
     };
-  }
-
-  private loadMockData(): void {
-    this.data = {
-      totalEtudiants: 547,
-      totalEnseignants: 42,
-      totalFilieres: 8,
-      totalModules: 64,
-      alertesActives: 12,
-      tauxReussiteGlobal: 73.5,
-      moyenneGenerale: 12.4,
-      repartitionEtudiants: [
-        { label: 'Informatique', valeur: 180, pourcentage: 32.9 },
-        { label: 'Génie Civil', valeur: 120, pourcentage: 21.9 },
-        { label: 'Électronique', valeur: 95, pourcentage: 17.4 },
-        { label: 'Mécanique', valeur: 82, pourcentage: 15.0 },
-        { label: 'Mathématiques', valeur: 70, pourcentage: 12.8 }
-      ],
-      evolutionInscriptions: [],
-      dernieresAlertes: [
-        { id: 1, type: 'NOTE_BASSE', message: 'Note inférieure au seuil en Algorithmes', etudiantNom: 'Diallo Amadou', date: '2026-03-01T10:30:00' },
-        { id: 2, type: 'MOYENNE_FAIBLE', message: 'Moyenne générale inférieure à 8/20', etudiantNom: 'Traoré Fatou', date: '2026-02-28T14:15:00' },
-        { id: 3, type: 'RISQUE_ECHEC', message: 'Risque d\'échec détecté en Analyse', etudiantNom: 'Konaté Ibrahim', date: '2026-02-27T09:00:00' },
-        { id: 4, type: 'ABSENCE_NOTE', message: 'Note manquante en Base de données', etudiantNom: 'Sangaré Mariam', date: '2026-02-26T16:45:00' },
-        { id: 5, type: 'NOTE_BASSE', message: 'Note inférieure au seuil en Physique', etudiantNom: 'Coulibaly Sekou', date: '2026-02-25T11:20:00' }
-      ]
-    };
-    this.buildDoughnutChart(this.data.repartitionEtudiants);
-    this.buildBarChart();
   }
 }

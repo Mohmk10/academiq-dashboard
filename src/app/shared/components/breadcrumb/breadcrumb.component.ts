@@ -62,6 +62,7 @@ export class BreadcrumbComponent implements OnDestroy {
     let currentUrl = '';
     for (const segment of segments) {
       currentUrl += `/${segment}`;
+      if (currentUrl === '/dashboard') continue;
       const label = this.routeLabels[segment] || (isNaN(+segment) ? segment : `#${segment}`);
       this.breadcrumbs.push({ label, url: currentUrl });
     }

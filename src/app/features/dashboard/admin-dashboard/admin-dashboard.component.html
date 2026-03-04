@@ -6,11 +6,11 @@
   <div class="space-y-6 fade-in-up">
 
     <!-- SUPER_ADMIN Section -->
-    @if (isSuperAdmin && systemStats) {
+    @if (isSuperAdmin) {
       <!-- Welcome Banner -->
       <div class="relative overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white">
         <div class="relative z-10">
-          <h2 class="text-lg font-semibold">Bienvenue, Super Administrateur</h2>
+          <h2 class="text-lg font-semibold">Bienvenue, {{ userName || 'Super Administrateur' }}</h2>
           <p class="text-purple-200 text-sm mt-1">Vue d'ensemble systeme — tout est sous controle</p>
         </div>
         <div class="absolute right-6 top-1/2 -translate-y-1/2 opacity-10">
@@ -19,41 +19,52 @@
       </div>
 
       <!-- System Metrics -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-        <div class="metric-card">
-          <div class="metric-value text-purple-600">{{ systemStats.cpuUsage }}%</div>
-          <div class="metric-label">CPU</div>
-          <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-            <div class="h-1.5 rounded-full bg-purple-500" [style.width.%]="systemStats.cpuUsage"></div>
+      @if (systemStats) {
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div class="metric-card">
+            <div class="flex items-center gap-2 mb-1">
+              <i class="fas fa-users text-blue-500 text-sm"></i>
+              <div class="metric-label">Utilisateurs</div>
+            </div>
+            <div class="metric-value text-blue-600">{{ systemStats.totalUtilisateurs ?? 0 }}</div>
+          </div>
+          <div class="metric-card">
+            <div class="flex items-center gap-2 mb-1">
+              <i class="fas fa-user-graduate text-indigo-500 text-sm"></i>
+              <div class="metric-label">Etudiants</div>
+            </div>
+            <div class="metric-value text-indigo-600">{{ systemStats.totalEtudiants ?? 0 }}</div>
+          </div>
+          <div class="metric-card">
+            <div class="flex items-center gap-2 mb-1">
+              <i class="fas fa-chalkboard-user text-emerald-500 text-sm"></i>
+              <div class="metric-label">Enseignants</div>
+            </div>
+            <div class="metric-value text-emerald-600">{{ systemStats.totalEnseignants ?? 0 }}</div>
+          </div>
+          <div class="metric-card">
+            <div class="flex items-center gap-2 mb-1">
+              <i class="fas fa-user-check text-teal-500 text-sm"></i>
+              <div class="metric-label">Comptes actifs</div>
+            </div>
+            <div class="metric-value text-teal-600">{{ systemStats.utilisateursActifs ?? 0 }}</div>
+          </div>
+          <div class="metric-card">
+            <div class="flex items-center gap-2 mb-1">
+              <i class="fas fa-file-pen text-amber-500 text-sm"></i>
+              <div class="metric-label">Evaluations</div>
+            </div>
+            <div class="metric-value text-amber-600">{{ systemStats.totalEvaluations ?? 0 }}</div>
+          </div>
+          <div class="metric-card">
+            <div class="flex items-center gap-2 mb-1">
+              <i class="fas fa-triangle-exclamation text-sm" [class]="systemStats.alertesActives > 0 ? 'text-red-500' : 'text-gray-400'"></i>
+              <div class="metric-label">Alertes actives</div>
+            </div>
+            <div class="metric-value" [class]="systemStats.alertesActives > 0 ? 'text-red-600' : 'text-gray-600'">{{ systemStats.alertesActives ?? 0 }}</div>
           </div>
         </div>
-        <div class="metric-card">
-          <div class="metric-value text-blue-600">{{ systemStats.memoryUsage }}%</div>
-          <div class="metric-label">Memoire</div>
-          <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-            <div class="h-1.5 rounded-full bg-blue-500" [style.width.%]="systemStats.memoryUsage"></div>
-          </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value text-emerald-600">{{ systemStats.diskUsage }}%</div>
-          <div class="metric-label">Disque</div>
-          <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-            <div class="h-1.5 rounded-full bg-emerald-500" [style.width.%]="systemStats.diskUsage"></div>
-          </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value text-gray-900">{{ systemStats.uptime }}</div>
-          <div class="metric-label">Uptime</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value text-amber-600">{{ systemStats.activeUsers }}</div>
-          <div class="metric-label">Utilisateurs actifs</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value text-indigo-600">{{ systemStats.requestsToday }}</div>
-          <div class="metric-label">Requetes aujourd'hui</div>
-        </div>
-      </div>
+      }
 
       <!-- Recent Activity -->
       <div class="card">
@@ -64,16 +75,21 @@
           </a>
         </div>
         <div class="divide-y divide-gray-100">
-          @for (log of recentLogs; track log.date) {
+          @for (log of recentLogs; track log.id) {
             <div class="flex items-center gap-3 py-3">
               <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center shrink-0">
-                <i class="fas {{ getLogIcon(log.type) }} text-sm"></i>
+                <i class="fas {{ getLogIcon(log.action) }} text-sm"></i>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm text-gray-900 truncate">{{ log.action }}</p>
-                <p class="text-xs text-gray-400">{{ log.user }}</p>
+                <p class="text-sm text-gray-900 truncate">{{ log.details || getActionLabel(log.action) }}</p>
+                <p class="text-xs text-gray-400">{{ log.performedByName || log.performedBy }}</p>
               </div>
               <span class="text-xs text-gray-400 whitespace-nowrap">{{ formatDateTime(log.date) }}</span>
+            </div>
+          } @empty {
+            <div class="flex flex-col items-center justify-center py-8 text-gray-400">
+              <i class="fas fa-clock-rotate-left text-2xl mb-2"></i>
+              <p class="text-sm">Aucune activite recente</p>
             </div>
           }
         </div>
@@ -127,55 +143,71 @@
     </div>
 
     <!-- Charts -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="card">
-        <h3 class="section-title">Inscriptions par filiere</h3>
-        <div class="h-72">
-          <canvas baseChart
-            [data]="doughnutData"
-            [options]="doughnutOptions"
-            type="doughnut">
-          </canvas>
+    @if (data.repartitionEtudiants.length > 0) {
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card">
+          <h3 class="section-title">Inscriptions par filiere</h3>
+          <div class="h-72">
+            <canvas baseChart
+              [data]="doughnutData"
+              [options]="doughnutOptions"
+              type="doughnut">
+            </canvas>
+          </div>
         </div>
-      </div>
 
-      <div class="card">
-        <h3 class="section-title">Taux de reussite par filiere</h3>
-        <div class="h-72">
-          <canvas baseChart
-            [data]="barData"
-            [options]="barOptions"
-            type="bar">
-          </canvas>
+        <div class="card">
+          <h3 class="section-title">Taux de reussite par filiere</h3>
+          <div class="h-72">
+            <canvas baseChart
+              [data]="barData"
+              [options]="barOptions"
+              type="bar">
+            </canvas>
+          </div>
         </div>
       </div>
-    </div>
+    } @else {
+      <div class="card">
+        <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+          <i class="fas fa-chart-pie text-3xl mb-3"></i>
+          <p class="text-sm font-medium">Aucune donnee disponible</p>
+          <p class="text-xs mt-1">Les graphiques s'afficheront lorsque des filieres et etudiants seront enregistres</p>
+        </div>
+      </div>
+    }
 
     <!-- Tables -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Repartition table -->
       <div class="card">
         <h3 class="section-title">Repartition des etudiants</h3>
-        <div class="data-table-wrapper">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Filiere</th>
-                <th class="text-right">Inscrits</th>
-                <th class="text-right">%</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (row of data.repartitionEtudiants; track row.label) {
+        @if (data.repartitionEtudiants.length > 0) {
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
                 <tr>
-                  <td class="cell-primary">{{ row.label }}</td>
-                  <td class="cell-number">{{ row.valeur }}</td>
-                  <td class="cell-number" style="color: #6B7280;">{{ row.pourcentage | number:'1.1-1' }}%</td>
+                  <th>Filiere</th>
+                  <th class="text-right">Inscrits</th>
+                  <th class="text-right">%</th>
                 </tr>
-              }
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                @for (row of data.repartitionEtudiants; track row.label) {
+                  <tr>
+                    <td class="cell-primary">{{ row.label }}</td>
+                    <td class="cell-number">{{ row.valeur }}</td>
+                    <td class="cell-number" style="color: #6B7280;">{{ row.pourcentage | number:'1.1-1' }}%</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="flex flex-col items-center justify-center py-8 text-gray-400">
+            <p class="text-sm">Aucune filiere enregistree</p>
+          </div>
+        }
       </div>
 
       <!-- Alertes recentes -->
@@ -219,14 +251,18 @@
           <p class="text-xs text-gray-500 mt-1">Modules actifs</p>
         </div>
         <div class="text-center">
-          <p class="text-2xl font-bold text-gray-900">{{ data.moyenneGenerale | number:'1.1-1' }}/20</p>
+          <p class="text-2xl font-bold text-gray-900">{{ (data.moyenneGenerale | number:'1.1-1') || '-' }}/20</p>
           <p class="text-xs text-gray-500 mt-1">Moyenne generale</p>
         </div>
         <div class="text-center">
-          <p class="text-2xl font-bold"
-             [class]="data.tauxReussiteGlobal >= 70 ? 'text-emerald-600' : data.tauxReussiteGlobal >= 50 ? 'text-amber-600' : 'text-red-600'">
-            {{ data.tauxReussiteGlobal | number:'1.1-1' }}%
-          </p>
+          @if (data.tauxReussiteGlobal > 0) {
+            <p class="text-2xl font-bold"
+               [class]="data.tauxReussiteGlobal >= 70 ? 'text-emerald-600' : data.tauxReussiteGlobal >= 50 ? 'text-amber-600' : 'text-red-600'">
+              {{ data.tauxReussiteGlobal | number:'1.1-1' }}%
+            </p>
+          } @else {
+            <p class="text-2xl font-bold text-gray-400">-</p>
+          }
           <p class="text-xs text-gray-500 mt-1">Taux de reussite</p>
         </div>
         <div class="text-center">

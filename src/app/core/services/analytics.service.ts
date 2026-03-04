@@ -19,6 +19,14 @@ export class AnalyticsService {
 
   constructor(private api: ApiService, private mock: MockDataService) {}
 
+  getSystemStats(): Observable<ApiResponse<any>> {
+    return this.api.get<any>('analytics/system-stats');
+  }
+
+  getRecentAuditLogs(limit: number = 10): Observable<ApiResponse<any[]>> {
+    return this.api.get<any[]>('analytics/audit-logs/recent', { limit });
+  }
+
   getDashboardAdmin(): Observable<ApiResponse<DashboardAdminDTO>> {
     if (this.mock.isDevMode()) {
       return of(this.mock.wrap(this.mock.dashboardAdmin)).pipe(delay(300));
