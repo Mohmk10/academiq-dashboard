@@ -46,6 +46,7 @@ export default class TeacherListComponent implements OnInit, OnDestroy {
   get canCreate(): boolean { return this.authService.hasAnyRole(['ADMIN']); }
   get canEdit(): boolean { return this.authService.hasAnyRole(['ADMIN']); }
   get canDelete(): boolean { return this.authService.hasAnyRole(['ADMIN']); }
+  get isReadOnly(): boolean { return this.authService.isExactRole('RESPONSABLE_PEDAGOGIQUE'); }
 
   ngOnInit(): void {
     this.loadTeachers();

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -18,6 +18,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   template: `
     <div class="space-y-6">
       <!-- Formulaire d'affectation -->
+      @if (canCreate) {
       <div class="bg-gray-50 rounded-xl p-5 border border-gray-200">
         <h3 class="text-sm font-semibold text-gray-700 mb-4">Affecter un enseignant à un module</h3>
         <form [formGroup]="affectationForm" (ngSubmit)="onSubmit()" class="flex flex-col sm:flex-row gap-4 items-end">
@@ -39,6 +40,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
           </button>
         </form>
       </div>
+      }
 
       <!-- Liste des affectations -->
       @if (isLoading) {
@@ -63,11 +65,13 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
                 <tr>
                   <td class="cell-primary">{{ row.enseignantNom }}</td>
                   <td>{{ row.moduleNom }}</td>
-                  <td class="cell-actions">
-                    <button class="action-menu-btn" style="color: #DC2626;" (click)="deleteAffectation(row)">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </td>
+                  @if (canDelete) {
+                    <td class="cell-actions">
+                      <button class="action-menu-btn" style="color: #DC2626;" (click)="deleteAffectation(row)">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  }
                 </tr>
               }
             </tbody>
@@ -78,6 +82,9 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   `
 })
 export class AffectationTabComponent implements OnInit {
+  @Input() canCreate = false;
+  @Input() canDelete = false;
+
   modules: ModuleResponse[] = [];
   affectations: AffectationResponse[] = [];
   isLoading = true;

@@ -128,14 +128,16 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
                   <td class="cell-secondary">{{ formatDate(row.createdAt) }}</td>
                   <td><span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getStatutBadge(row.statut)">{{ row.statut }}</span></td>
                   <td class="cell-actions">
-                    <div class="flex gap-1">
-                      @if (row.statut === 'ACTIVE') {
-                        <button class="btn-secondary !py-1 !px-3 !text-xs" (click)="traiterAlerte(row); $event.stopPropagation()">Traiter</button>
-                        <button class="btn-secondary !py-1 !px-3 !text-xs !text-gray-400 !border-gray-200" (click)="ignorerAlerte(row); $event.stopPropagation()">Ignorer</button>
-                      } @else if (row.statut === 'TRAITEE') {
-                        <button class="btn-secondary !py-1 !px-3 !text-xs !text-emerald-600 !border-emerald-200" (click)="resoudreAlerte(row); $event.stopPropagation()">Résoudre</button>
-                      }
-                    </div>
+                    @if (canTraiterAlerte) {
+                      <div class="flex gap-1">
+                        @if (row.statut === 'ACTIVE') {
+                          <button class="btn-secondary !py-1 !px-3 !text-xs" (click)="traiterAlerte(row); $event.stopPropagation()">Traiter</button>
+                          <button class="btn-secondary !py-1 !px-3 !text-xs !text-gray-400 !border-gray-200" (click)="ignorerAlerte(row); $event.stopPropagation()">Ignorer</button>
+                        } @else if (row.statut === 'TRAITEE') {
+                          <button class="btn-secondary !py-1 !px-3 !text-xs !text-emerald-600 !border-emerald-200" (click)="resoudreAlerte(row); $event.stopPropagation()">Résoudre</button>
+                        }
+                      </div>
+                    }
                   </td>
                 </tr>
               }
@@ -177,6 +179,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
   pageIndex = 0;
   isLoading = true;
   isAdmin = false;
+  canTraiterAlerte = false;
 
   stats = { critiques: 0, attention: 0, traitees: 0, total: 0 };
 
@@ -194,6 +197,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) {
     this.isAdmin = this.authService.hasRole('ADMIN');
+    this.canTraiterAlerte = this.authService.hasAnyRole(['ADMIN', 'RESPONSABLE_PEDAGOGIQUE']);
   }
 
   ngOnInit(): void {

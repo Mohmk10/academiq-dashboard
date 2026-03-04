@@ -63,6 +63,7 @@ export class MockDataService {
   getUserByRole(role: Role): { id: number; nom: string; prenom: string; email: string; role: Role; telephone: string; actif: boolean } {
     switch (role) {
       case 'SUPER_ADMIN': return this.superAdminUser;
+      case 'RESPONSABLE_PEDAGOGIQUE': return this.responsablePedagogiqueUser;
       case 'ENSEIGNANT': return this.enseignantUser;
       case 'ETUDIANT': return this.etudiantUser;
       default: return this.adminUser;
@@ -97,6 +98,11 @@ export class MockDataService {
   adminUser = {
     id: 1, nom: 'Diagne', prenom: 'Abdou', email: 'admin@academiq.sn',
     role: 'ADMIN' as Role, telephone: '+221781234567', actif: true
+  };
+
+  responsablePedagogiqueUser = {
+    id: 50, nom: 'Ba', prenom: 'Fatou', email: 'fatou.ba@academiq.sn',
+    role: 'RESPONSABLE_PEDAGOGIQUE' as Role, telephone: '+221776543210', actif: true
   };
 
   enseignantUser = {
@@ -204,6 +210,14 @@ export class MockDataService {
     };
   }
 
+  getResponsablePedagogiqueDetail(): UtilisateurDetail {
+    return {
+      id: 50, nom: 'Ba', prenom: 'Fatou', email: 'fatou.ba@academiq.sn',
+      role: 'RESPONSABLE_PEDAGOGIQUE', telephone: '+221776543210', actif: true, createdAt: '2024-03-01',
+      admin: { id: 50, fonction: 'Responsable pedagogique', departement: 'Sciences & Technologies', niveau: 'Responsable' }
+    };
+  }
+
   getAdminDetail(): UtilisateurDetail {
     return {
       id: 1, nom: 'Diagne', prenom: 'Abdou', email: 'admin@academiq.sn',
@@ -214,6 +228,7 @@ export class MockDataService {
 
   getUserDetail(id: number): UtilisateurDetail {
     if (id === 100) return this.getSuperAdminDetail();
+    if (id === 50) return this.getResponsablePedagogiqueDetail();
     if (id === 1) return this.getAdminDetail();
     if (this.enseignants.find(e => e.id === id)) return this.getEnseignantDetail(id);
     return this.getEtudiantDetail(id);
@@ -233,6 +248,7 @@ export class MockDataService {
     return [
       { id: 100, nom: 'Kouyate', prenom: 'Makan', email: 'superadmin@academiq.sn', role: 'SUPER_ADMIN', actif: true },
       { id: 1, nom: 'Diagne', prenom: 'Abdou', email: 'admin@academiq.sn', role: 'ADMIN', actif: true },
+      { id: 50, nom: 'Ba', prenom: 'Fatou', email: 'fatou.ba@academiq.sn', role: 'RESPONSABLE_PEDAGOGIQUE', actif: true },
       ...this.enseignants,
       ...this.etudiants
     ];
@@ -533,5 +549,5 @@ export class MockDataService {
   // USER STATS (settings page)
   // ============================================================
 
-  userStats = { superAdmins: 1, admins: 3, enseignants: 42, etudiants: 285, total: 348 };
+  userStats = { superAdmins: 1, admins: 2, responsables: 1, enseignants: 8, etudiants: 15, comptesInactifs: 3 };
 }

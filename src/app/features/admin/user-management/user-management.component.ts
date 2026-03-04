@@ -5,6 +5,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { MockDataService } from '../../../core/services/mock-data.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Role, UtilisateurSummary } from '../../../core/models/user.model';
 import { ChangeRoleDialogComponent } from './change-role-dialog.component';
@@ -40,11 +41,17 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  private currentUserId: number | null = null;
+
   constructor(
     private mock: MockDataService,
+    private authService: AuthService,
     private dialog: MatDialog,
     private notification: NotificationService
-  ) {}
+  ) {
+    const currentUser = this.mock.getUserByRole(this.authService.getCurrentUserRole() ?? 'ADMIN');
+    this.currentUserId = currentUser?.id ?? null;
+  }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -193,6 +200,10 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
       this.notification.error('Le role du Super Administrateur ne peut pas etre modifie');
       return;
     }
+    if (user.id === this.currentUserId) {
+      this.notification.error('Vous ne pouvez pas modifier votre propre role');
+      return;
+    }
     const ref = this.dialog.open(ChangeRoleDialogComponent, {
       width: '450px', maxWidth: '95vw',
       data: { userName: `${user.prenom} ${user.nom}`, currentRole: user.role }
@@ -208,6 +219,10 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
 
   toggleActivation(user: UtilisateurSummary): void {
     if (user.role === 'SUPER_ADMIN') return;
+    if (user.id === this.currentUserId) {
+      this.notification.error('Vous ne pouvez pas desactiver votre propre compte');
+      return;
+    }
     const action = user.actif ? 'desactiver' : 'activer';
     const ref = this.dialog.open(ConfirmDialogComponent, {
       width: '400px', maxWidth: '95vw',
@@ -224,6 +239,10 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
 
   deleteUser(user: UtilisateurSummary): void {
     if (user.role === 'SUPER_ADMIN') return;
+    if (user.id === this.currentUserId) {
+      this.notification.error('Vous ne pouvez pas supprimer votre propre compte');
+      return;
+    }
     const ref = this.dialog.open(ConfirmDialogComponent, {
       width: '400px', maxWidth: '95vw',
       data: {

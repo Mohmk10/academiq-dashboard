@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -16,6 +16,7 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
   template: `
     <div class="space-y-6">
       <!-- Formulaire d'inscription -->
+      @if (canCreate) {
       <div class="bg-gray-50 rounded-xl p-5 border border-gray-200">
         <h3 class="text-sm font-semibold text-gray-700 mb-4">Inscrire un étudiant</h3>
         <form [formGroup]="inscriptionForm" (ngSubmit)="onSubmit()" class="flex flex-col sm:flex-row gap-4 items-end">
@@ -37,6 +38,7 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
           </button>
         </form>
       </div>
+      }
 
       <!-- Liste des inscriptions -->
       <div>
@@ -117,6 +119,8 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
   `
 })
 export class InscriptionTabComponent implements OnInit {
+  @Input() canCreate = false;
+
   promotions: PromotionResponse[] = [];
   inscriptions: InscriptionResponse[] = [];
   totalElements = 0;

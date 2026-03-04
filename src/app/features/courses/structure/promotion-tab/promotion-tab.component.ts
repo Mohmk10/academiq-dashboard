@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
@@ -29,9 +29,11 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
             }
           </select>
         </div>
-        <button class="btn-primary" (click)="openCreate()">
-          <i class="fas fa-plus mr-2"></i> Nouvelle promotion
-        </button>
+        @if (canCreate) {
+          <button class="btn-primary" (click)="openCreate()">
+            <i class="fas fa-plus mr-2"></i> Nouvelle promotion
+          </button>
+        }
       </div>
 
       @if (isLoading) {
@@ -66,13 +68,19 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
                       {{ row.actif ? 'Active' : 'Inactive' }}
                     </span>
                   </td>
-                  <td class="cell-actions">
-                    <button class="action-menu-btn" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()"><i class="fas fa-ellipsis-vertical"></i></button>
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item (click)="openEdit(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Modifier</button>
-                      <button mat-menu-item (click)="deletePromotion(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
-                    </mat-menu>
-                  </td>
+                  @if (canEdit || canDelete) {
+                    <td class="cell-actions">
+                      <button class="action-menu-btn" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()"><i class="fas fa-ellipsis-vertical"></i></button>
+                      <mat-menu #menu="matMenu">
+                        @if (canEdit) {
+                          <button mat-menu-item (click)="openEdit(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Modifier</button>
+                        }
+                        @if (canDelete) {
+                          <button mat-menu-item (click)="deletePromotion(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                        }
+                      </mat-menu>
+                    </td>
+                  }
                 </tr>
               }
             </tbody>
@@ -83,6 +91,10 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   `
 })
 export class PromotionTabComponent implements OnInit {
+  @Input() canCreate = false;
+  @Input() canEdit = false;
+  @Input() canDelete = false;
+
   promotions: PromotionResponse[] = [];
   filteredPromotions: PromotionResponse[] = [];
   filieres: FiliereResponse[] = [];

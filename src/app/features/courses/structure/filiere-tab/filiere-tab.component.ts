@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -15,11 +15,13 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   imports: [CommonModule, MatMenuModule, MatProgressSpinnerModule, MatDialogModule],
   template: `
     <div class="space-y-4">
-      <div class="flex justify-end">
-        <button class="btn-primary" (click)="openCreate()">
-          <i class="fas fa-plus mr-2"></i> Nouvelle filière
-        </button>
-      </div>
+      @if (canCreate) {
+        <div class="flex justify-end">
+          <button class="btn-primary" (click)="openCreate()">
+            <i class="fas fa-plus mr-2"></i> Nouvelle filière
+          </button>
+        </div>
+      }
 
       @if (isLoading) {
         <div class="flex items-center justify-center h-48"><mat-spinner diameter="40"></mat-spinner></div>
@@ -42,13 +44,19 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
                   </div>
                   <h3 class="font-semibold text-gray-900 mt-2">{{ filiere.nom }}</h3>
                 </div>
-                <button class="action-menu-btn !-mt-1 !-mr-2" [matMenuTriggerFor]="menu">
-                  <i class="fas fa-ellipsis-vertical"></i>
-                </button>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="openEdit(filiere)"><i class="fas fa-pen mr-3 text-gray-400"></i> Modifier</button>
-                  <button mat-menu-item (click)="deleteFiliere(filiere)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
-                </mat-menu>
+                @if (canEdit || canDelete) {
+                  <button class="action-menu-btn !-mt-1 !-mr-2" [matMenuTriggerFor]="menu">
+                    <i class="fas fa-ellipsis-vertical"></i>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    @if (canEdit) {
+                      <button mat-menu-item (click)="openEdit(filiere)"><i class="fas fa-pen mr-3 text-gray-400"></i> Modifier</button>
+                    }
+                    @if (canDelete) {
+                      <button mat-menu-item (click)="deleteFiliere(filiere)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                    }
+                  </mat-menu>
+                }
               </div>
               @if (filiere.departement) {
                 <p class="text-sm text-gray-500 mt-2"><i class="fas fa-building mr-1"></i> {{ filiere.departement }}</p>
@@ -77,6 +85,10 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   `
 })
 export class FiliereTabComponent implements OnInit {
+  @Input() canCreate = false;
+  @Input() canEdit = false;
+  @Input() canDelete = false;
+
   filieres: FiliereResponse[] = [];
   isLoading = true;
 
