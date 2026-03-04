@@ -2,15 +2,13 @@ import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FiliereResponse } from '../../../../core/models/structure.model';
 
 @Component({
   selector: 'app-filiere-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule],
   template: `
     <div class="dialog-container">
       <div class="dialog-header">
@@ -20,23 +18,23 @@ import { FiliereResponse } from '../../../../core/models/structure.model';
 
       <form [formGroup]="form" class="dialog-content">
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Nom</mat-label>
-            <input matInput formControlName="nom" placeholder="Ex: Informatique">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Code</mat-label>
-            <input matInput formControlName="code" placeholder="Ex: INFO">
-          </mat-form-field>
+          <div class="field">
+            <label class="field-label">Nom <span class="required">*</span></label>
+            <input class="field-input" formControlName="nom" placeholder="Ex: Informatique">
+          </div>
+          <div class="field">
+            <label class="field-label">Code <span class="required">*</span></label>
+            <input class="field-input" formControlName="code" placeholder="Ex: INFO">
+          </div>
         </div>
-        <mat-form-field appearance="outline">
-          <mat-label>Département</mat-label>
-          <input matInput formControlName="departement" placeholder="Ex: Sciences et Technologies">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description" rows="3" placeholder="Description de la filière"></textarea>
-        </mat-form-field>
+        <div class="field">
+          <label class="field-label">Département</label>
+          <input class="field-input" formControlName="departement" placeholder="Ex: Sciences et Technologies">
+        </div>
+        <div class="field">
+          <label class="field-label">Description</label>
+          <textarea class="field-input" formControlName="description" rows="3" placeholder="Description de la filière"></textarea>
+        </div>
       </form>
 
       <div class="dialog-actions">

@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -18,8 +15,8 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   selector: 'app-affectation-tab',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatTableModule, MatFormFieldModule, MatInputModule,
-    MatSelectModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule
+    CommonModule, ReactiveFormsModule, MatTableModule,
+    MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
     <div class="space-y-6">
@@ -27,18 +24,19 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
       <div class="bg-gray-50 rounded-xl p-5 border border-gray-200">
         <h3 class="text-sm font-semibold text-gray-700 mb-4">Affecter un enseignant à un module</h3>
         <form [formGroup]="affectationForm" (ngSubmit)="onSubmit()" class="flex flex-col sm:flex-row gap-4 items-end">
-          <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
-            <mat-label>ID Enseignant</mat-label>
-            <input matInput type="number" formControlName="enseignantId" placeholder="Ex: 10">
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
-            <mat-label>Module</mat-label>
-            <mat-select formControlName="moduleId">
+          <div class="field !mb-0 flex-1">
+            <label class="field-label">ID Enseignant</label>
+            <input class="field-input" type="number" formControlName="enseignantId" placeholder="Ex: 10">
+          </div>
+          <div class="field !mb-0 flex-1">
+            <label class="field-label">Module</label>
+            <select class="field-input" formControlName="moduleId">
+              <option [ngValue]="null" disabled>Sélectionner</option>
               @for (m of modules; track m.id) {
-                <mat-option [value]="m.id">{{ m.code }} — {{ m.nom }}</mat-option>
+                <option [ngValue]="m.id">{{ m.code }} — {{ m.nom }}</option>
               }
-            </mat-select>
-          </mat-form-field>
+            </select>
+          </div>
           <button mat-raised-button color="primary" type="submit" [disabled]="affectationForm.invalid || isSubmitting" class="sm:self-center">
             <i class="fas fa-link mr-2"></i> Affecter
           </button>

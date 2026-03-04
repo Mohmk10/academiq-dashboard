@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { StructureService } from '../../../../core/services/structure.service';
@@ -17,7 +14,7 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule,
-    MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatProgressSpinnerModule
+    MatButtonModule, MatProgressSpinnerModule
   ],
   template: `
     <div class="space-y-6">
@@ -25,18 +22,19 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
       <div class="bg-gray-50 rounded-xl p-5 border border-gray-200">
         <h3 class="text-sm font-semibold text-gray-700 mb-4">Inscrire un étudiant</h3>
         <form [formGroup]="inscriptionForm" (ngSubmit)="onSubmit()" class="flex flex-col sm:flex-row gap-4 items-end">
-          <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
-            <mat-label>ID Étudiant</mat-label>
-            <input matInput type="number" formControlName="etudiantId" placeholder="Ex: 1">
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
-            <mat-label>Promotion</mat-label>
-            <mat-select formControlName="promotionId">
+          <div class="field !mb-0 flex-1">
+            <label class="field-label">ID Étudiant</label>
+            <input class="field-input" type="number" formControlName="etudiantId" placeholder="Ex: 1">
+          </div>
+          <div class="field !mb-0 flex-1">
+            <label class="field-label">Promotion</label>
+            <select class="field-input" formControlName="promotionId">
+              <option [ngValue]="null" disabled>Sélectionner</option>
               @for (p of promotions; track p.id) {
-                <mat-option [value]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</mat-option>
+                <option [ngValue]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</option>
               }
-            </mat-select>
-          </mat-form-field>
+            </select>
+          </div>
           <button mat-raised-button color="primary" type="submit" [disabled]="inscriptionForm.invalid || isSubmitting" class="sm:self-center">
             <i class="fas fa-user-plus mr-2"></i> Inscrire
           </button>
@@ -46,14 +44,15 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
       <!-- Liste des inscriptions -->
       <div>
         <div class="flex items-center gap-4 mb-4">
-          <mat-form-field appearance="outline" class="w-64" subscriptSizing="dynamic">
-            <mat-label>Promotion</mat-label>
-            <mat-select [formControl]="promotionFilter" (selectionChange)="loadInscriptions()">
+          <div class="field !mb-0 w-64">
+            <label class="field-label">Promotion</label>
+            <select class="field-input" [formControl]="promotionFilter" (change)="loadInscriptions()">
+              <option [ngValue]="null" disabled>Sélectionner</option>
               @for (p of promotions; track p.id) {
-                <mat-option [value]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</mat-option>
+                <option [ngValue]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</option>
               }
-            </mat-select>
-          </mat-form-field>
+            </select>
+          </div>
         </div>
 
         @if (isLoading) {

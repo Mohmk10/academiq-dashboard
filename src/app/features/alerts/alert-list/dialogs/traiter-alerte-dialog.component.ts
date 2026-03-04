@@ -2,15 +2,13 @@ import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { AlerteResponse } from '../../../../core/models/alerte.model';
 
 @Component({
   selector: 'app-traiter-alerte-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule],
   template: `
     <div class="dialog-container">
       <div class="dialog-header">
@@ -33,10 +31,10 @@ import { AlerteResponse } from '../../../../core/models/alerte.model';
             </div>
           }
         </div>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Commentaire de traitement</mat-label>
-          <textarea matInput [formControl]="commentaire" rows="3" placeholder="Décrivez les actions entreprises..."></textarea>
-        </mat-form-field>
+        <div class="field">
+          <label class="field-label">Commentaire de traitement <span class="required">*</span></label>
+          <textarea class="field-input" [formControl]="commentaire" rows="3" placeholder="Décrivez les actions entreprises..."></textarea>
+        </div>
       </div>
 
       <div class="dialog-actions">

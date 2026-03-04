@@ -42,32 +42,36 @@
       </div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Adresse email</mat-label>
-          <mat-icon matPrefix class="mr-2 text-gray-400">email</mat-icon>
-          <input matInput type="email" formControlName="email" placeholder="exemple@academiq.com" autocomplete="email">
+        <div class="field">
+          <label class="field-label">Adresse email <span class="required">*</span></label>
+          <div class="field-with-icon">
+            <i class="fas fa-envelope field-icon-left"></i>
+            <input class="field-input" type="email" formControlName="email" placeholder="exemple@academiq.com" autocomplete="email">
+          </div>
           @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
-            <mat-error>L'adresse email est requise</mat-error>
+            <div class="field-error"><i class="fas fa-exclamation-circle"></i> L'adresse email est requise</div>
           }
           @if (loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched) {
-            <mat-error>Veuillez entrer une adresse email valide</mat-error>
+            <div class="field-error"><i class="fas fa-exclamation-circle"></i> Veuillez entrer une adresse email valide</div>
           }
-        </mat-form-field>
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Mot de passe</mat-label>
-          <mat-icon matPrefix class="mr-2 text-gray-400">lock</mat-icon>
-          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="motDePasse" placeholder="Votre mot de passe" autocomplete="current-password">
-          <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
-            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
+        <div class="field">
+          <label class="field-label">Mot de passe <span class="required">*</span></label>
+          <div class="field-with-icon">
+            <i class="fas fa-lock field-icon-left"></i>
+            <input class="field-input" [type]="hidePassword ? 'password' : 'text'" formControlName="motDePasse" placeholder="Votre mot de passe" autocomplete="current-password">
+            <button type="button" class="field-icon-right" (click)="togglePasswordVisibility()">
+              <i class="fas" [class.fa-eye]="hidePassword" [class.fa-eye-slash]="!hidePassword"></i>
+            </button>
+          </div>
           @if (loginForm.get('motDePasse')?.hasError('required') && loginForm.get('motDePasse')?.touched) {
-            <mat-error>Le mot de passe est requis</mat-error>
+            <div class="field-error"><i class="fas fa-exclamation-circle"></i> Le mot de passe est requis</div>
           }
           @if (loginForm.get('motDePasse')?.hasError('minlength') && loginForm.get('motDePasse')?.touched) {
-            <mat-error>Le mot de passe doit contenir au moins 8 caracteres</mat-error>
+            <div class="field-error"><i class="fas fa-exclamation-circle"></i> Le mot de passe doit contenir au moins 8 caracteres</div>
           }
-        </mat-form-field>
+        </div>
 
         <div class="flex items-center justify-between">
           <mat-checkbox formControlName="rememberMe" color="primary">

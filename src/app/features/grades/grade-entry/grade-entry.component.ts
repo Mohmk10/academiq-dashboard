@@ -4,8 +4,6 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,7 +22,7 @@ interface GradeRow extends NotePrepopuleeDTO {
   standalone: true,
   imports: [
     CommonModule, FormsModule, RouterLink, MatTableModule, MatButtonModule,
-    MatInputModule, MatFormFieldModule, MatCheckboxModule, MatProgressSpinnerModule, MatIconModule
+    MatCheckboxModule, MatProgressSpinnerModule, MatIconModule
   ],
   template: `
     <div class="space-y-6 fade-in-up">

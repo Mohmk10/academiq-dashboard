@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -19,21 +17,21 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   selector: 'app-promotion-tab',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatTableModule, MatFormFieldModule, MatSelectModule,
+    CommonModule, ReactiveFormsModule, MatTableModule,
     MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
     <div class="space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <mat-form-field appearance="outline" class="filter-field w-full sm:w-64" subscriptSizing="dynamic">
-          <mat-label>Filtrer par filière</mat-label>
-          <mat-select [formControl]="filiereFilter">
-            <mat-option [value]="null">Toutes</mat-option>
+        <div class="field !mb-0 w-full sm:w-64">
+          <label class="field-label">Filtrer par filière</label>
+          <select class="field-input" [formControl]="filiereFilter">
+            <option [ngValue]="null">Toutes</option>
             @for (f of filieres; track f.id) {
-              <mat-option [value]="f.id">{{ f.nom }}</mat-option>
+              <option [ngValue]="f.id">{{ f.nom }}</option>
             }
-          </mat-select>
-        </mat-form-field>
+          </select>
+        </div>
         <button class="btn-primary" (click)="openCreate()">
           <i class="fas fa-plus mr-2"></i> Nouvelle promotion
         </button>

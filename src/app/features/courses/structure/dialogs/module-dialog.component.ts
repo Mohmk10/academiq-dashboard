@@ -2,9 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { StructureService } from '../../../../core/services/structure.service';
 import { UeResponse, ModuleResponse } from '../../../../core/models/structure.model';
@@ -12,7 +9,7 @@ import { UeResponse, ModuleResponse } from '../../../../core/models/structure.mo
 @Component({
   selector: 'app-module-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule],
   template: `
     <div class="dialog-container">
       <div class="dialog-header">
@@ -22,32 +19,33 @@ import { UeResponse, ModuleResponse } from '../../../../core/models/structure.mo
 
       <form [formGroup]="form" class="dialog-content">
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Nom</mat-label>
-            <input matInput formControlName="nom" placeholder="Ex: Algorithmique">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Code</mat-label>
-            <input matInput formControlName="code" placeholder="Ex: INFO-101">
-          </mat-form-field>
+          <div class="field">
+            <label class="field-label">Nom <span class="required">*</span></label>
+            <input class="field-input" formControlName="nom" placeholder="Ex: Algorithmique">
+          </div>
+          <div class="field">
+            <label class="field-label">Code <span class="required">*</span></label>
+            <input class="field-input" formControlName="code" placeholder="Ex: INFO-101">
+          </div>
         </div>
-        <mat-form-field appearance="outline">
-          <mat-label>Unité d'enseignement (UE)</mat-label>
-          <mat-select formControlName="ueId">
+        <div class="field">
+          <label class="field-label">Unité d'enseignement (UE) <span class="required">*</span></label>
+          <select class="field-input" formControlName="ueId">
+            <option [ngValue]="null" disabled>Sélectionner...</option>
             @for (ue of ues; track ue.id) {
-              <mat-option [value]="ue.id">{{ ue.code }} — {{ ue.nom }}</mat-option>
+              <option [ngValue]="ue.id">{{ ue.code }} — {{ ue.nom }}</option>
             }
-          </mat-select>
-        </mat-form-field>
+          </select>
+        </div>
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Coefficient</mat-label>
-            <input matInput type="number" formControlName="coefficient" placeholder="Ex: 3">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Volume horaire</mat-label>
-            <input matInput type="number" formControlName="volumeHoraire" placeholder="Ex: 48">
-          </mat-form-field>
+          <div class="field">
+            <label class="field-label">Coefficient <span class="required">*</span></label>
+            <input class="field-input" type="number" formControlName="coefficient" placeholder="Ex: 3">
+          </div>
+          <div class="field">
+            <label class="field-label">Volume horaire</label>
+            <input class="field-input" type="number" formControlName="volumeHoraire" placeholder="Ex: 48">
+          </div>
         </div>
       </form>
 

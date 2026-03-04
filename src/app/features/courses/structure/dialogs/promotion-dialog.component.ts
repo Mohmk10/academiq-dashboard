@@ -2,9 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { StructureService } from '../../../../core/services/structure.service';
 import { FiliereResponse, NiveauResponse, PromotionResponse } from '../../../../core/models/structure.model';
@@ -12,7 +9,7 @@ import { FiliereResponse, NiveauResponse, PromotionResponse } from '../../../../
 @Component({
   selector: 'app-promotion-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule],
   template: `
     <div class="dialog-container">
       <div class="dialog-header">
@@ -22,36 +19,38 @@ import { FiliereResponse, NiveauResponse, PromotionResponse } from '../../../../
 
       <form [formGroup]="form" class="dialog-content">
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Filière</mat-label>
-            <mat-select formControlName="filiereId" (selectionChange)="onFiliereChange($event.value)">
+          <div class="field">
+            <label class="field-label">Filière <span class="required">*</span></label>
+            <select class="field-input" formControlName="filiereId" (change)="onFiliereChange(form.get('filiereId')!.value)">
+              <option [ngValue]="null" disabled>Sélectionner...</option>
               @for (f of filieres; track f.id) {
-                <mat-option [value]="f.id">{{ f.nom }}</mat-option>
+                <option [ngValue]="f.id">{{ f.nom }}</option>
               }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Niveau</mat-label>
-            <mat-select formControlName="niveauId">
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Niveau <span class="required">*</span></label>
+            <select class="field-input" formControlName="niveauId">
+              <option [ngValue]="null" disabled>Sélectionner...</option>
               @for (n of niveaux; track n.id) {
-                <mat-option [value]="n.id">{{ n.nom }}</mat-option>
+                <option [ngValue]="n.id">{{ n.nom }}</option>
               }
-            </mat-select>
-          </mat-form-field>
+            </select>
+          </div>
         </div>
-        <mat-form-field appearance="outline">
-          <mat-label>Année universitaire</mat-label>
-          <input matInput formControlName="anneeUniversitaire" placeholder="Ex: 2024-2025">
-        </mat-form-field>
+        <div class="field">
+          <label class="field-label">Année universitaire <span class="required">*</span></label>
+          <input class="field-input" formControlName="anneeUniversitaire" placeholder="Ex: 2024-2025">
+        </div>
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Date début</mat-label>
-            <input matInput type="date" formControlName="dateDebut">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Date fin</mat-label>
-            <input matInput type="date" formControlName="dateFin">
-          </mat-form-field>
+          <div class="field">
+            <label class="field-label">Date début</label>
+            <input class="field-input" type="date" formControlName="dateDebut">
+          </div>
+          <div class="field">
+            <label class="field-label">Date fin</label>
+            <input class="field-input" type="date" formControlName="dateFin">
+          </div>
         </div>
       </form>
 

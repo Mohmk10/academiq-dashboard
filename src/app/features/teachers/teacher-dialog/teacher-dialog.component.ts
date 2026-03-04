@@ -2,9 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { UtilisateurDetail } from '../../../core/models/user.model';
 
@@ -16,7 +13,7 @@ export interface TeacherDialogData {
 @Component({
   selector: 'app-teacher-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule],
   template: `
     <div class="dialog-container">
       <div class="dialog-header">
@@ -26,66 +23,62 @@ export interface TeacherDialogData {
 
       <form [formGroup]="form" class="dialog-content">
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Nom</mat-label>
-            <input matInput formControlName="nom" placeholder="Ex: Traoré">
-            <mat-error>Requis</mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Prénom</mat-label>
-            <input matInput formControlName="prenom" placeholder="Ex: Ousmane">
-            <mat-error>Requis</mat-error>
-          </mat-form-field>
+          <div class="field">
+            <label class="field-label">Nom <span class="required">*</span></label>
+            <input class="field-input" formControlName="nom" placeholder="Ex: Traoré">
+          </div>
+          <div class="field">
+            <label class="field-label">Prénom <span class="required">*</span></label>
+            <input class="field-input" formControlName="prenom" placeholder="Ex: Ousmane">
+          </div>
         </div>
 
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input matInput type="email" formControlName="email" placeholder="Ex: enseignant@academiq.sn">
-            <mat-error>Email invalide</mat-error>
-          </mat-form-field>
+          <div class="field">
+            <label class="field-label">Email <span class="required">*</span></label>
+            <input class="field-input" type="email" formControlName="email" placeholder="Ex: enseignant@academiq.sn">
+          </div>
           @if (data.mode === 'create') {
-            <mat-form-field appearance="outline">
-              <mat-label>Mot de passe</mat-label>
-              <input matInput type="password" formControlName="motDePasse" placeholder="Minimum 8 caractères">
-              <mat-error>Min 8 caractères</mat-error>
-            </mat-form-field>
+            <div class="field">
+              <label class="field-label">Mot de passe <span class="required">*</span></label>
+              <input class="field-input" type="password" formControlName="motDePasse" placeholder="Minimum 8 caractères">
+            </div>
           }
         </div>
 
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Spécialité</mat-label>
-            <input matInput formControlName="specialite" placeholder="Ex: Informatique">
-            <mat-error>Requis</mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Grade</mat-label>
-            <mat-select formControlName="grade">
-              <mat-option value="Professeur">Professeur</mat-option>
-              <mat-option value="Maître de conférences">Maître de conférences</mat-option>
-              <mat-option value="Docteur">Docteur</mat-option>
-              <mat-option value="Assistant">Assistant</mat-option>
-              <mat-option value="Vacataire">Vacataire</mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div class="field">
+            <label class="field-label">Spécialité <span class="required">*</span></label>
+            <input class="field-input" formControlName="specialite" placeholder="Ex: Informatique">
+          </div>
+          <div class="field">
+            <label class="field-label">Grade</label>
+            <select class="field-input" formControlName="grade">
+              <option value="" disabled>Sélectionner...</option>
+              <option value="Professeur">Professeur</option>
+              <option value="Maître de conférences">Maître de conférences</option>
+              <option value="Docteur">Docteur</option>
+              <option value="Assistant">Assistant</option>
+              <option value="Vacataire">Vacataire</option>
+            </select>
+          </div>
         </div>
 
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Département</mat-label>
-            <input matInput formControlName="departement" placeholder="Ex: Sciences et Technologies">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Bureau</mat-label>
-            <input matInput formControlName="bureau" placeholder="Ex: B-204">
-          </mat-form-field>
+          <div class="field">
+            <label class="field-label">Département</label>
+            <input class="field-input" formControlName="departement" placeholder="Ex: Sciences et Technologies">
+          </div>
+          <div class="field">
+            <label class="field-label">Bureau</label>
+            <input class="field-input" formControlName="bureau" placeholder="Ex: B-204">
+          </div>
         </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Téléphone</mat-label>
-          <input matInput formControlName="telephone" placeholder="Ex: +221 77 000 00 00">
-        </mat-form-field>
+        <div class="field">
+          <label class="field-label">Téléphone</label>
+          <input class="field-input" formControlName="telephone" placeholder="Ex: +221 77 000 00 00">
+        </div>
       </form>
 
       <div class="dialog-actions">

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -14,7 +12,7 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   template: `
     <div class="space-y-6 max-w-3xl mx-auto fade-in-up">
       @if (isLoading) {
@@ -50,31 +48,31 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
             </div>
           } @else {
             <form [formGroup]="profileForm">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Email</mat-label>
-                  <input matInput formControlName="email" [readonly]="true" class="!text-gray-400">
-                </mat-form-field>
-                <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Téléphone</mat-label>
-                  <input matInput formControlName="telephone">
-                </mat-form-field>
-                <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Nom</mat-label>
-                  <input matInput formControlName="nom">
-                </mat-form-field>
-                <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Prénom</mat-label>
-                  <input matInput formControlName="prenom">
-                </mat-form-field>
-                <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Date de naissance</mat-label>
-                  <input matInput type="date" formControlName="dateNaissance">
-                </mat-form-field>
-                <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Adresse</mat-label>
-                  <input matInput formControlName="adresse">
-                </mat-form-field>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+                <div class="field">
+                  <label class="field-label">Email</label>
+                  <input class="field-input !text-gray-400" formControlName="email" readonly>
+                </div>
+                <div class="field">
+                  <label class="field-label">Téléphone</label>
+                  <input class="field-input" formControlName="telephone">
+                </div>
+                <div class="field">
+                  <label class="field-label">Nom <span class="required">*</span></label>
+                  <input class="field-input" formControlName="nom">
+                </div>
+                <div class="field">
+                  <label class="field-label">Prénom <span class="required">*</span></label>
+                  <input class="field-input" formControlName="prenom">
+                </div>
+                <div class="field">
+                  <label class="field-label">Date de naissance</label>
+                  <input class="field-input" type="date" formControlName="dateNaissance">
+                </div>
+                <div class="field">
+                  <label class="field-label">Adresse</label>
+                  <input class="field-input" formControlName="adresse">
+                </div>
               </div>
             </form>
             <div class="flex justify-end gap-3 mt-4">
@@ -99,18 +97,26 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
             </div>
           </div>
           <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="space-y-5 max-w-md">
-            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-              <mat-label>Ancien mot de passe</mat-label>
-              <mat-icon matPrefix class="mr-2">lock_outline</mat-icon>
-              <input matInput [type]="showOld ? 'text' : 'password'" formControlName="ancienMotDePasse" placeholder="Entrez votre mot de passe actuel">
-              <button mat-icon-button matSuffix type="button" (click)="showOld = !showOld"><mat-icon>{{ showOld ? 'visibility_off' : 'visibility' }}</mat-icon></button>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-              <mat-label>Nouveau mot de passe</mat-label>
-              <mat-icon matPrefix class="mr-2">lock</mat-icon>
-              <input matInput [type]="showNew ? 'text' : 'password'" formControlName="nouveauMotDePasse" placeholder="Minimum 8 caractères">
-              <button mat-icon-button matSuffix type="button" (click)="showNew = !showNew"><mat-icon>{{ showNew ? 'visibility_off' : 'visibility' }}</mat-icon></button>
-            </mat-form-field>
+            <div class="field">
+              <label class="field-label">Ancien mot de passe <span class="required">*</span></label>
+              <div class="field-with-icon">
+                <i class="fas fa-lock field-icon-left"></i>
+                <input class="field-input" [type]="showOld ? 'text' : 'password'" formControlName="ancienMotDePasse" placeholder="Entrez votre mot de passe actuel">
+                <button type="button" class="field-icon-right" (click)="showOld = !showOld">
+                  <i class="fas" [class.fa-eye]="!showOld" [class.fa-eye-slash]="showOld"></i>
+                </button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label">Nouveau mot de passe <span class="required">*</span></label>
+              <div class="field-with-icon">
+                <i class="fas fa-lock field-icon-left"></i>
+                <input class="field-input" [type]="showNew ? 'text' : 'password'" formControlName="nouveauMotDePasse" placeholder="Minimum 8 caractères">
+                <button type="button" class="field-icon-right" (click)="showNew = !showNew">
+                  <i class="fas" [class.fa-eye]="!showNew" [class.fa-eye-slash]="showNew"></i>
+                </button>
+              </div>
+            </div>
             @if (passwordForm.get('nouveauMotDePasse')?.value) {
               <div class="space-y-2">
                 <div class="flex gap-1.5">
@@ -127,15 +133,19 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
                 </p>
               </div>
             }
-            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-              <mat-label>Confirmer le mot de passe</mat-label>
-              <mat-icon matPrefix class="mr-2">lock_outline</mat-icon>
-              <input matInput [type]="showConfirm ? 'text' : 'password'" formControlName="confirmationMotDePasse" placeholder="Retapez le nouveau mot de passe">
-              <button mat-icon-button matSuffix type="button" (click)="showConfirm = !showConfirm"><mat-icon>{{ showConfirm ? 'visibility_off' : 'visibility' }}</mat-icon></button>
+            <div class="field">
+              <label class="field-label">Confirmer le mot de passe <span class="required">*</span></label>
+              <div class="field-with-icon">
+                <i class="fas fa-lock field-icon-left"></i>
+                <input class="field-input" [type]="showConfirm ? 'text' : 'password'" formControlName="confirmationMotDePasse" placeholder="Retapez le nouveau mot de passe">
+                <button type="button" class="field-icon-right" (click)="showConfirm = !showConfirm">
+                  <i class="fas" [class.fa-eye]="!showConfirm" [class.fa-eye-slash]="showConfirm"></i>
+                </button>
+              </div>
               @if (passwordForm.hasError('mismatch')) {
-                <mat-error><i class="fas fa-circle-exclamation mr-1"></i> Les mots de passe ne correspondent pas</mat-error>
+                <div class="field-error"><i class="fas fa-circle-exclamation"></i> Les mots de passe ne correspondent pas</div>
               }
-            </mat-form-field>
+            </div>
             <button type="submit" class="btn-primary w-full justify-center !py-3" [disabled]="passwordForm.invalid || isChangingPassword">
               @if (isChangingPassword) {
                 <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner>

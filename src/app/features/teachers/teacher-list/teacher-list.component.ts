@@ -5,9 +5,6 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -25,7 +22,7 @@ import { TeacherDialogComponent } from '../teacher-dialog/teacher-dialog.compone
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatTableModule, MatSortModule,
-    MatPaginatorModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    MatPaginatorModule,
     MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
   templateUrl: './teacher-list.component.html',

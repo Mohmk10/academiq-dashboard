@@ -4,9 +4,6 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -27,7 +24,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatTabsModule, MatTableModule,
-    MatPaginatorModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    MatPaginatorModule,
     MatButtonModule, MatIconModule, MatCheckboxModule, MatSlideToggleModule,
     MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
@@ -55,20 +52,20 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 
             <!-- Recherche + actions -->
             <div class="flex flex-col sm:flex-row gap-4 items-end">
-              <mat-form-field appearance="outline" class="filter-field flex-1" subscriptSizing="dynamic">
-                <mat-icon matPrefix class="mr-2 !text-gray-400">search</mat-icon>
-                <mat-label>Rechercher</mat-label>
-                <input matInput [formControl]="userSearch">
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="filter-field w-40" subscriptSizing="dynamic">
-                <mat-label>Rôle</mat-label>
-                <mat-select [formControl]="roleFilter">
-                  <mat-option value="">Tous</mat-option>
-                  <mat-option value="ADMIN">Admin</mat-option>
-                  <mat-option value="ENSEIGNANT">Enseignant</mat-option>
-                  <mat-option value="ETUDIANT">Étudiant</mat-option>
-                </mat-select>
-              </mat-form-field>
+              <div class="field !mb-0 flex-1">
+                <div class="field-with-icon">
+                  <i class="fas fa-search field-icon-left"></i>
+                  <input class="field-input" [formControl]="userSearch" placeholder="Rechercher...">
+                </div>
+              </div>
+              <div class="field !mb-0 w-40">
+                <select class="field-input" [formControl]="roleFilter">
+                  <option value="">Tous les rôles</option>
+                  <option value="ADMIN">Admin</option>
+                  <option value="ENSEIGNANT">Enseignant</option>
+                  <option value="ETUDIANT">Étudiant</option>
+                </select>
+              </div>
             </div>
 
             <!-- Table utilisateurs -->

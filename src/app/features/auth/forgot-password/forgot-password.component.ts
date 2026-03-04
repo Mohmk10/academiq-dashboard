@@ -2,15 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, MatButtonModule, MatIconModule],
   template: `
     <div class="min-h-screen flex flex-col lg:flex-row">
       <!-- Branding Panel -->
@@ -43,17 +41,19 @@ import { MatIconModule } from '@angular/material/icon';
             </div>
 
             <form (ngSubmit)="onSubmit()" class="space-y-5">
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Adresse email</mat-label>
-                <mat-icon matPrefix class="mr-2 text-gray-400">email</mat-icon>
-                <input matInput type="email" [formControl]="emailControl" placeholder="exemple@academiq.com">
+              <div class="field">
+                <label class="field-label">Adresse email <span class="required">*</span></label>
+                <div class="field-with-icon">
+                  <i class="fas fa-envelope field-icon-left"></i>
+                  <input class="field-input" type="email" [formControl]="emailControl" placeholder="exemple@academiq.com">
+                </div>
                 @if (emailControl.hasError('required') && emailControl.touched) {
-                  <mat-error>L'adresse email est requise</mat-error>
+                  <div class="field-error"><i class="fas fa-exclamation-circle"></i> L'adresse email est requise</div>
                 }
                 @if (emailControl.hasError('email') && emailControl.touched) {
-                  <mat-error>Veuillez entrer une adresse email valide</mat-error>
+                  <div class="field-error"><i class="fas fa-exclamation-circle"></i> Veuillez entrer une adresse email valide</div>
                 }
-              </mat-form-field>
+              </div>
 
               <button type="submit" class="btn-primary w-full justify-center !py-3" [disabled]="emailControl.invalid">
                 Envoyer le lien de reinitialisation

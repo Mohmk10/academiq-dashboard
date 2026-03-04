@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -20,8 +17,8 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
   selector: 'app-reports',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule,
-    MatSelectModule, MatButtonModule, MatProgressSpinnerModule, MatAutocompleteModule
+    CommonModule, ReactiveFormsModule,
+    MatButtonModule, MatProgressSpinnerModule, MatAutocompleteModule
   ],
   template: `
     <div class="space-y-6 fade-in-up">
@@ -35,14 +32,15 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
         <div class="card">
           <h3 class="section-title"><i class="fas fa-file-alt mr-2"></i> Mes documents</h3>
           <div class="space-y-4">
-            <mat-form-field appearance="outline" class="filter-field w-full sm:w-80" subscriptSizing="dynamic">
-              <mat-label>Promotion</mat-label>
-              <mat-select [formControl]="promotionControl">
+            <div class="field !mb-0 w-full sm:w-80">
+              <label class="field-label">Promotion</label>
+              <select class="field-input" [formControl]="promotionControl">
+                <option [ngValue]="null" disabled>Sélectionner une promotion</option>
                 @for (p of promotions; track p.id) {
-                  <mat-option [value]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</mat-option>
+                  <option [ngValue]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</option>
                 }
-              </mat-select>
-            </mat-form-field>
+              </select>
+            </div>
             <div class="flex flex-wrap gap-3">
               <button mat-raised-button color="primary" [disabled]="!promotionControl.value || loadingMap['releve']" (click)="telechargerReleve()">
                 @if (loadingMap['releve']) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
@@ -63,23 +61,27 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
           <div class="card">
             <h3 class="section-title"><i class="fas fa-user mr-2"></i> Documents individuels</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-                <mat-label>Rechercher un étudiant</mat-label>
-                <input matInput [formControl]="etudiantSearch" [matAutocomplete]="auto" placeholder="Nom ou matricule">
+              <div class="field !mb-0">
+                <label class="field-label">Rechercher un étudiant</label>
+                <div class="field-with-icon">
+                  <i class="fas fa-search field-icon-left"></i>
+                  <input class="field-input" [formControl]="etudiantSearch" [matAutocomplete]="auto" placeholder="Nom ou matricule">
+                </div>
                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEtudiant" (optionSelected)="onEtudiantSelected($event.option.value)">
                   @for (e of filteredEtudiants$ | async; track e.id) {
                     <mat-option [value]="e">{{ e.prenom }} {{ e.nom }} ({{ e.matricule || e.email }})</mat-option>
                   }
                 </mat-autocomplete>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-                <mat-label>Promotion</mat-label>
-                <mat-select [formControl]="promotionControl">
+              </div>
+              <div class="field !mb-0">
+                <label class="field-label">Promotion</label>
+                <select class="field-input" [formControl]="promotionControl">
+                  <option [ngValue]="null" disabled>Sélectionner une promotion</option>
                   @for (p of promotions; track p.id) {
-                    <mat-option [value]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</mat-option>
+                    <option [ngValue]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</option>
                   }
-                </mat-select>
-              </mat-form-field>
+                </select>
+              </div>
             </div>
             <div class="flex flex-wrap gap-3">
               <button mat-raised-button color="primary" [disabled]="!selectedEtudiantId || !promotionControl.value || loadingMap['releve']" (click)="telechargerReleve()">
@@ -97,14 +99,15 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
           <div class="card">
             <h3 class="section-title"><i class="fas fa-users mr-2"></i> Documents collectifs</h3>
             <div class="mb-4">
-              <mat-form-field appearance="outline" class="filter-field w-full sm:w-80" subscriptSizing="dynamic">
-                <mat-label>Promotion</mat-label>
-                <mat-select [formControl]="promotionCollectifControl">
+              <div class="field !mb-0 w-full sm:w-80">
+                <label class="field-label">Promotion</label>
+                <select class="field-input" [formControl]="promotionCollectifControl">
+                  <option [ngValue]="null" disabled>Sélectionner une promotion</option>
                   @for (p of promotions; track p.id) {
-                    <mat-option [value]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</mat-option>
+                    <option [ngValue]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</option>
                   }
-                </mat-select>
-              </mat-form-field>
+                </select>
+              </div>
             </div>
             <div class="flex flex-wrap gap-3">
               <button mat-raised-button color="primary" [disabled]="!promotionCollectifControl.value || loadingMap['pv']" (click)="telechargerPV()">
@@ -123,22 +126,24 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
         <div class="card">
           <h3 class="section-title"><i class="fas fa-book mr-2"></i> Export par module</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-              <mat-label>Promotion</mat-label>
-              <mat-select [formControl]="promotionModuleControl">
+            <div class="field !mb-0">
+              <label class="field-label">Promotion</label>
+              <select class="field-input" [formControl]="promotionModuleControl">
+                <option [ngValue]="null" disabled>Sélectionner une promotion</option>
                 @for (p of promotions; track p.id) {
-                  <mat-option [value]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</mat-option>
+                  <option [ngValue]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</option>
                 }
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-              <mat-label>Module</mat-label>
-              <mat-select [formControl]="moduleControl">
+              </select>
+            </div>
+            <div class="field !mb-0">
+              <label class="field-label">Module</label>
+              <select class="field-input" [formControl]="moduleControl">
+                <option [ngValue]="null" disabled>Sélectionner un module</option>
                 @for (m of modules; track m.id) {
-                  <mat-option [value]="m.id">{{ m.code }} — {{ m.nom }}</mat-option>
+                  <option [ngValue]="m.id">{{ m.code }} — {{ m.nom }}</option>
                 }
-              </mat-select>
-            </mat-form-field>
+              </select>
+            </div>
           </div>
           <button mat-raised-button class="!bg-green-600 !text-white" [disabled]="!moduleControl.value || !promotionModuleControl.value || loadingMap['excelModule']" (click)="exporterExcelModule()">
             @if (loadingMap['excelModule']) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }

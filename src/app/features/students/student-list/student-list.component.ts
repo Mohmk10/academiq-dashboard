@@ -5,9 +5,6 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule, MatSort, Sort } from '@angular/material/sort';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -26,7 +23,7 @@ import { ImportDialogComponent } from '../import-dialog/import-dialog.component'
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatTableModule, MatSortModule,
-    MatPaginatorModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    MatPaginatorModule,
     MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
   templateUrl: './student-list.component.html',

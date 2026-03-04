@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -19,40 +17,40 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   selector: 'app-module-tab',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatTableModule, MatFormFieldModule, MatSelectModule,
+    CommonModule, ReactiveFormsModule, MatTableModule,
     MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
     <div class="space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-end gap-4">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
-          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-            <mat-label>Filière</mat-label>
-            <mat-select [formControl]="filiereFilter" (selectionChange)="onFiliereChange($event.value)">
-              <mat-option [value]="null">Toutes</mat-option>
+          <div class="field !mb-0">
+            <label class="field-label">Filière</label>
+            <select class="field-input" [formControl]="filiereFilter" (change)="onFiliereChange(filiereFilter.value)">
+              <option [ngValue]="null">Toutes</option>
               @for (f of filieres; track f.id) {
-                <mat-option [value]="f.id">{{ f.nom }}</mat-option>
+                <option [ngValue]="f.id">{{ f.nom }}</option>
               }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-            <mat-label>Niveau</mat-label>
-            <mat-select [formControl]="niveauFilter" (selectionChange)="onNiveauChange($event.value)">
-              <mat-option [value]="null">Tous</mat-option>
+            </select>
+          </div>
+          <div class="field !mb-0">
+            <label class="field-label">Niveau</label>
+            <select class="field-input" [formControl]="niveauFilter" (change)="onNiveauChange(niveauFilter.value)">
+              <option [ngValue]="null">Tous</option>
               @for (n of niveaux; track n.id) {
-                <mat-option [value]="n.id">{{ n.nom }}</mat-option>
+                <option [ngValue]="n.id">{{ n.nom }}</option>
               }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-            <mat-label>UE</mat-label>
-            <mat-select [formControl]="ueFilter" (selectionChange)="onUeChange()">
-              <mat-option [value]="null">Toutes</mat-option>
+            </select>
+          </div>
+          <div class="field !mb-0">
+            <label class="field-label">UE</label>
+            <select class="field-input" [formControl]="ueFilter" (change)="onUeChange()">
+              <option [ngValue]="null">Toutes</option>
               @for (ue of ues; track ue.id) {
-                <mat-option [value]="ue.id">{{ ue.code }} — {{ ue.nom }}</mat-option>
+                <option [ngValue]="ue.id">{{ ue.code }} — {{ ue.nom }}</option>
               }
-            </mat-select>
-          </mat-form-field>
+            </select>
+          </div>
         </div>
         <button class="btn-primary sm:self-center" (click)="openCreate()">
           <i class="fas fa-plus mr-2"></i> Nouveau module

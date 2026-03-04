@@ -4,9 +4,6 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -24,7 +21,7 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatTableModule, MatSortModule,
-    MatPaginatorModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    MatPaginatorModule,
     MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
@@ -66,42 +63,40 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
 
       <!-- Filters -->
       <div class="filter-bar">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-            <mat-label>Statut</mat-label>
-            <mat-select [formControl]="statutFilter">
-              <mat-option value="">Tous</mat-option>
-              <mat-option value="ACTIVE">Actives</mat-option>
-              <mat-option value="TRAITEE">Traitées</mat-option>
-              <mat-option value="RESOLUE">Résolues</mat-option>
-              <mat-option value="IGNOREE">Ignorées</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-            <mat-label>Niveau</mat-label>
-            <mat-select [formControl]="niveauFilter">
-              <mat-option value="">Tous</mat-option>
-              <mat-option value="critique">Critique</mat-option>
-              <mat-option value="attention">Attention</mat-option>
-              <mat-option value="info">Info</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-            <mat-label>Type</mat-label>
-            <mat-select [formControl]="typeFilter">
-              <mat-option value="">Tous</mat-option>
-              <mat-option value="MOYENNE_FAIBLE">Moyenne faible</mat-option>
-              <mat-option value="NOTE_BASSE">Note basse</mat-option>
-              <mat-option value="ABSENCE_NOTE">Absences</mat-option>
-              <mat-option value="RISQUE_ECHEC">Risque échec</mat-option>
-              <mat-option value="CUSTOM">Personnalisée</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
-            <mat-icon matPrefix class="mr-2 !text-gray-400">search</mat-icon>
-            <mat-label>Rechercher un étudiant</mat-label>
-            <input matInput [formControl]="searchControl">
-          </mat-form-field>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+          <div class="field !mb-0">
+            <select class="field-input" [formControl]="statutFilter">
+              <option value="">Tous les statuts</option>
+              <option value="ACTIVE">Actives</option>
+              <option value="TRAITEE">Traitées</option>
+              <option value="RESOLUE">Résolues</option>
+              <option value="IGNOREE">Ignorées</option>
+            </select>
+          </div>
+          <div class="field !mb-0">
+            <select class="field-input" [formControl]="niveauFilter">
+              <option value="">Tous les niveaux</option>
+              <option value="critique">Critique</option>
+              <option value="attention">Attention</option>
+              <option value="info">Info</option>
+            </select>
+          </div>
+          <div class="field !mb-0">
+            <select class="field-input" [formControl]="typeFilter">
+              <option value="">Tous les types</option>
+              <option value="MOYENNE_FAIBLE">Moyenne faible</option>
+              <option value="NOTE_BASSE">Note basse</option>
+              <option value="ABSENCE_NOTE">Absences</option>
+              <option value="RISQUE_ECHEC">Risque échec</option>
+              <option value="CUSTOM">Personnalisée</option>
+            </select>
+          </div>
+          <div class="field !mb-0">
+            <div class="field-with-icon">
+              <i class="fas fa-search field-icon-left"></i>
+              <input class="field-input" [formControl]="searchControl" placeholder="Rechercher un étudiant">
+            </div>
+          </div>
         </div>
       </div>
 

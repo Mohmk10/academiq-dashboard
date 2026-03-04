@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -19,8 +16,7 @@ import { RegleAlerteResponse, TypeAlerte } from '../../../../core/models/alerte.
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatDialogModule, MatTableModule,
-    MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule,
-    MatIconModule, MatSlideToggleModule, MatProgressSpinnerModule
+    MatButtonModule, MatIconModule, MatSlideToggleModule, MatProgressSpinnerModule
   ],
   template: `
     <div class="dialog-container">
@@ -33,18 +29,18 @@ import { RegleAlerteResponse, TypeAlerte } from '../../../../core/models/alerte.
         <div class="bg-gray-50 rounded-lg p-4">
           <h4 class="text-sm font-semibold text-gray-700 mb-3">{{ editingId ? 'Modifier la règle' : 'Nouvelle règle' }}</h4>
           <form [formGroup]="form" (ngSubmit)="onSubmitRule()" class="form-grid-3 items-end">
-            <mat-form-field appearance="outline">
-              <mat-label>Type</mat-label>
-              <mat-select formControlName="type">
+            <div class="field !mb-0">
+              <label class="field-label">Type</label>
+              <select class="field-input" formControlName="type">
                 @for (t of types; track t.value) {
-                  <mat-option [value]="t.value">{{ t.label }}</mat-option>
+                  <option [value]="t.value">{{ t.label }}</option>
                 }
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Seuil</mat-label>
-              <input matInput type="number" formControlName="seuil" placeholder="Ex: 10">
-            </mat-form-field>
+              </select>
+            </div>
+            <div class="field !mb-0">
+              <label class="field-label">Seuil</label>
+              <input class="field-input" type="number" formControlName="seuil" placeholder="Ex: 10">
+            </div>
             <div class="flex gap-2">
               <button class="btn-primary flex-1" type="submit" [disabled]="form.invalid">
                 {{ editingId ? 'Modifier' : 'Ajouter' }}
@@ -54,10 +50,10 @@ import { RegleAlerteResponse, TypeAlerte } from '../../../../core/models/alerte.
               }
             </div>
           </form>
-          <mat-form-field appearance="outline" class="w-full mt-3">
-            <mat-label>Description</mat-label>
-            <input matInput [formControl]="$any(form.get('description'))" placeholder="Ex: Alerte si moyenne < 10">
-          </mat-form-field>
+          <div class="field !mb-0 mt-3">
+            <label class="field-label">Description</label>
+            <input class="field-input" [formControl]="$any(form.get('description'))" placeholder="Ex: Alerte si moyenne < 10">
+          </div>
         </div>
 
         @if (isLoading) {

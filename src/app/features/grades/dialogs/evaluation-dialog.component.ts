@@ -2,9 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { StructureService } from '../../../core/services/structure.service';
 import { ModuleResponse, PromotionResponse } from '../../../core/models/structure.model';
@@ -13,7 +10,7 @@ import { EvaluationResponse, TypeEvaluation } from '../../../core/models/note.mo
 @Component({
   selector: 'app-evaluation-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule],
   template: `
     <div class="dialog-container">
       <div class="dialog-header">
@@ -22,54 +19,56 @@ import { EvaluationResponse, TypeEvaluation } from '../../../core/models/note.mo
       </div>
 
       <form [formGroup]="form" class="dialog-content">
-        <mat-form-field appearance="outline">
-          <mat-label>Nom de l'évaluation</mat-label>
-          <input matInput formControlName="nom" placeholder="Ex: Examen final">
-        </mat-form-field>
+        <div class="field">
+          <label class="field-label">Nom de l'évaluation <span class="required">*</span></label>
+          <input class="field-input" formControlName="nom" placeholder="Ex: Examen final">
+        </div>
 
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Module</mat-label>
-            <mat-select formControlName="moduleId">
+          <div class="field">
+            <label class="field-label">Module <span class="required">*</span></label>
+            <select class="field-input" formControlName="moduleId">
+              <option [ngValue]="null" disabled>Sélectionner...</option>
               @for (m of modules; track m.id) {
-                <mat-option [value]="m.id">{{ m.code }} — {{ m.nom }}</mat-option>
+                <option [ngValue]="m.id">{{ m.code }} — {{ m.nom }}</option>
               }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Promotion</mat-label>
-            <mat-select formControlName="promotionId">
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Promotion <span class="required">*</span></label>
+            <select class="field-input" formControlName="promotionId">
+              <option [ngValue]="null" disabled>Sélectionner...</option>
               @for (p of promotions; track p.id) {
-                <mat-option [value]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</mat-option>
+                <option [ngValue]="p.id">{{ p.filiereNom }} — {{ p.niveauNom }} ({{ p.anneeUniversitaire }})</option>
               }
-            </mat-select>
-          </mat-form-field>
+            </select>
+          </div>
         </div>
 
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Type</mat-label>
-            <mat-select formControlName="type">
+          <div class="field">
+            <label class="field-label">Type <span class="required">*</span></label>
+            <select class="field-input" formControlName="type">
               @for (t of types; track t.value) {
-                <mat-option [value]="t.value">{{ t.label }}</mat-option>
+                <option [value]="t.value">{{ t.label }}</option>
               }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Coefficient</mat-label>
-            <input matInput type="number" formControlName="coefficient" placeholder="Ex: 2">
-          </mat-form-field>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Coefficient <span class="required">*</span></label>
+            <input class="field-input" type="number" formControlName="coefficient" placeholder="Ex: 2">
+          </div>
         </div>
 
         <div class="form-grid-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Note maximale</mat-label>
-            <input matInput type="number" formControlName="noteMax" placeholder="Ex: 20">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Date</mat-label>
-            <input matInput type="date" formControlName="date">
-          </mat-form-field>
+          <div class="field">
+            <label class="field-label">Note maximale <span class="required">*</span></label>
+            <input class="field-input" type="number" formControlName="noteMax" placeholder="Ex: 20">
+          </div>
+          <div class="field">
+            <label class="field-label">Date</label>
+            <input class="field-input" type="date" formControlName="date">
+          </div>
         </div>
       </form>
 
