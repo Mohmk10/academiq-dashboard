@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
@@ -32,8 +30,6 @@ interface MenuSection {
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    MatIconModule,
-    MatButtonModule,
     MatMenuModule,
     MatTooltipModule,
     FormsModule,
