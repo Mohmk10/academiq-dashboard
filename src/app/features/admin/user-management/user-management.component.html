@@ -1,0 +1,178 @@
+<div class="space-y-6 fade-in-up">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="page-title">Gestion des utilisateurs</h1>
+      <p class="text-sm text-gray-500 mt-1">{{ stats.total }} utilisateurs enregistres sur la plateforme</p>
+    </div>
+    <button class="btn-primary" (click)="openCreateDialog()">
+      <i class="fas fa-plus mr-2"></i> Creer un utilisateur
+    </button>
+  </div>
+
+  <!-- Stats cards -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div class="metric-card">
+      <div class="metric-value text-gray-900">{{ stats.total }}</div>
+      <div class="metric-label">Total</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value text-purple-600">{{ stats.superAdmins }}</div>
+      <div class="metric-label">Super Admins</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value text-blue-600">{{ stats.admins }}</div>
+      <div class="metric-label">Admins</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value text-amber-600">{{ stats.enseignants }}</div>
+      <div class="metric-label">Enseignants</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value text-green-600">{{ stats.etudiants }}</div>
+      <div class="metric-label">Etudiants</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value text-emerald-600">{{ stats.actifs }}</div>
+      <div class="metric-label">Actifs</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+      <div class="field !mb-0">
+        <div class="field-with-icon">
+          <i class="fas fa-search field-icon-left"></i>
+          <input class="field-input" [formControl]="searchControl" placeholder="Rechercher par nom, email ou matricule">
+        </div>
+      </div>
+      <div class="field !mb-0">
+        <select class="field-input" [formControl]="roleFilter" (change)="onFilterChange()">
+          <option value="">Tous les roles</option>
+          <option value="SUPER_ADMIN">Super Admin</option>
+          <option value="ADMIN">Admin</option>
+          <option value="RESPONSABLE_PEDAGOGIQUE">Resp. Pedagogique</option>
+          <option value="ENSEIGNANT">Enseignant</option>
+          <option value="ETUDIANT">Etudiant</option>
+        </select>
+      </div>
+      <div class="field !mb-0">
+        <select class="field-input" [formControl]="statutFilter" (change)="onFilterChange()">
+          <option value="">Tous les statuts</option>
+          <option value="actif">Actifs</option>
+          <option value="inactif">Inactifs</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="data-table-wrapper">
+    @if (pagedUsers.length === 0) {
+      <div class="flex flex-col items-center justify-center py-16 text-gray-400">
+        <i class="fas fa-users text-5xl mb-4"></i>
+        <p class="font-medium">Aucun utilisateur trouve</p>
+        <p class="text-sm mt-1">Modifiez vos filtres ou creez un utilisateur</p>
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="cursor-pointer select-none" (click)="onSort('nom')">
+              Nom & Prenom
+              @if (sortColumn === 'nom') {
+                <i class="fas fa-sort-{{ sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+              }
+            </th>
+            <th class="cursor-pointer select-none" (click)="onSort('email')">
+              Email
+              @if (sortColumn === 'email') {
+                <i class="fas fa-sort-{{ sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+              }
+            </th>
+            <th class="cursor-pointer select-none" (click)="onSort('role')">
+              Role
+              @if (sortColumn === 'role') {
+                <i class="fas fa-sort-{{ sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+              }
+            </th>
+            <th>Matricule</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of pagedUsers; track user.id) {
+            <tr>
+              <td class="cell-primary">{{ user.nom }} {{ user.prenom }}</td>
+              <td class="cell-secondary">{{ user.email }}</td>
+              <td>
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getRoleBadgeClass(user.role)">
+                  {{ getRoleLabel(user.role) }}
+                </span>
+              </td>
+              <td>
+                @if (user.matricule) {
+                  <span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ user.matricule }}</span>
+                } @else {
+                  <span class="text-gray-300">—</span>
+                }
+              </td>
+              <td>
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getStatutBadge(user.actif).class">
+                  {{ getStatutBadge(user.actif).text }}
+                </span>
+              </td>
+              <td class="cell-actions">
+                @if (user.role !== 'SUPER_ADMIN') {
+                  <button class="action-menu-btn" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                    <i class="fas fa-ellipsis-vertical"></i>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="openChangeRoleDialog(user)">
+                      <i class="fas fa-user-shield mr-3 text-gray-400"></i> Changer le role
+                    </button>
+                    <button mat-menu-item (click)="toggleActivation(user)">
+                      <i class="fas mr-3" [class]="user.actif ? 'fa-lock text-warning' : 'fa-lock-open text-success'"></i>
+                      {{ user.actif ? 'Desactiver' : 'Activer' }}
+                    </button>
+                    <button mat-menu-item (click)="deleteUser(user)" class="!text-danger">
+                      <i class="fas fa-trash mr-3"></i> Supprimer
+                    </button>
+                  </mat-menu>
+                } @else {
+                  <span class="text-gray-300 text-xs">—</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="table-pagination">
+        <div class="pagination-info">
+          <span>{{ pageIndex * pageSize + 1 }}</span>–<span>{{ min((pageIndex + 1) * pageSize, filteredUsers.length) }}</span> sur <span>{{ filteredUsers.length }}</span>
+        </div>
+        <div class="pagination-controls">
+          <button class="pagination-btn" [disabled]="pageIndex === 0" (click)="goToPage(0)"><i class="fas fa-angles-left"></i></button>
+          <button class="pagination-btn" [disabled]="pageIndex === 0" (click)="goToPage(pageIndex - 1)"><i class="fas fa-chevron-left"></i></button>
+          @for (p of visiblePages; track p) {
+            <button class="pagination-btn" [class.active]="p === pageIndex" (click)="goToPage(p)">{{ p + 1 }}</button>
+          }
+          <button class="pagination-btn" [disabled]="pageIndex >= totalPages - 1" (click)="goToPage(pageIndex + 1)"><i class="fas fa-chevron-right"></i></button>
+          <button class="pagination-btn" [disabled]="pageIndex >= totalPages - 1" (click)="goToPage(totalPages - 1)"><i class="fas fa-angles-right"></i></button>
+        </div>
+        <div class="pagination-size">
+          <span>Lignes</span>
+          <select [value]="pageSize" (change)="changePageSize(+$any($event.target).value)">
+            <option [value]="10">10</option>
+            <option [value]="25">25</option>
+            <option [value]="50">50</option>
+          </select>
+        </div>
+      </div>
+    }
+  </div>
+</div>
