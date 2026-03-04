@@ -10,7 +10,7 @@ import { EtudiantDashboardComponent } from './etudiant-dashboard/etudiant-dashbo
   standalone: true,
   imports: [CommonModule, AdminDashboardComponent, EnseignantDashboardComponent, EtudiantDashboardComponent],
   template: `
-    @if (role === 'ADMIN' || role === 'RESPONSABLE_PEDAGOGIQUE') {
+    @if (role === 'SUPER_ADMIN' || role === 'ADMIN' || role === 'RESPONSABLE_PEDAGOGIQUE') {
       <app-admin-dashboard />
     } @else if (role === 'ENSEIGNANT') {
       <app-enseignant-dashboard />

@@ -62,6 +62,7 @@ export class MockDataService {
 
   getUserByRole(role: Role): { id: number; nom: string; prenom: string; email: string; role: Role; telephone: string; actif: boolean } {
     switch (role) {
+      case 'SUPER_ADMIN': return this.superAdminUser;
       case 'ENSEIGNANT': return this.enseignantUser;
       case 'ETUDIANT': return this.etudiantUser;
       default: return this.adminUser;
@@ -88,9 +89,14 @@ export class MockDataService {
   // USER PROFILES
   // ============================================================
 
+  superAdminUser = {
+    id: 100, nom: 'Kouyate', prenom: 'Makan', email: 'superadmin@academiq.sn',
+    role: 'SUPER_ADMIN' as Role, telephone: '+221781975048', actif: true
+  };
+
   adminUser = {
-    id: 1, nom: 'Kouyate', prenom: 'Makan', email: 'admin@academiq.sn',
-    role: 'ADMIN' as Role, telephone: '+221781975048', actif: true
+    id: 1, nom: 'Diagne', prenom: 'Abdou', email: 'admin@academiq.sn',
+    role: 'ADMIN' as Role, telephone: '+221781234567', actif: true
   };
 
   enseignantUser = {
@@ -190,15 +196,24 @@ export class MockDataService {
     };
   }
 
+  getSuperAdminDetail(): UtilisateurDetail {
+    return {
+      id: 100, nom: 'Kouyate', prenom: 'Makan', email: 'superadmin@academiq.sn',
+      role: 'SUPER_ADMIN', telephone: '+221781975048', actif: true, createdAt: '2024-01-01',
+      admin: { id: 100, fonction: 'Super Administrateur', departement: 'Direction Generale', niveau: 'Super Admin' }
+    };
+  }
+
   getAdminDetail(): UtilisateurDetail {
     return {
-      id: 1, nom: 'Kouyate', prenom: 'Makan', email: 'admin@academiq.sn',
-      role: 'ADMIN', telephone: '+221781975048', actif: true, createdAt: '2024-01-15',
-      admin: { id: 1, fonction: 'Administrateur systeme', departement: 'Direction des Systemes d\'Information', niveau: 'Super Admin' }
+      id: 1, nom: 'Diagne', prenom: 'Abdou', email: 'admin@academiq.sn',
+      role: 'ADMIN', telephone: '+221781234567', actif: true, createdAt: '2024-01-15',
+      admin: { id: 1, fonction: 'Administrateur systeme', departement: 'Direction des Systemes d\'Information', niveau: 'Admin' }
     };
   }
 
   getUserDetail(id: number): UtilisateurDetail {
+    if (id === 100) return this.getSuperAdminDetail();
     if (id === 1) return this.getAdminDetail();
     if (this.enseignants.find(e => e.id === id)) return this.getEnseignantDetail(id);
     return this.getEtudiantDetail(id);
@@ -209,13 +224,15 @@ export class MockDataService {
     return {
       id: user.id, nom: user.nom, prenom: user.prenom,
       email: user.email, role: user.role,
-      telephone: user.telephone, actif: user.actif, createdAt: '2024-01-15'
+      telephone: user.telephone, actif: user.actif,
+      createdAt: role === 'SUPER_ADMIN' ? '2024-01-01' : '2024-01-15'
     };
   }
 
   getAllUsers(): UtilisateurSummary[] {
     return [
-      { id: 1, nom: 'Kouyate', prenom: 'Makan', email: 'admin@academiq.sn', role: 'ADMIN', actif: true },
+      { id: 100, nom: 'Kouyate', prenom: 'Makan', email: 'superadmin@academiq.sn', role: 'SUPER_ADMIN', actif: true },
+      { id: 1, nom: 'Diagne', prenom: 'Abdou', email: 'admin@academiq.sn', role: 'ADMIN', actif: true },
       ...this.enseignants,
       ...this.etudiants
     ];
@@ -516,5 +533,5 @@ export class MockDataService {
   // USER STATS (settings page)
   // ============================================================
 
-  userStats = { admins: 3, enseignants: 42, etudiants: 285, total: 347 };
+  userStats = { superAdmins: 1, admins: 3, enseignants: 42, etudiants: 285, total: 348 };
 }

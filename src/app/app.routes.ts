@@ -55,6 +55,18 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN'] }
       },
+      {
+        path: 'gestion-utilisateurs',
+        loadComponent: () => import('./features/admin/user-management/user-management.component'),
+        canActivate: [roleGuard],
+        data: { roles: ['SUPER_ADMIN'] }
+      },
+      {
+        path: 'audit-logs',
+        loadComponent: () => import('./features/admin/audit-logs/audit-logs.component'),
+        canActivate: [roleGuard],
+        data: { roles: ['SUPER_ADMIN'] }
+      },
     ]
   },
 

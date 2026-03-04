@@ -47,8 +47,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   userInitials = '';
   menuSections: MenuSection[] = [];
   isDevMode = false;
-  selectedRole: Role = 'ADMIN';
+  selectedRole: Role = 'SUPER_ADMIN';
   devRoles: { value: Role; label: string }[] = [
+    { value: 'SUPER_ADMIN', label: 'Super Admin' },
     { value: 'ADMIN', label: 'Admin' },
     { value: 'ENSEIGNANT', label: 'Enseignant' },
     { value: 'ETUDIANT', label: 'Etudiant' }
@@ -111,6 +112,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   getRoleLabel(): string {
     const labels: Record<string, string> = {
+      'SUPER_ADMIN': 'Super Administrateur',
       'ADMIN': 'Administrateur',
       'ENSEIGNANT': 'Enseignant',
       'ETUDIANT': 'Etudiant',
@@ -135,7 +137,34 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       }
     ];
 
-    if (this.authService.hasRole('ADMIN')) {
+    if (this.authService.isExactRole('SUPER_ADMIN')) {
+      sections.push(
+        {
+          title: 'Gestion',
+          items: [
+            { label: 'Etudiants', icon: 'fa-solid fa-user-graduate', route: '/etudiants' },
+            { label: 'Enseignants', icon: 'fa-solid fa-chalkboard-user', route: '/enseignants' },
+            { label: 'Structure', icon: 'fa-solid fa-building-columns', route: '/structure' },
+            { label: 'Notes', icon: 'fa-solid fa-file-pen', route: '/notes' },
+          ]
+        },
+        {
+          title: 'Suivi',
+          items: [
+            { label: 'Alertes', icon: 'fa-solid fa-triangle-exclamation', route: '/alertes' },
+            { label: 'Rapports', icon: 'fa-solid fa-chart-column', route: '/rapports' },
+          ]
+        },
+        {
+          title: 'Administration',
+          items: [
+            { label: 'Utilisateurs', icon: 'fa-solid fa-users-gear', route: '/gestion-utilisateurs' },
+            { label: 'Logs d\'audit', icon: 'fa-solid fa-clipboard-list', route: '/audit-logs' },
+            { label: 'Parametres', icon: 'fa-solid fa-gear', route: '/parametres' },
+          ]
+        }
+      );
+    } else if (this.authService.isExactRole('ADMIN')) {
       sections.push(
         {
           title: 'Gestion',
@@ -160,7 +189,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           ]
         }
       );
-    } else if (this.authService.hasRole('RESPONSABLE_PEDAGOGIQUE')) {
+    } else if (this.authService.isExactRole('RESPONSABLE_PEDAGOGIQUE')) {
       sections.push(
         {
           title: 'Gestion',
@@ -177,7 +206,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           ]
         }
       );
-    } else if (this.authService.hasRole('ENSEIGNANT')) {
+    } else if (this.authService.isExactRole('ENSEIGNANT')) {
       sections.push(
         {
           title: 'Gestion',
@@ -193,7 +222,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           ]
         }
       );
-    } else if (this.authService.hasRole('ETUDIANT')) {
+    } else if (this.authService.isExactRole('ETUDIANT')) {
       sections.push({
         title: 'Espace etudiant',
         items: [

@@ -33,7 +33,7 @@ export class AuthService {
     private mock: MockDataService
   ) {
     if (this.mock.isDevMode()) {
-      this.initDevMode('ADMIN');
+      this.initDevMode('SUPER_ADMIN');
     } else {
       this.loadUserFromToken();
     }
@@ -154,12 +154,19 @@ export class AuthService {
   }
 
   hasRole(role: Role): boolean {
-    return this.getCurrentUserRole() === role;
+    const currentRole = this.getCurrentUserRole();
+    if (currentRole === 'SUPER_ADMIN') return true;
+    return currentRole === role;
   }
 
   hasAnyRole(roles: Role[]): boolean {
     const currentRole = this.getCurrentUserRole();
+    if (currentRole === 'SUPER_ADMIN') return true;
     return currentRole !== null && roles.includes(currentRole);
+  }
+
+  isExactRole(role: Role): boolean {
+    return this.getCurrentUserRole() === role;
   }
 
   private initDevMode(role: Role): void {
