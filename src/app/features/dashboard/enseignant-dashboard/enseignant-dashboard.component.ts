@@ -59,7 +59,11 @@ export class EnseignantDashboardComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
-        this.loadMockData();
+        this.data = {
+          totalModules: 0, totalEtudiants: 0, evaluationsEnCours: 0,
+          moyenneModules: 0, modules: [], alertesRecentes: []
+        };
+        this.sortedModules = [];
       }
     });
   }
@@ -129,26 +133,6 @@ export class EnseignantDashboardComponent implements OnInit {
     };
   }
 
-  private loadMockData(): void {
-    this.data = {
-      totalModules: 4,
-      totalEtudiants: 156,
-      evaluationsEnCours: 3,
-      moyenneModules: 11.8,
-      modules: [
-        { moduleId: 1, moduleNom: 'Algorithmes avancés', moduleCode: 'ALGO-301', nombreEtudiants: 45, moyenneClasse: 12.5, evaluationsCount: 38 },
-        { moduleId: 2, moduleNom: 'Base de données', moduleCode: 'BDD-201', nombreEtudiants: 52, moyenneClasse: 11.2, evaluationsCount: 52 },
-        { moduleId: 3, moduleNom: 'Réseaux informatiques', moduleCode: 'RES-301', nombreEtudiants: 38, moyenneClasse: 9.8, evaluationsCount: 20 },
-        { moduleId: 4, moduleNom: 'Génie logiciel', moduleCode: 'GL-401', nombreEtudiants: 21, moyenneClasse: 13.6, evaluationsCount: 21 }
-      ],
-      alertesRecentes: [
-        { id: 1, type: 'NOTE_BASSE', message: 'Note inférieure au seuil en Réseaux', etudiantNom: 'Diallo Amadou', date: '2026-03-01T10:30:00' },
-        { id: 2, type: 'MOYENNE_FAIBLE', message: 'Moyenne faible en Algorithmes', etudiantNom: 'Traoré Fatou', date: '2026-02-28T14:15:00' }
-      ]
-    };
-    this.sortedModules = [...this.data.modules];
-    this.buildBarChart(this.data.modules);
-  }
 }
 
 function compare(a: string | number, b: string | number, isAsc: boolean): number {

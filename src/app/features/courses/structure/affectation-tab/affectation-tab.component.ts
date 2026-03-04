@@ -108,10 +108,7 @@ export class AffectationTabComponent implements OnInit {
     this.structureService.getModules().subscribe({
       next: (res) => this.modules = res.data,
       error: () => {
-        this.modules = [
-          { id: 1, nom: 'Algorithmique', code: 'INFO-101', coefficient: 3, ueId: 1 },
-          { id: 2, nom: 'Programmation C', code: 'INFO-102', coefficient: 3, ueId: 1 }
-        ];
+        this.modules = [];
       }
     });
     this.loadAffectations();
@@ -121,7 +118,7 @@ export class AffectationTabComponent implements OnInit {
     this.isLoading = true;
     this.structureService.getAffectations().subscribe({
       next: (res) => { this.affectations = res.data; this.isLoading = false; },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.affectations = []; }
     });
   }
 
@@ -149,13 +146,5 @@ export class AffectationTabComponent implements OnInit {
         error: () => {}
       });
     });
-  }
-
-  private loadMockData(): void {
-    this.affectations = [
-      { id: 1, enseignantId: 10, enseignantNom: 'Keita Ousmane', moduleId: 1, moduleNom: 'Algorithmique' },
-      { id: 2, enseignantId: 11, enseignantNom: 'Cissé Aissata', moduleId: 2, moduleNom: 'Programmation C' },
-      { id: 3, enseignantId: 12, enseignantNom: 'Touré Mohamed', moduleId: 3, moduleNom: 'Bases de données' },
-    ];
   }
 }

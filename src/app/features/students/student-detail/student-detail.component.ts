@@ -46,7 +46,7 @@ export default class StudentDetailComponent implements OnInit {
         this.loadNotes(id);
         this.loadAlertes(id);
       },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.student = null; }
     });
   }
 
@@ -108,12 +108,4 @@ export default class StudentDetailComponent implements OnInit {
     });
   }
 
-  private loadMockData(): void {
-    this.student = {
-      id: 1, nom: 'Diallo', prenom: 'Amadou', email: 'amadou.diallo@univ.ml', role: 'ETUDIANT',
-      telephone: '+223 70 12 34 56', dateNaissance: '2002-05-15', adresse: 'Bamako, Mali',
-      actif: true, createdAt: '2024-09-01',
-      etudiant: { id: 1, matricule: 'ETU-2024-001', niveauActuel: 'L3', filiereActuelle: 'Informatique', dateInscription: '2024-09-01', nomTuteur: 'Diallo Moussa', numeroTuteur: '+223 76 00 00 00', statut: 'Actif' }
-    };
-  }
 }

@@ -30,7 +30,7 @@ export default class TeacherDetailComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.utilisateurService.getById(id).subscribe({
       next: (res) => { this.teacher = res.data; this.isLoading = false; },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.teacher = null; }
     });
   }
 
@@ -49,11 +49,4 @@ export default class TeacherDetailComponent implements OnInit {
 
   formatDate(date: string): string { return new Date(date).toLocaleDateString('fr-FR'); }
 
-  private loadMockData(): void {
-    this.teacher = {
-      id: 10, nom: 'Keita', prenom: 'Ousmane', email: 'ousmane.keita@univ.ml', role: 'ENSEIGNANT',
-      telephone: '+223 76 12 34 56', actif: true, createdAt: '2020-09-01',
-      enseignant: { id: 1, matricule: 'ENS-2020-001', specialite: 'Informatique', grade: 'Maître de conférences', departement: 'Sciences & Technologies', bureau: 'B-204', dateRecrutement: '2020-09-01', statut: 'Actif' }
-    };
-  }
 }

@@ -120,7 +120,7 @@ export class PromotionTabComponent implements OnInit {
     });
     this.structureService.getPromotions().subscribe({
       next: (res) => { this.promotions = res.data; this.applyFilter(); this.isLoading = false; },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.promotions = []; this.filteredPromotions = []; }
     });
   }
 
@@ -161,19 +161,5 @@ export class PromotionTabComponent implements OnInit {
         error: () => {}
       });
     });
-  }
-
-  private loadMockData(): void {
-    this.filieres = [
-      { id: 1, nom: 'Informatique', code: 'INFO', actif: true },
-      { id: 2, nom: 'Mathématiques', code: 'MATH', actif: true }
-    ];
-    this.promotions = [
-      { id: 1, anneeUniversitaire: '2024-2025', niveauId: 1, niveauNom: 'L1', filiereNom: 'Informatique', nombreEtudiants: 45, actif: true },
-      { id: 2, anneeUniversitaire: '2024-2025', niveauId: 2, niveauNom: 'L2', filiereNom: 'Informatique', nombreEtudiants: 38, actif: true },
-      { id: 3, anneeUniversitaire: '2024-2025', niveauId: 3, niveauNom: 'L3', filiereNom: 'Informatique', nombreEtudiants: 30, actif: true },
-      { id: 4, anneeUniversitaire: '2023-2024', niveauId: 1, niveauNom: 'L1', filiereNom: 'Mathématiques', nombreEtudiants: 25, actif: false },
-    ];
-    this.applyFilter();
   }
 }

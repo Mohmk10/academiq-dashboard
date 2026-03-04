@@ -79,7 +79,7 @@ export default class StudentListComponent implements OnInit, OnDestroy {
         this.totalElements = res.data.totalElements;
         this.isLoading = false;
       },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.students = []; this.totalElements = 0; }
     });
   }
 
@@ -178,14 +178,4 @@ export default class StudentListComponent implements OnInit, OnDestroy {
       : { text: 'Inactif', class: 'bg-gray-100 text-gray-500' };
   }
 
-  private loadMockData(): void {
-    this.students = [
-      { id: 1, nom: 'Diallo', prenom: 'Amadou', email: 'amadou.diallo@univ.ml', role: 'ETUDIANT', actif: true, matricule: 'ETU-2024-001' },
-      { id: 2, nom: 'Traoré', prenom: 'Fatou', email: 'fatou.traore@univ.ml', role: 'ETUDIANT', actif: true, matricule: 'ETU-2024-002' },
-      { id: 3, nom: 'Konaté', prenom: 'Ibrahim', email: 'ibrahim.konate@univ.ml', role: 'ETUDIANT', actif: false, matricule: 'ETU-2024-003' },
-      { id: 4, nom: 'Sangaré', prenom: 'Mariam', email: 'mariam.sangare@univ.ml', role: 'ETUDIANT', actif: true, matricule: 'ETU-2024-004' },
-      { id: 5, nom: 'Coulibaly', prenom: 'Sekou', email: 'sekou.coulibaly@univ.ml', role: 'ETUDIANT', actif: true, matricule: 'ETU-2024-005' },
-    ];
-    this.totalElements = 5;
-  }
 }

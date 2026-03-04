@@ -132,7 +132,7 @@ export class ModuleTabComponent implements OnInit {
   ngOnInit(): void {
     this.structureService.getFilieres().subscribe({
       next: (res) => this.filieres = res.data,
-      error: () => { this.filieres = [{ id: 1, nom: 'Informatique', code: 'INFO', actif: true }]; }
+      error: () => { this.filieres = []; }
     });
     this.loadModules();
   }
@@ -167,7 +167,7 @@ export class ModuleTabComponent implements OnInit {
     const ueId = this.ueFilter.value;
     this.structureService.getModules(ueId ?? undefined).subscribe({
       next: (res) => { this.modules = res.data; this.isLoading = false; },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.modules = []; }
     });
   }
 
@@ -201,14 +201,5 @@ export class ModuleTabComponent implements OnInit {
         error: () => {}
       });
     });
-  }
-
-  private loadMockData(): void {
-    this.modules = [
-      { id: 1, nom: 'Algorithmique', code: 'INFO-101', coefficient: 3, ueId: 1, ueNom: 'UE Fondamentale', enseignantNom: 'Keita Ousmane', volumeHoraire: 60 },
-      { id: 2, nom: 'Programmation C', code: 'INFO-102', coefficient: 3, ueId: 1, ueNom: 'UE Fondamentale', enseignantNom: 'Cissé Aissata', volumeHoraire: 45 },
-      { id: 3, nom: 'Bases de données', code: 'INFO-201', coefficient: 4, ueId: 2, ueNom: 'UE Informatique', enseignantNom: 'Touré Mohamed', volumeHoraire: 50 },
-      { id: 4, nom: 'Réseaux', code: 'INFO-202', coefficient: 2, ueId: 2, ueNom: 'UE Informatique', volumeHoraire: 30 },
-    ];
   }
 }

@@ -65,7 +65,7 @@ export default class TeacherListComponent implements OnInit, OnDestroy {
 
     obs.subscribe({
       next: (res) => { this.teachers = res.data.content; this.totalElements = res.data.totalElements; this.isLoading = false; },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.teachers = []; this.totalElements = 0; }
     });
   }
 
@@ -128,12 +128,4 @@ export default class TeacherListComponent implements OnInit, OnDestroy {
     return actif ? { text: 'Actif', class: 'bg-green-50 text-success' } : { text: 'Inactif', class: 'bg-gray-100 text-gray-500' };
   }
 
-  private loadMockData(): void {
-    this.teachers = [
-      { id: 10, nom: 'Keita', prenom: 'Ousmane', email: 'ousmane.keita@univ.ml', role: 'ENSEIGNANT', actif: true, matricule: 'ENS-2020-001' },
-      { id: 11, nom: 'Cissé', prenom: 'Aissata', email: 'aissata.cisse@univ.ml', role: 'ENSEIGNANT', actif: true, matricule: 'ENS-2019-002' },
-      { id: 12, nom: 'Touré', prenom: 'Mohamed', email: 'mohamed.toure@univ.ml', role: 'ENSEIGNANT', actif: false, matricule: 'ENS-2021-003' },
-    ];
-    this.totalElements = 3;
-  }
 }

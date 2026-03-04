@@ -222,7 +222,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
         this.applyClientFilters();
         this.isLoading = false;
       },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.alertes = []; this.filteredAlertes = []; this.totalElements = 0; }
     });
   }
 
@@ -237,7 +237,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
           total: s.alertesActives
         };
       },
-      error: () => { this.stats = { critiques: 3, attention: 2, traitees: 1, total: 4 }; }
+      error: () => { this.stats = { critiques: 0, attention: 0, traitees: 0, total: 0 }; }
     });
   }
 
@@ -326,17 +326,4 @@ export default class AlertListComponent implements OnInit, OnDestroy {
 
   formatDate(date: string): string { return new Date(date).toLocaleDateString('fr-FR'); }
 
-  private loadMockData(): void {
-    this.alertes = [
-      { id: 1, type: 'RISQUE_ECHEC', statut: 'ACTIVE', message: 'Moyenne générale inférieure à 8/20', etudiantId: 1, etudiantNom: 'Diallo Amadou', etudiantMatricule: 'ETU-2024-001', valeurNote: 7.5, seuil: 8, createdAt: '2025-01-10' },
-      { id: 2, type: 'NOTE_BASSE', statut: 'ACTIVE', message: 'Note éliminatoire en Algorithmique', etudiantId: 2, etudiantNom: 'Traoré Fatoumata', etudiantMatricule: 'ETU-2024-002', moduleNom: 'Algorithmique', valeurNote: 3, seuil: 5, createdAt: '2025-01-12' },
-      { id: 3, type: 'MOYENNE_FAIBLE', statut: 'ACTIVE', message: 'Moyenne du module inférieure à 10', etudiantId: 3, etudiantNom: 'Coulibaly Ibrahim', etudiantMatricule: 'ETU-2024-003', moduleNom: 'Programmation C', valeurNote: 9.5, seuil: 10, createdAt: '2025-01-14' },
-      { id: 4, type: 'ABSENCE_NOTE', statut: 'TRAITEE', message: 'Note manquante pour le CC1 Algo', etudiantId: 4, etudiantNom: 'Sangaré Mariam', etudiantMatricule: 'ETU-2024-004', evaluationNom: 'CC1 Algorithmique', createdAt: '2025-01-08', traitePar: 'Admin', commentaireTraitement: 'Étudiant contacté' },
-      { id: 5, type: 'MOYENNE_FAIBLE', statut: 'RESOLUE', message: 'Moyenne remontée après rattrapage', etudiantId: 1, etudiantNom: 'Diallo Amadou', etudiantMatricule: 'ETU-2024-001', createdAt: '2024-12-15' },
-      { id: 6, type: 'RISQUE_ECHEC', statut: 'ACTIVE', message: 'Risque d\'exclusion — 3 modules sous le seuil', etudiantId: 5, etudiantNom: 'Konaté Seydou', etudiantMatricule: 'ETU-2024-005', createdAt: '2025-01-15' },
-    ];
-    this.filteredAlertes = [...this.alertes];
-    this.totalElements = this.alertes.length;
-    this.stats = { critiques: 3, attention: 2, traitees: 1, total: 4 };
-  }
 }

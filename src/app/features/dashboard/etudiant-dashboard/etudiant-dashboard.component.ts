@@ -84,7 +84,10 @@ export class EtudiantDashboardComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
-        this.loadMockData();
+        this.data = {
+          moyenneGenerale: 0, creditValides: 0, creditTotal: 0,
+          alertesActives: 0, resultatsModules: [], evolutionMoyenne: []
+        };
       }
     });
   }
@@ -171,31 +174,4 @@ export class EtudiantDashboardComponent implements OnInit {
     })).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 10);
   }
 
-  private loadMockData(): void {
-    this.data = {
-      moyenneGenerale: 12.8,
-      rang: 12,
-      totalEtudiants: 45,
-      creditValides: 42,
-      creditTotal: 60,
-      alertesActives: 1,
-      resultatsModules: [
-        { moduleId: 1, moduleNom: 'Algorithmes avancés', moduleCode: 'ALGO-301', moyenne: 14.5, noteMax: 20, coefficient: 4, statut: 'VALIDE' },
-        { moduleId: 2, moduleNom: 'Base de données', moduleCode: 'BDD-201', moyenne: 12.0, noteMax: 20, coefficient: 3, statut: 'VALIDE' },
-        { moduleId: 3, moduleNom: 'Réseaux', moduleCode: 'RES-301', moyenne: 9.5, noteMax: 20, coefficient: 3, statut: 'NON_VALIDE' },
-        { moduleId: 4, moduleNom: 'Génie logiciel', moduleCode: 'GL-401', moyenne: 15.2, noteMax: 20, coefficient: 4, statut: 'VALIDE' },
-        { moduleId: 5, moduleNom: 'Systèmes', moduleCode: 'SYS-301', moyenne: 11.0, noteMax: 20, coefficient: 2, statut: 'VALIDE' },
-        { moduleId: 6, moduleNom: 'Anglais', moduleCode: 'ANG-201', moyenne: 13.5, noteMax: 20, coefficient: 2, statut: 'VALIDE' }
-      ],
-      evolutionMoyenne: [
-        { periode: 'S1 2024', valeur: 11.2 },
-        { periode: 'S2 2024', valeur: 11.8 },
-        { periode: 'S1 2025', valeur: 12.3 },
-        { periode: 'S2 2025', valeur: 12.8 }
-      ]
-    };
-    this.buildBarChart(this.data.resultatsModules);
-    this.buildLineChart(this.data.evolutionMoyenne);
-    this.buildNotesRecentes(this.data.resultatsModules);
-  }
 }

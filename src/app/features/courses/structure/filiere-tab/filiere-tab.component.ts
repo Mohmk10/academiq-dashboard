@@ -104,7 +104,7 @@ export class FiliereTabComponent implements OnInit {
     this.isLoading = true;
     this.structureService.getFilieres().subscribe({
       next: (res) => { this.filieres = res.data; this.isLoading = false; },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.filieres = []; }
     });
   }
 
@@ -138,13 +138,5 @@ export class FiliereTabComponent implements OnInit {
         error: () => {}
       });
     });
-  }
-
-  private loadMockData(): void {
-    this.filieres = [
-      { id: 1, nom: 'Informatique', code: 'INFO', departement: 'Sciences & Technologies', actif: true, description: 'Formation en informatique et génie logiciel', niveaux: [{ id: 1, nom: 'L1', code: 'L1', ordre: 1, filiereId: 1 }, { id: 2, nom: 'L2', code: 'L2', ordre: 2, filiereId: 1 }, { id: 3, nom: 'L3', code: 'L3', ordre: 3, filiereId: 1 }] },
-      { id: 2, nom: 'Mathématiques', code: 'MATH', departement: 'Sciences & Technologies', actif: true, niveaux: [{ id: 4, nom: 'L1', code: 'L1', ordre: 1, filiereId: 2 }] },
-      { id: 3, nom: 'Droit', code: 'DRT', departement: 'Sciences Juridiques', actif: false },
-    ];
   }
 }

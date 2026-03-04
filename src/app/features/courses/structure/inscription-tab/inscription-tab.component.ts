@@ -147,10 +147,7 @@ export class InscriptionTabComponent implements OnInit {
     this.structureService.getPromotions().subscribe({
       next: (res) => this.promotions = res.data,
       error: () => {
-        this.promotions = [
-          { id: 1, anneeUniversitaire: '2024-2025', niveauId: 1, niveauNom: 'L1', filiereNom: 'Informatique', actif: true },
-          { id: 2, anneeUniversitaire: '2024-2025', niveauId: 2, niveauNom: 'L2', filiereNom: 'Informatique', actif: true }
-        ];
+        this.promotions = [];
       }
     });
   }
@@ -175,7 +172,7 @@ export class InscriptionTabComponent implements OnInit {
     this.isLoading = true;
     this.structureService.getInscriptions(promoId, this.pageIndex, this.pageSize).subscribe({
       next: (res) => { this.inscriptions = res.data.content; this.totalElements = res.data.totalElements; this.isLoading = false; },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.inscriptions = []; this.totalElements = 0; }
     });
   }
 
@@ -192,13 +189,4 @@ export class InscriptionTabComponent implements OnInit {
   min(a: number, b: number): number { return Math.min(a, b); }
 
   formatDate(date: string): string { return new Date(date).toLocaleDateString('fr-FR'); }
-
-  private loadMockData(): void {
-    this.inscriptions = [
-      { id: 1, etudiantId: 1, etudiantNom: 'Diallo Amadou', etudiantMatricule: 'ETU-2024-001', promotionId: 1, promotionNom: 'L1 Informatique 2024-2025', dateInscription: '2024-10-01', statut: 'INSCRIT' },
-      { id: 2, etudiantId: 2, etudiantNom: 'Traoré Fatoumata', etudiantMatricule: 'ETU-2024-002', promotionId: 1, promotionNom: 'L1 Informatique 2024-2025', dateInscription: '2024-10-01', statut: 'INSCRIT' },
-      { id: 3, etudiantId: 3, etudiantNom: 'Coulibaly Ibrahim', etudiantMatricule: 'ETU-2024-003', promotionId: 1, promotionNom: 'L1 Informatique 2024-2025', dateInscription: '2024-10-02', statut: 'INSCRIT' },
-    ];
-    this.totalElements = 3;
-  }
 }

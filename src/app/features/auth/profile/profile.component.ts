@@ -233,7 +233,7 @@ export default class ProfileComponent implements OnInit {
           error: () => { this.setUserFromProfile(profile); this.isLoading = false; }
         });
       },
-      error: () => { this.isLoading = false; this.loadMockData(); }
+      error: () => { this.isLoading = false; this.user = null; }
     });
   }
 
@@ -322,11 +322,4 @@ export default class ProfileComponent implements OnInit {
     return pwd && confirm && pwd !== confirm ? { mismatch: true } : null;
   }
 
-  private loadMockData(): void {
-    this.setUser({
-      id: 1, nom: 'Kouyaté', prenom: 'Makan', email: 'makan@univ.ml', role: 'ADMIN',
-      telephone: '+223 76 00 00 00', actif: true, createdAt: '2024-01-15',
-      admin: { id: 1, fonction: 'Administrateur système', departement: 'Direction des Systèmes d\'Information', niveau: 'Super Admin' }
-    });
-  }
 }
