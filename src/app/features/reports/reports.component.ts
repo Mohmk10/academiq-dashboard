@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Observable, of, debounceTime, switchMap, startWith, map } from 'rxjs';
@@ -18,7 +17,7 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule,
-    MatButtonModule, MatProgressSpinnerModule, MatAutocompleteModule
+    MatProgressSpinnerModule, MatAutocompleteModule
   ],
   template: `
     <div class="space-y-6 fade-in-up">
@@ -42,11 +41,11 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
               </select>
             </div>
             <div class="flex flex-wrap gap-3">
-              <button mat-raised-button color="primary" [disabled]="!promotionControl.value || loadingMap['releve']" (click)="telechargerReleve()">
+              <button class="btn-primary" [disabled]="!promotionControl.value || loadingMap['releve']" (click)="telechargerReleve()">
                 @if (loadingMap['releve']) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                 <i class="fas fa-file-pdf mr-2 text-red-400"></i> Relevé de notes
               </button>
-              <button mat-raised-button color="primary" [disabled]="!promotionControl.value || loadingMap['attestation']" (click)="telechargerAttestation()">
+              <button class="btn-primary" [disabled]="!promotionControl.value || loadingMap['attestation']" (click)="telechargerAttestation()">
                 @if (loadingMap['attestation']) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                 <i class="fas fa-graduation-cap mr-2 text-red-400"></i> Attestation de réussite
               </button>
@@ -84,11 +83,11 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
               </div>
             </div>
             <div class="flex flex-wrap gap-3">
-              <button mat-raised-button color="primary" [disabled]="!selectedEtudiantId || !promotionControl.value || loadingMap['releve']" (click)="telechargerReleve()">
+              <button class="btn-primary" [disabled]="!selectedEtudiantId || !promotionControl.value || loadingMap['releve']" (click)="telechargerReleve()">
                 @if (loadingMap['releve']) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                 <i class="fas fa-file-pdf mr-2 text-red-400"></i> Relevé de notes
               </button>
-              <button mat-raised-button color="primary" [disabled]="!selectedEtudiantId || !promotionControl.value || loadingMap['attestation']" (click)="telechargerAttestation()">
+              <button class="btn-primary" [disabled]="!selectedEtudiantId || !promotionControl.value || loadingMap['attestation']" (click)="telechargerAttestation()">
                 @if (loadingMap['attestation']) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                 <i class="fas fa-graduation-cap mr-2 text-red-400"></i> Attestation de réussite
               </button>
@@ -110,11 +109,11 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
               </div>
             </div>
             <div class="flex flex-wrap gap-3">
-              <button mat-raised-button color="primary" [disabled]="!promotionCollectifControl.value || loadingMap['pv']" (click)="telechargerPV()">
+              <button class="btn-primary" [disabled]="!promotionCollectifControl.value || loadingMap['pv']" (click)="telechargerPV()">
                 @if (loadingMap['pv']) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                 <i class="fas fa-file-pdf mr-2 text-red-400"></i> PV de délibération
               </button>
-              <button mat-raised-button class="!bg-green-600 !text-white" [disabled]="!promotionCollectifControl.value || loadingMap['excel']" (click)="exporterExcelPromotion()">
+              <button class="btn-success" [disabled]="!promotionCollectifControl.value || loadingMap['excel']" (click)="exporterExcelPromotion()">
                 @if (loadingMap['excel']) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                 <i class="fas fa-file-excel mr-2"></i> Export résultats
               </button>
@@ -145,7 +144,7 @@ import { PromotionResponse, ModuleResponse } from '../../core/models/structure.m
               </select>
             </div>
           </div>
-          <button mat-raised-button class="!bg-green-600 !text-white" [disabled]="!moduleControl.value || !promotionModuleControl.value || loadingMap['excelModule']" (click)="exporterExcelModule()">
+          <button class="btn-success" [disabled]="!moduleControl.value || !promotionModuleControl.value || loadingMap['excelModule']" (click)="exporterExcelModule()">
             @if (loadingMap['excelModule']) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
             <i class="fas fa-file-excel mr-2"></i> Export notes du module
           </button>

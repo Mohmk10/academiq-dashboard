@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
@@ -15,7 +14,6 @@ import { DashboardEnseignantDTO, ModuleEnseignantDTO } from '../../../core/model
   imports: [
     CommonModule,
     RouterLink,
-    MatButtonModule,
     MatProgressSpinnerModule,
     BaseChartDirective,
     DatePipe

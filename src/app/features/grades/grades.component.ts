@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -20,7 +18,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   selector: 'app-grades',
   standalone: true,
   imports: [
-    CommonModule, MatButtonModule, MatIconModule, MatMenuModule,
+    CommonModule, MatMenuModule,
     MatProgressSpinnerModule, MatExpansionModule, MatChipsModule, MatDialogModule
   ],
   template: `

@@ -2,8 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatMenuModule } from '@angular/material/menu';
@@ -22,7 +20,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatTabsModule,
-    MatButtonModule, MatIconModule, MatCheckboxModule, MatSlideToggleModule,
+    MatCheckboxModule, MatSlideToggleModule,
     MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
@@ -188,11 +186,11 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
             <div class="card">
               <h3 class="section-title">Maintenance</h3>
               <div class="flex flex-wrap gap-3">
-                <button mat-raised-button color="primary" [disabled]="isAnalyzing" (click)="analyserPromotions()">
+                <button class="btn-primary" [disabled]="isAnalyzing" (click)="analyserPromotions()">
                   @if (isAnalyzing) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                   <i class="fas fa-magnifying-glass-chart mr-2"></i> Analyser toutes les promotions
                 </button>
-                <button mat-stroked-button (click)="exporterDonnees()">
+                <button class="btn-secondary" (click)="exporterDonnees()">
                   <i class="fas fa-database mr-2"></i> Exporter toutes les données
                 </button>
               </div>

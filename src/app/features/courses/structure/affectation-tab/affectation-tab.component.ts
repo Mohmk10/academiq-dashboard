@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { StructureService } from '../../../../core/services/structure.service';
@@ -14,7 +13,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule,
-    MatIconModule, MatProgressSpinnerModule, MatDialogModule
+    MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
     <div class="space-y-6">
@@ -35,7 +34,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
               }
             </select>
           </div>
-          <button mat-raised-button color="primary" type="submit" [disabled]="affectationForm.invalid || isSubmitting" class="sm:self-center">
+          <button class="btn-primary sm:self-center" type="submit" [disabled]="affectationForm.invalid || isSubmitting">
             <i class="fas fa-link mr-2"></i> Affecter
           </button>
         </form>

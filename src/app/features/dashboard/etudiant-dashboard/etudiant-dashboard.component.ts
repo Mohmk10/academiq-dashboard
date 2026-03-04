@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
@@ -24,7 +23,6 @@ interface NoteRecente {
   standalone: true,
   imports: [
     CommonModule,
-    MatButtonModule,
     MatProgressSpinnerModule,
     BaseChartDirective
   ],

@@ -2,10 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
 import { NoteService } from '../../../core/services/note.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { EvaluationResponse, NotePrepopuleeDTO, NoteSaisieUnitaire } from '../../../core/models/note.model';
@@ -20,8 +18,8 @@ interface GradeRow extends NotePrepopuleeDTO {
   selector: 'app-grade-entry',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, RouterLink, MatButtonModule,
-    MatCheckboxModule, MatProgressSpinnerModule, MatIconModule
+    CommonModule, FormsModule, RouterLink,
+    MatCheckboxModule, MatProgressSpinnerModule
   ],
   template: `
     <div class="space-y-6 fade-in-up">
@@ -44,10 +42,10 @@ interface GradeRow extends NotePrepopuleeDTO {
           </div>
         </div>
         <div class="flex gap-2">
-          <button mat-stroked-button (click)="downloadTemplate()" [disabled]="!evaluation">
+          <button class="btn-secondary" (click)="downloadTemplate()" [disabled]="!evaluation">
             <i class="fas fa-download mr-2"></i> Template
           </button>
-          <button mat-raised-button color="primary" (click)="saveAll()" [disabled]="isSaving || rows.length === 0">
+          <button class="btn-primary" (click)="saveAll()" [disabled]="isSaving || rows.length === 0">
             @if (isSaving) {
               <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
             }

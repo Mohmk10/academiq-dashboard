@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -14,7 +12,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
 @Component({
   selector: 'app-filiere-tab',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatDialogModule],
+  imports: [CommonModule, MatMenuModule, MatProgressSpinnerModule, MatDialogModule],
   template: `
     <div class="space-y-4">
       <div class="flex justify-end">
@@ -44,8 +42,8 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
                   </div>
                   <h3 class="font-semibold text-gray-900 mt-2">{{ filiere.nom }}</h3>
                 </div>
-                <button mat-icon-button [matMenuTriggerFor]="menu" class="!-mt-1 !-mr-2">
-                  <mat-icon>more_vert</mat-icon>
+                <button class="action-menu-btn !-mt-1 !-mr-2" [matMenuTriggerFor]="menu">
+                  <i class="fas fa-ellipsis-vertical"></i>
                 </button>
                 <mat-menu #menu="matMenu">
                   <button mat-menu-item (click)="openEdit(filiere)"><i class="fas fa-pen mr-3 text-gray-400"></i> Modifier</button>

@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AlerteService } from '../../../../core/services/alerte.service';
@@ -15,7 +13,7 @@ import { RegleAlerteResponse, TypeAlerte } from '../../../../core/models/alerte.
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatDialogModule,
-    MatButtonModule, MatIconModule, MatSlideToggleModule, MatProgressSpinnerModule
+    MatSlideToggleModule, MatProgressSpinnerModule
   ],
   template: `
     <div class="dialog-container">

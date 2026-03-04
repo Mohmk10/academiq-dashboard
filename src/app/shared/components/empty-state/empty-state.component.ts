@@ -1,12 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-empty-state',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule],
+  imports: [CommonModule, RouterLink],
   template: `
     <div class="flex flex-col items-center justify-center py-16 text-gray-400">
       <i [class]="'fas ' + icon + ' text-5xl mb-4'"></i>
@@ -15,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
         <p class="text-sm mt-1">{{ message }}</p>
       }
       @if (actionLabel && actionLink) {
-        <a mat-raised-button [routerLink]="actionLink" color="primary" class="mt-4">{{ actionLabel }}</a>
+        <a [routerLink]="actionLink" class="btn-primary mt-4">{{ actionLabel }}</a>
       }
     </div>
   `

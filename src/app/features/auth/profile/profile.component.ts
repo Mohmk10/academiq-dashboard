@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
 import { UtilisateurService } from '../../../core/services/utilisateur.service';
@@ -12,7 +10,7 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule, MatProgressSpinnerModule],
   template: `
     <div class="space-y-6 max-w-3xl mx-auto fade-in-up">
       @if (isLoading) {
@@ -44,7 +42,7 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
               <div><span class="text-xs text-gray-400 uppercase">Adresse</span><p class="text-sm">{{ user?.adresse || '—' }}</p></div>
             </div>
             <div class="flex justify-end gap-3 mt-4">
-              <button mat-raised-button color="primary" (click)="editMode = true"><i class="fas fa-pen mr-2"></i> Modifier</button>
+              <button class="btn-primary" (click)="editMode = true"><i class="fas fa-pen mr-2"></i> Modifier</button>
             </div>
           } @else {
             <form [formGroup]="profileForm">
@@ -76,8 +74,8 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
               </div>
             </form>
             <div class="flex justify-end gap-3 mt-4">
-              <button mat-stroked-button (click)="cancelEdit()">Annuler</button>
-              <button mat-raised-button color="primary" [disabled]="profileForm.invalid || isSaving" (click)="saveProfile()">
+              <button class="btn-secondary" (click)="cancelEdit()">Annuler</button>
+              <button class="btn-primary" [disabled]="profileForm.invalid || isSaving" (click)="saveProfile()">
                 @if (isSaving) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                 Enregistrer
               </button>

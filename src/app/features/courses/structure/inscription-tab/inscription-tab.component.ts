@@ -32,7 +32,7 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
               }
             </select>
           </div>
-          <button mat-raised-button color="primary" type="submit" [disabled]="inscriptionForm.invalid || isSubmitting" class="sm:self-center">
+          <button class="btn-primary sm:self-center" type="submit" [disabled]="inscriptionForm.invalid || isSubmitting">
             <i class="fas fa-user-plus mr-2"></i> Inscrire
           </button>
         </form>

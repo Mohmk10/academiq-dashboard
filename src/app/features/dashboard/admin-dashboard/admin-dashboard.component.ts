@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
@@ -14,7 +13,6 @@ import { DashboardAdminDTO, DerniereAlerteDTO, RepartitionDTO } from '../../../c
   imports: [
     CommonModule,
     RouterLink,
-    MatButtonModule,
     MatProgressSpinnerModule,
     BaseChartDirective
   ],
