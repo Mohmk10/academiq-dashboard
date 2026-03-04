@@ -12,34 +12,34 @@ export class RapportService {
     if (this.mock.isDevMode()) {
       return of(this.mock.createFakeBlob()).pipe(delay(500));
     }
-    return this.api.download(`rapports/releve/${etudiantId}?promotionId=${promotionId}`);
+    return this.api.download(`rapports/releve/etudiant/${etudiantId}/promotion/${promotionId}`);
   }
 
   telechargerAttestation(etudiantId: number, promotionId: number): Observable<Blob> {
     if (this.mock.isDevMode()) {
       return of(this.mock.createFakeBlob()).pipe(delay(500));
     }
-    return this.api.download(`rapports/attestation/${etudiantId}?promotionId=${promotionId}`);
+    return this.api.download(`rapports/attestation/etudiant/${etudiantId}/promotion/${promotionId}`);
   }
 
   telechargerPV(promotionId: number): Observable<Blob> {
     if (this.mock.isDevMode()) {
       return of(this.mock.createFakeBlob()).pipe(delay(500));
     }
-    return this.api.download(`rapports/pv/${promotionId}`);
+    return this.api.download(`rapports/pv-deliberation/promotion/${promotionId}`);
   }
 
   exporterExcelPromotion(promotionId: number): Observable<Blob> {
     if (this.mock.isDevMode()) {
       return of(this.mock.createFakeBlob()).pipe(delay(500));
     }
-    return this.api.download(`rapports/excel/promotion/${promotionId}`);
+    return this.api.download(`rapports/export-excel/promotion/${promotionId}`);
   }
 
   exporterExcelModule(moduleId: number, promotionId: number): Observable<Blob> {
     if (this.mock.isDevMode()) {
       return of(this.mock.createFakeBlob()).pipe(delay(500));
     }
-    return this.api.download(`rapports/excel/module/${moduleId}?promotionId=${promotionId}`);
+    return this.api.download(`rapports/export-excel/module/${moduleId}/promotion/${promotionId}`);
   }
 }

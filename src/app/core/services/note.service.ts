@@ -27,14 +27,20 @@ export class NoteService {
       if (promotionId) list = list.filter(e => e.promotionId === promotionId);
       return of(this.mock.wrap(list)).pipe(delay(300));
     }
-    return this.api.get<EvaluationResponse[]>('evaluations', { moduleId, promotionId });
+    if (moduleId && promotionId) {
+      return this.api.get<EvaluationResponse[]>(`notes/evaluations/module/${moduleId}/promotion/${promotionId}`);
+    }
+    if (moduleId) {
+      return this.api.get<EvaluationResponse[]>(`notes/evaluations/module/${moduleId}`);
+    }
+    return this.api.get<EvaluationResponse[]>('notes/evaluations/module/0');
   }
 
   getEvaluation(id: number): Observable<ApiResponse<EvaluationResponse>> {
     if (this.mock.isDevMode()) {
       return of(this.mock.wrap(this.mock.evaluations.find(e => e.id === id)!)).pipe(delay(300));
     }
-    return this.api.get<EvaluationResponse>(`evaluations/${id}`);
+    return this.api.get<EvaluationResponse>(`notes/evaluations/${id}`);
   }
 
   createEvaluation(request: EvaluationRequest): Observable<ApiResponse<EvaluationResponse>> {
@@ -48,7 +54,16 @@ export class NoteService {
       };
       return of(this.mock.wrap(evaluation)).pipe(delay(300));
     }
-    return this.api.post<EvaluationResponse>('evaluations', request);
+    const body = {
+      nom: request.nom,
+      type: request.type,
+      dateEvaluation: request.date,
+      noteMaximale: request.noteMax ?? 20,
+      coefficient: request.coefficient,
+      moduleFormationId: request.moduleId,
+      promotionId: request.promotionId
+    };
+    return this.api.post<EvaluationResponse>('notes/evaluations', body);
   }
 
   updateEvaluation(id: number, request: EvaluationRequest): Observable<ApiResponse<EvaluationResponse>> {
@@ -56,21 +71,30 @@ export class NoteService {
       const existing = this.mock.evaluations.find(e => e.id === id)!;
       return of(this.mock.wrap({ ...existing, ...request })).pipe(delay(300));
     }
-    return this.api.put<EvaluationResponse>(`evaluations/${id}`, request);
+    const body = {
+      nom: request.nom,
+      type: request.type,
+      dateEvaluation: request.date,
+      noteMaximale: request.noteMax ?? 20,
+      coefficient: request.coefficient,
+      moduleFormationId: request.moduleId,
+      promotionId: request.promotionId
+    };
+    return this.api.put<EvaluationResponse>(`notes/evaluations/${id}`, body);
   }
 
   deleteEvaluation(id: number): Observable<ApiResponse<void>> {
     if (this.mock.isDevMode()) {
       return of(this.mock.wrap(undefined as any)).pipe(delay(300));
     }
-    return this.api.delete<void>(`evaluations/${id}`);
+    return this.api.delete<void>(`notes/evaluations/${id}`);
   }
 
   publierEvaluation(id: number): Observable<ApiResponse<void>> {
     if (this.mock.isDevMode()) {
       return of(this.mock.wrap(undefined as any)).pipe(delay(300));
     }
-    return this.api.patch<void>(`evaluations/${id}/publier`);
+    return this.api.patch<void>(`notes/evaluations/${id}/terminer`);
   }
 
   // --- Notes ---
@@ -84,14 +108,14 @@ export class NoteService {
       };
       return of(this.mock.wrap(note)).pipe(delay(300));
     }
-    return this.api.post<NoteResponse>('notes', request);
+    return this.api.post<NoteResponse>('notes/saisir', request);
   }
 
   saisirEnMasse(request: SaisieEnMasseRequest): Observable<ApiResponse<SaisieEnMasseResult>> {
     if (this.mock.isDevMode()) {
       return of(this.mock.wrap({ totalTraitees: request.notes.length, totalSucces: request.notes.length, totalEchecs: 0, erreurs: [] })).pipe(delay(500));
     }
-    return this.api.post<SaisieEnMasseResult>('notes/saisie-masse', request);
+    return this.api.post<SaisieEnMasseResult>('notes/saisir-en-masse', request);
   }
 
   getNotesEvaluation(evaluationId: number): Observable<ApiResponse<NoteResponse[]>> {
@@ -111,7 +135,7 @@ export class NoteService {
     if (this.mock.isDevMode()) {
       return of(this.mock.wrap(this.mock.getNotesPrepopulees())).pipe(delay(300));
     }
-    return this.api.get<NotePrepopuleeDTO[]>(`notes/evaluation/${evaluationId}/prepopulees`);
+    return this.api.get<NotePrepopuleeDTO[]>(`notes/evaluations/${evaluationId}/preparer-saisie`);
   }
 
   getNotesEtudiant(etudiantId: number): Observable<ApiResponse<NoteResponse[]>> {
@@ -140,16 +164,16 @@ export class NoteService {
       };
       return of(this.mock.wrap(stats)).pipe(delay(300));
     }
-    return this.api.get<StatistiquesEvaluationDTO>(`notes/evaluation/${evaluationId}/statistiques`);
+    return this.api.get<StatistiquesEvaluationDTO>(`notes/evaluations/${evaluationId}/statistiques`);
   }
 
   // --- Recapitulatifs ---
   getRecapitulatifEtudiant(etudiantId: number, promotionId: number): Observable<ApiResponse<RecapitulatifEtudiantDTO>> {
-    return this.api.get<RecapitulatifEtudiantDTO>(`notes/recapitulatif/etudiant/${etudiantId}`, { promotionId });
+    return this.api.get<RecapitulatifEtudiantDTO>(`notes/etudiant/${etudiantId}/promotion/${promotionId}/recapitulatif`);
   }
 
   getRecapitulatifModule(moduleId: number, promotionId: number): Observable<ApiResponse<RecapitulatifModuleDTO>> {
-    return this.api.get<RecapitulatifModuleDTO>(`notes/recapitulatif/module/${moduleId}`, { promotionId });
+    return this.api.get<RecapitulatifModuleDTO>(`notes/modules/${moduleId}/promotion/${promotionId}/recapitulatif`);
   }
 
   // --- Import/Export ---
@@ -157,13 +181,13 @@ export class NoteService {
     if (this.mock.isDevMode()) {
       return of(this.mock.createFakeBlob()).pipe(delay(300));
     }
-    return this.api.download(`notes/evaluation/${evaluationId}/template`);
+    return this.api.download(`notes/evaluations/${evaluationId}/template-excel`);
   }
 
   importerNotes(evaluationId: number, file: File): Observable<ApiResponse<ImportResult>> {
     if (this.mock.isDevMode()) {
       return of(this.mock.wrap({ totalTraitees: 45, totalSucces: 42, totalEchecs: 3, erreurs: ['Ligne 5: note invalide', 'Ligne 12: etudiant inconnu', 'Ligne 30: doublon'] })).pipe(delay(500));
     }
-    return this.api.upload<ImportResult>(`notes/evaluation/${evaluationId}/import`, file);
+    return this.api.upload<ImportResult>(`notes/evaluations/${evaluationId}/import-excel`, file);
   }
 }

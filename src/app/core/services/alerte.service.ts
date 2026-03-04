@@ -21,7 +21,7 @@ export class AlerteService {
       const list = statut ? this.mock.alertes.filter(a => a.statut === statut) : this.mock.alertes;
       return of(this.mock.wrap(this.mock.paginate(list, page, size))).pipe(delay(300));
     }
-    return this.api.getPage<AlerteResponse>('alertes', page, size, 'createdAt', 'desc', statut ? { statut } : undefined);
+    return this.api.getPage<AlerteResponse>('alertes/rechercher', page, size, 'createdAt', 'desc', statut ? { statut } : undefined);
   }
 
   getAlerte(id: number): Observable<ApiResponse<AlerteResponse>> {
@@ -47,12 +47,12 @@ export class AlerteService {
     return this.api.patch<AlerteResponse>(`alertes/${id}/resoudre`);
   }
 
-  ignorerAlerte(id: number): Observable<ApiResponse<AlerteResponse>> {
+  ignorerAlerte(id: number, commentaire?: string): Observable<ApiResponse<AlerteResponse>> {
     if (this.mock.isDevMode()) {
       const alerte = { ...this.mock.alertes.find(a => a.id === id)!, statut: 'IGNOREE' as any };
       return of(this.mock.wrap(alerte)).pipe(delay(300));
     }
-    return this.api.patch<AlerteResponse>(`alertes/${id}/ignorer`);
+    return this.api.patch<AlerteResponse>(`alertes/${id}/ignorer`, { commentaire: commentaire ?? '' });
   }
 
   getAlertesEtudiant(etudiantId: number): Observable<ApiResponse<AlerteResponse[]>> {

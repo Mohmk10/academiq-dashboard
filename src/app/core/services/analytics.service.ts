@@ -26,34 +26,40 @@ export class AnalyticsService {
     return this.api.get<DashboardAdminDTO>('analytics/dashboard/admin');
   }
 
-  getDashboardEnseignant(): Observable<ApiResponse<DashboardEnseignantDTO>> {
+  getDashboardEnseignant(enseignantId?: number): Observable<ApiResponse<DashboardEnseignantDTO>> {
     if (this.mock.isDevMode()) {
       return of(this.mock.wrap(this.mock.dashboardEnseignant)).pipe(delay(300));
     }
-    return this.api.get<DashboardEnseignantDTO>('analytics/dashboard/enseignant');
+    if (enseignantId) {
+      return this.api.get<DashboardEnseignantDTO>(`analytics/dashboard/enseignant/${enseignantId}`);
+    }
+    return this.api.get<DashboardEnseignantDTO>('analytics/dashboard/enseignant/0');
   }
 
-  getDashboardEtudiant(): Observable<ApiResponse<DashboardEtudiantDTO>> {
+  getDashboardEtudiant(etudiantId?: number): Observable<ApiResponse<DashboardEtudiantDTO>> {
     if (this.mock.isDevMode()) {
       return of(this.mock.wrap(this.mock.dashboardEtudiant)).pipe(delay(300));
     }
-    return this.api.get<DashboardEtudiantDTO>('analytics/dashboard/etudiant');
+    if (etudiantId) {
+      return this.api.get<DashboardEtudiantDTO>(`analytics/dashboard/etudiant/${etudiantId}`);
+    }
+    return this.api.get<DashboardEtudiantDTO>('analytics/dashboard/etudiant/0');
   }
 
   getTauxReussite(promotionId: number): Observable<ApiResponse<TauxReussiteDTO>> {
-    return this.api.get<TauxReussiteDTO>(`analytics/taux-reussite/${promotionId}`);
+    return this.api.get<TauxReussiteDTO>(`analytics/taux-reussite/promotion/${promotionId}`);
   }
 
-  getDistributionNotes(moduleId: number, promotionId?: number): Observable<ApiResponse<DistributionNotesDTO>> {
-    return this.api.get<DistributionNotesDTO>(`analytics/distribution/${moduleId}`, promotionId ? { promotionId } : undefined);
+  getDistributionNotes(moduleId: number, promotionId: number): Observable<ApiResponse<DistributionNotesDTO>> {
+    return this.api.get<DistributionNotesDTO>(`analytics/distribution/module/${moduleId}/promotion/${promotionId}`);
   }
 
-  getComparaisonPromotions(niveauId: number): Observable<ApiResponse<ComparaisonPromotionsDTO>> {
-    return this.api.get<ComparaisonPromotionsDTO>(`analytics/comparaison-promotions/${niveauId}`);
+  getComparaisonPromotions(promotionIds: number[]): Observable<ApiResponse<ComparaisonPromotionsDTO>> {
+    return this.api.get<ComparaisonPromotionsDTO>('analytics/comparaison', { promotionIds: promotionIds.join(',') });
   }
 
-  getEvolutionPerformance(promotionId: number): Observable<ApiResponse<EvolutionPerformanceDTO>> {
-    return this.api.get<EvolutionPerformanceDTO>(`analytics/evolution/${promotionId}`);
+  getEvolutionEtudiant(etudiantId: number): Observable<ApiResponse<EvolutionPerformanceDTO>> {
+    return this.api.get<EvolutionPerformanceDTO>(`analytics/evolution/etudiant/${etudiantId}`);
   }
 
   getBulletinEtudiant(etudiantId: number, promotionId: number): Observable<ApiResponse<BulletinEtudiantDTO>> {
