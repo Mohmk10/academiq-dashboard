@@ -20,21 +20,36 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN', 'RESPONSABLE_PEDAGOGIQUE'] }
       },
-      { path: 'etudiants/:id', loadComponent: () => import('./features/students/student-detail/student-detail.component') },
+      {
+        path: 'etudiants/:id',
+        loadComponent: () => import('./features/students/student-detail/student-detail.component'),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'RESPONSABLE_PEDAGOGIQUE'] }
+      },
       {
         path: 'enseignants',
         loadComponent: () => import('./features/teachers/teacher-list/teacher-list.component'),
         canActivate: [roleGuard],
         data: { roles: ['ADMIN', 'RESPONSABLE_PEDAGOGIQUE'] }
       },
-      { path: 'enseignants/:id', loadComponent: () => import('./features/teachers/teacher-detail/teacher-detail.component') },
+      {
+        path: 'enseignants/:id',
+        loadComponent: () => import('./features/teachers/teacher-detail/teacher-detail.component'),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'RESPONSABLE_PEDAGOGIQUE'] }
+      },
       {
         path: 'structure',
         loadComponent: () => import('./features/courses/structure/structure.component'),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN', 'RESPONSABLE_PEDAGOGIQUE', 'ENSEIGNANT'] }
       },
-      { path: 'notes', loadComponent: () => import('./features/grades/grades.component') },
+      {
+        path: 'notes',
+        loadComponent: () => import('./features/grades/grades.component'),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'RESPONSABLE_PEDAGOGIQUE', 'ENSEIGNANT', 'ETUDIANT'] }
+      },
       {
         path: 'notes/saisie/:evaluationId',
         loadComponent: () => import('./features/grades/grade-entry/grade-entry.component'),

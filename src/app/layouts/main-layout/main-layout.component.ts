@@ -51,6 +51,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   devRoles: { value: Role; label: string }[] = [
     { value: 'SUPER_ADMIN', label: 'Super Admin' },
     { value: 'ADMIN', label: 'Admin' },
+    { value: 'RESPONSABLE_PEDAGOGIQUE', label: 'Resp. Pedagogique' },
     { value: 'ENSEIGNANT', label: 'Enseignant' },
     { value: 'ETUDIANT', label: 'Etudiant' }
   ];
@@ -132,7 +133,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private buildMenu(): MenuSection[] {
     const sections: MenuSection[] = [
       {
-        title: 'Principal',
+        title: 'PRINCIPAL',
         items: [{ label: 'Tableau de bord', icon: 'fa-solid fa-house', route: '/dashboard' }]
       }
     ];
@@ -140,7 +141,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     if (this.authService.isExactRole('SUPER_ADMIN')) {
       sections.push(
         {
-          title: 'Gestion',
+          title: 'ADMINISTRATION',
+          items: [
+            { label: 'Gestion des utilisateurs', icon: 'fa-solid fa-users-gear', route: '/gestion-utilisateurs' },
+            { label: 'Logs d\'audit', icon: 'fa-solid fa-clipboard-list', route: '/audit-logs' },
+            { label: 'Parametres', icon: 'fa-solid fa-gear', route: '/parametres' },
+          ]
+        },
+        {
+          title: 'GESTION',
           items: [
             { label: 'Etudiants', icon: 'fa-solid fa-user-graduate', route: '/etudiants' },
             { label: 'Enseignants', icon: 'fa-solid fa-chalkboard-user', route: '/enseignants' },
@@ -149,25 +158,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           ]
         },
         {
-          title: 'Suivi',
+          title: 'SUIVI',
           items: [
             { label: 'Alertes', icon: 'fa-solid fa-triangle-exclamation', route: '/alertes' },
             { label: 'Rapports', icon: 'fa-solid fa-chart-column', route: '/rapports' },
-          ]
-        },
-        {
-          title: 'Administration',
-          items: [
-            { label: 'Utilisateurs', icon: 'fa-solid fa-users-gear', route: '/gestion-utilisateurs' },
-            { label: 'Logs d\'audit', icon: 'fa-solid fa-clipboard-list', route: '/audit-logs' },
-            { label: 'Parametres', icon: 'fa-solid fa-gear', route: '/parametres' },
           ]
         }
       );
     } else if (this.authService.isExactRole('ADMIN')) {
       sections.push(
         {
-          title: 'Gestion',
+          title: 'GESTION',
           items: [
             { label: 'Etudiants', icon: 'fa-solid fa-user-graduate', route: '/etudiants' },
             { label: 'Enseignants', icon: 'fa-solid fa-chalkboard-user', route: '/enseignants' },
@@ -176,14 +177,14 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           ]
         },
         {
-          title: 'Suivi',
+          title: 'SUIVI',
           items: [
             { label: 'Alertes', icon: 'fa-solid fa-triangle-exclamation', route: '/alertes' },
             { label: 'Rapports', icon: 'fa-solid fa-chart-column', route: '/rapports' },
           ]
         },
         {
-          title: 'Systeme',
+          title: 'SYSTEME',
           items: [
             { label: 'Parametres', icon: 'fa-solid fa-gear', route: '/parametres' },
           ]
@@ -192,14 +193,16 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     } else if (this.authService.isExactRole('RESPONSABLE_PEDAGOGIQUE')) {
       sections.push(
         {
-          title: 'Gestion',
+          title: 'CONSULTATION',
           items: [
             { label: 'Etudiants', icon: 'fa-solid fa-user-graduate', route: '/etudiants' },
+            { label: 'Enseignants', icon: 'fa-solid fa-chalkboard-user', route: '/enseignants' },
+            { label: 'Structure', icon: 'fa-solid fa-building-columns', route: '/structure' },
             { label: 'Notes', icon: 'fa-solid fa-file-pen', route: '/notes' },
           ]
         },
         {
-          title: 'Suivi',
+          title: 'SUIVI',
           items: [
             { label: 'Alertes', icon: 'fa-solid fa-triangle-exclamation', route: '/alertes' },
             { label: 'Rapports', icon: 'fa-solid fa-chart-column', route: '/rapports' },
@@ -209,13 +212,14 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     } else if (this.authService.isExactRole('ENSEIGNANT')) {
       sections.push(
         {
-          title: 'Gestion',
+          title: 'PEDAGOGIE',
           items: [
+            { label: 'Structure', icon: 'fa-solid fa-building-columns', route: '/structure' },
             { label: 'Mes notes', icon: 'fa-solid fa-file-pen', route: '/notes' },
           ]
         },
         {
-          title: 'Suivi',
+          title: 'SUIVI',
           items: [
             { label: 'Alertes', icon: 'fa-solid fa-triangle-exclamation', route: '/alertes' },
             { label: 'Rapports', icon: 'fa-solid fa-chart-column', route: '/rapports' },
@@ -223,13 +227,20 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         }
       );
     } else if (this.authService.isExactRole('ETUDIANT')) {
-      sections.push({
-        title: 'Espace etudiant',
-        items: [
-          { label: 'Mes notes', icon: 'fa-solid fa-file-pen', route: '/notes' },
-          { label: 'Mes releves', icon: 'fa-solid fa-chart-column', route: '/rapports' },
-        ]
-      });
+      sections.push(
+        {
+          title: 'SCOLARITE',
+          items: [
+            { label: 'Mes notes', icon: 'fa-solid fa-file-pen', route: '/notes' },
+          ]
+        },
+        {
+          title: 'SUIVI',
+          items: [
+            { label: 'Mes releves', icon: 'fa-solid fa-chart-column', route: '/rapports' },
+          ]
+        }
+      );
     }
 
     return sections;
