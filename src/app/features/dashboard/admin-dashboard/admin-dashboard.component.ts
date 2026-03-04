@@ -5,7 +5,24 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { AnalyticsService } from '../../../core/services/analytics.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { DashboardAdminDTO, DerniereAlerteDTO, RepartitionDTO } from '../../../core/models/analytics.model';
+
+interface SystemStats {
+  cpuUsage: number;
+  memoryUsage: number;
+  diskUsage: number;
+  uptime: string;
+  activeUsers: number;
+  requestsToday: number;
+}
+
+interface RecentLog {
+  action: string;
+  user: string;
+  date: string;
+  type: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'ROLE_CHANGE';
+}
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -49,11 +66,24 @@ export class AdminDashboardComponent implements OnInit {
     }
   };
 
+  isSuperAdmin = false;
+  systemStats: SystemStats | null = null;
+  recentLogs: RecentLog[] = [];
+
   private chartColors = ['#2563EB', '#059669', '#8B5CF6', '#D97706', '#DC2626', '#06B6D4', '#EC4899', '#F97316'];
 
-  constructor(private analyticsService: AnalyticsService) {}
+  constructor(
+    private analyticsService: AnalyticsService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    this.isSuperAdmin = this.authService.isExactRole('SUPER_ADMIN');
+
+    if (this.isSuperAdmin) {
+      this.loadSystemStats();
+    }
+
     this.analyticsService.getDashboardAdmin().subscribe({
       next: (res) => {
         this.data = res.data;
@@ -67,6 +97,41 @@ export class AdminDashboardComponent implements OnInit {
         this.loadMockData();
       }
     });
+  }
+
+  private loadSystemStats(): void {
+    this.systemStats = {
+      cpuUsage: 34,
+      memoryUsage: 62,
+      diskUsage: 45,
+      uptime: '15j 8h 42m',
+      activeUsers: 23,
+      requestsToday: 1847
+    };
+    this.recentLogs = [
+      { action: 'Role modifie pour Diagne Abdou', user: 'Kouyate Makan', date: '2026-03-04T09:20:00', type: 'ROLE_CHANGE' },
+      { action: 'Nouvel etudiant inscrit (ETU-2025-016)', user: 'Diagne Abdou', date: '2026-03-04T10:00:00', type: 'CREATE' },
+      { action: 'Notes saisies CC2 Spring Boot', user: 'Diop Ibrahima', date: '2026-03-03T15:30:00', type: 'UPDATE' },
+      { action: 'Export releves L3 GL', user: 'Diagne Abdou', date: '2026-03-03T14:00:00', type: 'CREATE' },
+      { action: 'Connexion reussie', user: 'Diagne Abdou', date: '2026-03-03T08:30:00', type: 'LOGIN' }
+    ];
+  }
+
+  getLogIcon(type: string): string {
+    const icons: Record<string, string> = {
+      'CREATE': 'fa-plus text-green-500',
+      'UPDATE': 'fa-pen text-blue-500',
+      'DELETE': 'fa-trash text-red-500',
+      'LOGIN': 'fa-right-to-bracket text-gray-400',
+      'ROLE_CHANGE': 'fa-user-shield text-purple-500'
+    };
+    return icons[type] ?? 'fa-circle text-gray-400';
+  }
+
+  formatDateTime(date: string): string {
+    const d = new Date(date);
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) +
+      ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   }
 
   getAlertTypeIcon(type: string): string {

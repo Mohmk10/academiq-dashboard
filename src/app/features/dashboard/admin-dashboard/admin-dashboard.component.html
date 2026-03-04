@@ -4,6 +4,82 @@
   </div>
 } @else if (data) {
   <div class="space-y-6 fade-in-up">
+
+    <!-- SUPER_ADMIN Section -->
+    @if (isSuperAdmin && systemStats) {
+      <!-- Welcome Banner -->
+      <div class="relative overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white">
+        <div class="relative z-10">
+          <h2 class="text-lg font-semibold">Bienvenue, Super Administrateur</h2>
+          <p class="text-purple-200 text-sm mt-1">Vue d'ensemble systeme — tout est sous controle</p>
+        </div>
+        <div class="absolute right-6 top-1/2 -translate-y-1/2 opacity-10">
+          <i class="fas fa-shield-halved text-8xl"></i>
+        </div>
+      </div>
+
+      <!-- System Metrics -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="metric-card">
+          <div class="metric-value text-purple-600">{{ systemStats.cpuUsage }}%</div>
+          <div class="metric-label">CPU</div>
+          <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+            <div class="h-1.5 rounded-full bg-purple-500" [style.width.%]="systemStats.cpuUsage"></div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value text-blue-600">{{ systemStats.memoryUsage }}%</div>
+          <div class="metric-label">Memoire</div>
+          <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+            <div class="h-1.5 rounded-full bg-blue-500" [style.width.%]="systemStats.memoryUsage"></div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value text-emerald-600">{{ systemStats.diskUsage }}%</div>
+          <div class="metric-label">Disque</div>
+          <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+            <div class="h-1.5 rounded-full bg-emerald-500" [style.width.%]="systemStats.diskUsage"></div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value text-gray-900">{{ systemStats.uptime }}</div>
+          <div class="metric-label">Uptime</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value text-amber-600">{{ systemStats.activeUsers }}</div>
+          <div class="metric-label">Utilisateurs actifs</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value text-indigo-600">{{ systemStats.requestsToday }}</div>
+          <div class="metric-label">Requetes aujourd'hui</div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="section-title !mb-0">Activite recente</h3>
+          <a routerLink="/audit-logs" class="text-sm text-primary font-medium hover:text-primary-hover transition-colors inline-flex items-center gap-1">
+            Voir tous les logs <i class="fas fa-arrow-right text-xs"></i>
+          </a>
+        </div>
+        <div class="divide-y divide-gray-100">
+          @for (log of recentLogs; track log.date) {
+            <div class="flex items-center gap-3 py-3">
+              <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center shrink-0">
+                <i class="fas {{ getLogIcon(log.type) }} text-sm"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-900 truncate">{{ log.action }}</p>
+                <p class="text-xs text-gray-400">{{ log.user }}</p>
+              </div>
+              <span class="text-xs text-gray-400 whitespace-nowrap">{{ formatDateTime(log.date) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
     <!-- Metric Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       <div class="stat-card">
