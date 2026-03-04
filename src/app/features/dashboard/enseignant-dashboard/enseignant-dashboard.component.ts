@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { AnalyticsService } from '../../../core/services/analytics.service';
@@ -18,11 +15,8 @@ import { DashboardEnseignantDTO, ModuleEnseignantDTO } from '../../../core/model
   imports: [
     CommonModule,
     RouterLink,
-    MatTableModule,
-    MatSortModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatProgressBarModule,
     BaseChartDirective,
     DatePipe
   ],
@@ -35,7 +29,6 @@ export class EnseignantDashboardComponent implements OnInit {
   userName = '';
   today = new Date();
   sortedModules: ModuleEnseignantDTO[] = [];
-  displayedColumns = ['moduleNom', 'moduleCode', 'nombreEtudiants', 'moyenneClasse', 'evaluationsCount', 'actions'];
 
   barData: ChartData<'bar'> = { labels: [], datasets: [] };
   barOptions: ChartConfiguration<'bar'>['options'] = {
@@ -90,22 +83,36 @@ export class EnseignantDashboardComponent implements OnInit {
     return 'warn';
   }
 
-  onSort(sort: Sort): void {
+  sortColumn = '';
+  sortDirection: 'asc' | 'desc' | '' = '';
+
+  onSort(column: string): void {
     if (!this.data) return;
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : this.sortDirection === 'desc' ? '' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
     const data = [...this.data.modules];
-    if (!sort.active || sort.direction === '') {
+    if (!this.sortColumn || this.sortDirection === '') {
       this.sortedModules = data;
       return;
     }
+    const isAsc = this.sortDirection === 'asc';
     this.sortedModules = data.sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      switch (sort.active) {
+      switch (this.sortColumn) {
         case 'moduleNom': return compare(a.moduleNom, b.moduleNom, isAsc);
         case 'nombreEtudiants': return compare(a.nombreEtudiants, b.nombreEtudiants, isAsc);
         case 'moyenneClasse': return compare(a.moyenneClasse, b.moyenneClasse, isAsc);
         default: return 0;
       }
     });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column || this.sortDirection === '') return 'fa-sort';
+    return this.sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down';
   }
 
   private buildBarChart(modules: ModuleEnseignantDTO[]): void {

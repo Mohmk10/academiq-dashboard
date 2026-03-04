@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BaseChartDirective } from 'ng2-charts';
@@ -25,7 +24,6 @@ interface NoteRecente {
   standalone: true,
   imports: [
     CommonModule,
-    MatTableModule,
     MatButtonModule,
     MatProgressSpinnerModule,
     BaseChartDirective
@@ -38,7 +36,6 @@ export class EtudiantDashboardComponent implements OnInit {
   isLoading = true;
   userName = '';
   notesRecentes: NoteRecente[] = [];
-  notesColumns = ['date', 'evaluation', 'module', 'type', 'note'];
 
   barData: ChartData<'bar'> = { labels: [], datasets: [] };
   barOptions: ChartConfiguration<'bar'>['options'] = {

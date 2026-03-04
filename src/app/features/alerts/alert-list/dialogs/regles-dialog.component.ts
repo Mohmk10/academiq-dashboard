@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -15,7 +14,7 @@ import { RegleAlerteResponse, TypeAlerte } from '../../../../core/models/alerte.
   selector: 'app-regles-dialog',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatDialogModule, MatTableModule,
+    CommonModule, ReactiveFormsModule, MatDialogModule,
     MatButtonModule, MatIconModule, MatSlideToggleModule, MatProgressSpinnerModule
   ],
   template: `
@@ -61,37 +60,33 @@ import { RegleAlerteResponse, TypeAlerte } from '../../../../core/models/alerte.
         } @else if (regles.length === 0) {
           <p class="text-center text-gray-400 py-8">Aucune règle configurée</p>
         } @else {
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="regles" class="w-full">
-              <ng-container matColumnDef="type">
-                <th mat-header-cell *matHeaderCellDef>Type</th>
-                <td mat-cell *matCellDef="let row">{{ getTypeLabel(row.type) }}</td>
-              </ng-container>
-              <ng-container matColumnDef="seuil">
-                <th mat-header-cell *matHeaderCellDef>Seuil</th>
-                <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.seuil }}</td>
-              </ng-container>
-              <ng-container matColumnDef="description">
-                <th mat-header-cell *matHeaderCellDef>Description</th>
-                <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ row.description || '—' }}</td>
-              </ng-container>
-              <ng-container matColumnDef="actif">
-                <th mat-header-cell *matHeaderCellDef>Actif</th>
-                <td mat-cell *matCellDef="let row">
-                  <mat-slide-toggle [checked]="row.actif" (change)="toggleRegle(row)" color="primary"></mat-slide-toggle>
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef class="!w-20"></th>
-                <td mat-cell *matCellDef="let row">
-                  <div class="flex gap-1">
-                    <button mat-icon-button (click)="startEdit(row)"><mat-icon class="!text-lg text-gray-400">edit</mat-icon></button>
-                    <button mat-icon-button (click)="deleteRegle(row)"><mat-icon class="!text-lg text-danger">delete</mat-icon></button>
-                  </div>
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="columns"></tr>
-              <tr mat-row *matRowDef="let row; columns: columns" class="hover:bg-gray-50"></tr>
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Seuil</th>
+                  <th>Description</th>
+                  <th>Actif</th>
+                  <th class="!w-20"></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of regles; track row.id) {
+                  <tr>
+                    <td>{{ getTypeLabel(row.type) }}</td>
+                    <td class="cell-primary">{{ row.seuil }}</td>
+                    <td class="cell-secondary">{{ row.description || '—' }}</td>
+                    <td><mat-slide-toggle [checked]="row.actif" (change)="toggleRegle(row)" color="primary"></mat-slide-toggle></td>
+                    <td class="cell-actions">
+                      <div class="flex gap-1">
+                        <button class="action-menu-btn" (click)="startEdit(row)"><i class="fas fa-pen text-gray-400"></i></button>
+                        <button class="action-menu-btn" style="color: #DC2626;" (click)="deleteRegle(row)"><i class="fas fa-trash"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
             </table>
           </div>
         }
@@ -105,7 +100,6 @@ import { RegleAlerteResponse, TypeAlerte } from '../../../../core/models/alerte.
 })
 export class ReglesDialogComponent implements OnInit {
   regles: RegleAlerteResponse[] = [];
-  columns = ['type', 'seuil', 'description', 'actif', 'actions'];
   isLoading = true;
   editingId: number | null = null;
   form: FormGroup;

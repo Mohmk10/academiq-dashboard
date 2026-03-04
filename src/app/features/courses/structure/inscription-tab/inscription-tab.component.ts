@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { StructureService } from '../../../../core/services/structure.service';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -13,8 +10,8 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
   selector: 'app-inscription-tab',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule,
-    MatButtonModule, MatProgressSpinnerModule
+    CommonModule, ReactiveFormsModule,
+    MatProgressSpinnerModule
   ],
   template: `
     <div class="space-y-6">
@@ -64,38 +61,55 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
             <p class="text-sm mt-1">Sélectionnez une promotion pour voir les inscriptions</p>
           </div>
         } @else {
-          <div class="card !p-0 overflow-hidden">
-            <div class="overflow-x-auto">
-              <table mat-table [dataSource]="inscriptions" class="w-full">
-                <ng-container matColumnDef="matricule">
-                  <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Matricule</th>
-                  <td mat-cell *matCellDef="let row"><span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.etudiantMatricule }}</span></td>
-                </ng-container>
-                <ng-container matColumnDef="nom">
-                  <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Étudiant</th>
-                  <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.etudiantNom }}</td>
-                </ng-container>
-                <ng-container matColumnDef="promotion">
-                  <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Promotion</th>
-                  <td mat-cell *matCellDef="let row">{{ row.promotionNom }}</td>
-                </ng-container>
-                <ng-container matColumnDef="date">
-                  <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Date</th>
-                  <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ formatDate(row.dateInscription) }}</td>
-                </ng-container>
-                <ng-container matColumnDef="statut">
-                  <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Statut</th>
-                  <td mat-cell *matCellDef="let row">
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="row.statut === 'INSCRIT' ? 'bg-green-50 text-success' : 'bg-gray-100 text-gray-500'">
-                      {{ row.statut }}
-                    </span>
-                  </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50 transition-colors"></tr>
-              </table>
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Matricule</th>
+                  <th>Étudiant</th>
+                  <th>Promotion</th>
+                  <th>Date</th>
+                  <th>Statut</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of inscriptions; track row.id) {
+                  <tr>
+                    <td><span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.etudiantMatricule }}</span></td>
+                    <td class="cell-primary">{{ row.etudiantNom }}</td>
+                    <td>{{ row.promotionNom }}</td>
+                    <td class="cell-secondary">{{ formatDate(row.dateInscription) }}</td>
+                    <td>
+                      <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="row.statut === 'INSCRIT' ? 'bg-green-50 text-success' : 'bg-gray-100 text-gray-500'">
+                        {{ row.statut }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+            <div class="table-pagination">
+              <div class="pagination-info">
+                <span>{{ pageIndex * pageSize + 1 }}</span>–<span>{{ min((pageIndex + 1) * pageSize, totalElements) }}</span> sur <span>{{ totalElements }}</span>
+              </div>
+              <div class="pagination-controls">
+                <button class="pagination-btn" [disabled]="pageIndex === 0" (click)="goToPage(0)"><i class="fas fa-angles-left"></i></button>
+                <button class="pagination-btn" [disabled]="pageIndex === 0" (click)="goToPage(pageIndex - 1)"><i class="fas fa-chevron-left"></i></button>
+                @for (p of visiblePages; track p) {
+                  <button class="pagination-btn" [class.active]="p === pageIndex" (click)="goToPage(p)">{{ p + 1 }}</button>
+                }
+                <button class="pagination-btn" [disabled]="pageIndex >= totalPages - 1" (click)="goToPage(pageIndex + 1)"><i class="fas fa-chevron-right"></i></button>
+                <button class="pagination-btn" [disabled]="pageIndex >= totalPages - 1" (click)="goToPage(totalPages - 1)"><i class="fas fa-angles-right"></i></button>
+              </div>
+              <div class="pagination-size">
+                <span>Lignes</span>
+                <select [value]="pageSize" (change)="changePageSize(+$any($event.target).value)">
+                  <option [value]="10">10</option>
+                  <option [value]="25">25</option>
+                  <option [value]="50">50</option>
+                </select>
+              </div>
             </div>
-            <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageSizeOptions]="[10, 25, 50]" [pageIndex]="pageIndex" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
           </div>
         }
       </div>
@@ -105,7 +119,6 @@ import { PromotionResponse, InscriptionResponse } from '../../../../core/models/
 export class InscriptionTabComponent implements OnInit {
   promotions: PromotionResponse[] = [];
   inscriptions: InscriptionResponse[] = [];
-  displayedColumns = ['matricule', 'nom', 'promotion', 'date', 'statut'];
   totalElements = 0;
   pageSize = 10;
   pageIndex = 0;
@@ -162,11 +175,17 @@ export class InscriptionTabComponent implements OnInit {
     });
   }
 
-  onPageChange(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.loadInscriptions();
+  get totalPages(): number { return Math.ceil(this.totalElements / this.pageSize); }
+  get visiblePages(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(0, this.pageIndex - 2);
+    const end = Math.min(this.totalPages, start + 5);
+    for (let i = start; i < end; i++) pages.push(i);
+    return pages;
   }
+  goToPage(page: number): void { this.pageIndex = page; this.loadInscriptions(); }
+  changePageSize(size: number): void { this.pageSize = size; this.pageIndex = 0; this.loadInscriptions(); }
+  min(a: number, b: number): number { return Math.min(a, b); }
 
   formatDate(date: string): string { return new Date(date).toLocaleDateString('fr-FR'); }
 

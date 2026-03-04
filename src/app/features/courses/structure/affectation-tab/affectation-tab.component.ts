@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -15,8 +13,8 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   selector: 'app-affectation-tab',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatTableModule,
-    MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule
+    CommonModule, ReactiveFormsModule,
+    MatIconModule, MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
     <div class="space-y-6">
@@ -52,29 +50,29 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
           <p class="font-medium">Aucune affectation enregistrée</p>
         </div>
       } @else {
-        <div class="card !p-0 overflow-hidden">
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="affectations" class="w-full">
-              <ng-container matColumnDef="enseignant">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Enseignant</th>
-                <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.enseignantNom }}</td>
-              </ng-container>
-              <ng-container matColumnDef="module">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Module</th>
-                <td mat-cell *matCellDef="let row">{{ row.moduleNom }}</td>
-              </ng-container>
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef class="!w-16"></th>
-                <td mat-cell *matCellDef="let row">
-                  <button mat-icon-button color="warn" (click)="deleteAffectation(row)">
-                    <mat-icon class="!text-lg">delete</mat-icon>
-                  </button>
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50 transition-colors"></tr>
-            </table>
-          </div>
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Enseignant</th>
+                <th>Module</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of affectations; track row.id) {
+                <tr>
+                  <td class="cell-primary">{{ row.enseignantNom }}</td>
+                  <td>{{ row.moduleNom }}</td>
+                  <td class="cell-actions">
+                    <button class="action-menu-btn" style="color: #DC2626;" (click)="deleteAffectation(row)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
       }
     </div>
@@ -83,7 +81,6 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
 export class AffectationTabComponent implements OnInit {
   modules: ModuleResponse[] = [];
   affectations: AffectationResponse[] = [];
-  displayedColumns = ['enseignant', 'module', 'actions'];
   isLoading = true;
   isSubmitting = false;
 

@@ -1,12 +1,7 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule, MatSort, Sort } from '@angular/material/sort';
-import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -22,16 +17,14 @@ import { ImportDialogComponent } from '../import-dialog/import-dialog.component'
   selector: 'app-student-list',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatTableModule, MatSortModule,
-    MatPaginatorModule,
-    MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatDialogModule
+    CommonModule, ReactiveFormsModule,
+    MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
   templateUrl: './student-list.component.html',
   styleUrl: './student-list.component.scss'
 })
 export default class StudentListComponent implements OnInit, OnDestroy {
   students: UtilisateurSummary[] = [];
-  displayedColumns = ['matricule', 'nom', 'email', 'niveau', 'filiere', 'statut', 'actions'];
   totalElements = 0;
   pageSize = 10;
   pageIndex = 0;
@@ -43,9 +36,6 @@ export default class StudentListComponent implements OnInit, OnDestroy {
 
   niveaux = ['L1', 'L2', 'L3', 'M1', 'M2'];
   statuts = ['Actif', 'Suspendu', 'Diplômé', 'Abandonné'];
-
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private destroy$ = new Subject<void>();
 
@@ -86,11 +76,17 @@ export default class StudentListComponent implements OnInit, OnDestroy {
     });
   }
 
-  onPageChange(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.loadStudents();
+  get totalPages(): number { return Math.ceil(this.totalElements / this.pageSize); }
+  get visiblePages(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(0, this.pageIndex - 2);
+    const end = Math.min(this.totalPages, start + 5);
+    for (let i = start; i < end; i++) pages.push(i);
+    return pages;
   }
+  goToPage(page: number): void { this.pageIndex = page; this.loadStudents(); }
+  changePageSize(size: number): void { this.pageSize = size; this.pageIndex = 0; this.loadStudents(); }
+  min(a: number, b: number): number { return Math.min(a, b); }
 
   onFilterChange(): void {
     this.pageIndex = 0;

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -21,7 +20,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   selector: 'app-grades',
   standalone: true,
   imports: [
-    CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatMenuModule,
+    CommonModule, MatButtonModule, MatIconModule, MatMenuModule,
     MatProgressSpinnerModule, MatExpansionModule, MatChipsModule, MatDialogModule
   ],
   template: `
@@ -62,28 +61,26 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                     </span>
                   </mat-panel-description>
                 </mat-expansion-panel-header>
-                <div class="overflow-x-auto">
-                  <table mat-table [dataSource]="mod.notes" class="w-full">
-                    <ng-container matColumnDef="evaluation">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Évaluation</th>
-                      <td mat-cell *matCellDef="let n">{{ n.evaluationNom }}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="type">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Type</th>
-                      <td mat-cell *matCellDef="let n"><span class="text-xs px-2 py-0.5 rounded-full bg-gray-100">{{ getTypeLabel(n.type) }}</span></td>
-                    </ng-container>
-                    <ng-container matColumnDef="note">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Note</th>
-                      <td mat-cell *matCellDef="let n" class="!font-semibold" [class]="n.valeur >= (n.noteMax / 2) ? 'text-success' : 'text-danger'">
-                        {{ n.valeur }}/{{ n.noteMax }}
-                      </td>
-                    </ng-container>
-                    <ng-container matColumnDef="coefficient">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Coeff.</th>
-                      <td mat-cell *matCellDef="let n">{{ n.coefficient }}</td>
-                    </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="studentColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: studentColumns" class="hover:bg-gray-50"></tr>
+                <div class="data-table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Évaluation</th>
+                        <th>Type</th>
+                        <th>Note</th>
+                        <th>Coeff.</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (n of mod.notes; track n.evaluationNom) {
+                        <tr>
+                          <td>{{ n.evaluationNom }}</td>
+                          <td><span class="text-xs px-2 py-0.5 rounded-full bg-gray-100">{{ getTypeLabel(n.type) }}</span></td>
+                          <td class="cell-primary" [class]="n.valeur >= (n.noteMax / 2) ? 'text-success' : 'text-danger'">{{ n.valeur }}/{{ n.noteMax }}</td>
+                          <td>{{ n.coefficient }}</td>
+                        </tr>
+                      }
+                    </tbody>
                   </table>
                 </div>
               </mat-expansion-panel>
@@ -98,61 +95,57 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
             <p class="font-medium">Aucune évaluation trouvée</p>
           </div>
         } @else {
-          <div class="card !p-0 overflow-hidden">
-            <div class="overflow-x-auto">
-              <table mat-table [dataSource]="evaluations" class="w-full">
-                <ng-container matColumnDef="nom">
-                  <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Évaluation</th>
-                  <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.nom }}</td>
-                </ng-container>
-                <ng-container matColumnDef="module">
-                  <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Module</th>
-                  <td mat-cell *matCellDef="let row">
-                    <span class="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">{{ row.moduleCode }}</span>
-                    <span class="ml-2 text-sm">{{ row.moduleNom }}</span>
-                  </td>
-                </ng-container>
-                <ng-container matColumnDef="type">
-                  <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Type</th>
-                  <td mat-cell *matCellDef="let row"><span class="text-xs px-2 py-0.5 rounded-full bg-gray-100">{{ getTypeLabel(row.type) }}</span></td>
-                </ng-container>
-                <ng-container matColumnDef="progression">
-                  <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Saisie</th>
-                  <td mat-cell *matCellDef="let row">
-                    <div class="flex items-center gap-2">
-                      <div class="w-20 bg-gray-200 rounded-full h-2">
-                        <div class="h-2 rounded-full" [class]="getProgressionClass(row)" [style.width.%]="getProgressionPercent(row)"></div>
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Évaluation</th>
+                  <th>Module</th>
+                  <th>Type</th>
+                  <th>Saisie</th>
+                  <th>Statut</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of evaluations; track row.id) {
+                  <tr class="row-clickable" (click)="goToSaisie(row)">
+                    <td class="cell-primary">{{ row.nom }}</td>
+                    <td>
+                      <span class="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">{{ row.moduleCode }}</span>
+                      <span class="ml-2 text-sm">{{ row.moduleNom }}</span>
+                    </td>
+                    <td><span class="text-xs px-2 py-0.5 rounded-full bg-gray-100">{{ getTypeLabel(row.type) }}</span></td>
+                    <td>
+                      <div class="flex items-center gap-2">
+                        <div class="w-20 bg-gray-200 rounded-full h-2">
+                          <div class="h-2 rounded-full" [class]="getProgressionClass(row)" [style.width.%]="getProgressionPercent(row)"></div>
+                        </div>
+                        <span class="text-xs text-gray-500">{{ row.nombreNotesSaisies }}/{{ row.nombreEtudiantsInscrits }}</span>
                       </div>
-                      <span class="text-xs text-gray-500">{{ row.nombreNotesSaisies }}/{{ row.nombreEtudiantsInscrits }}</span>
-                    </div>
-                  </td>
-                </ng-container>
-                <ng-container matColumnDef="statut">
-                  <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Statut</th>
-                  <td mat-cell *matCellDef="let row">
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="row.publiee ? 'bg-green-50 text-success' : 'bg-amber-50 text-warning'">
-                      {{ row.publiee ? 'Publiée' : 'Brouillon' }}
-                    </span>
-                  </td>
-                </ng-container>
-                <ng-container matColumnDef="actions">
-                  <th mat-header-cell *matHeaderCellDef class="!w-16"></th>
-                  <td mat-cell *matCellDef="let row">
-                    <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()"><mat-icon>more_vert</mat-icon></button>
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item (click)="goToSaisie(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Saisir les notes</button>
-                      <button mat-menu-item (click)="openEditEvaluation(row)"><i class="fas fa-edit mr-3 text-gray-400"></i> Modifier</button>
-                      @if (!row.publiee) {
-                        <button mat-menu-item (click)="publierEvaluation(row)"><i class="fas fa-check-circle mr-3 text-success"></i> Publier</button>
-                      }
-                      <button mat-menu-item (click)="deleteEvaluation(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
-                    </mat-menu>
-                  </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="evalColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: evalColumns" class="hover:bg-gray-50 cursor-pointer transition-colors" (click)="goToSaisie(row)"></tr>
-              </table>
-            </div>
+                    </td>
+                    <td>
+                      <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="row.publiee ? 'bg-green-50 text-success' : 'bg-amber-50 text-warning'">
+                        {{ row.publiee ? 'Publiée' : 'Brouillon' }}
+                      </span>
+                    </td>
+                    <td class="cell-actions">
+                      <button class="action-menu-btn" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                        <i class="fas fa-ellipsis-vertical"></i>
+                      </button>
+                      <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="goToSaisie(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Saisir les notes</button>
+                        <button mat-menu-item (click)="openEditEvaluation(row)"><i class="fas fa-edit mr-3 text-gray-400"></i> Modifier</button>
+                        @if (!row.publiee) {
+                          <button mat-menu-item (click)="publierEvaluation(row)"><i class="fas fa-check-circle mr-3 text-success"></i> Publier</button>
+                        }
+                        <button mat-menu-item (click)="deleteEvaluation(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                      </mat-menu>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
           </div>
         }
       }
@@ -166,8 +159,6 @@ export default class GradesComponent implements OnInit {
   studentModules: StudentModuleGroup[] = [];
   isLoading = true;
 
-  evalColumns = ['nom', 'module', 'type', 'progression', 'statut', 'actions'];
-  studentColumns = ['evaluation', 'type', 'note', 'coefficient'];
 
   constructor(
     private authService: AuthService,

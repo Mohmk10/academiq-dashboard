@@ -56,30 +56,30 @@
           <p class="text-sm">Aucune note disponible</p>
         </div>
       } @else {
-        <table mat-table [dataSource]="notes" class="w-full">
-          <ng-container matColumnDef="evaluation">
-            <th mat-header-cell *matHeaderCellDef>Évaluation</th>
-            <td mat-cell *matCellDef="let row" class="!font-medium text-sm">{{ row.evaluationNom }}</td>
-          </ng-container>
-          <ng-container matColumnDef="module">
-            <th mat-header-cell *matHeaderCellDef>Module</th>
-            <td mat-cell *matCellDef="let row" class="text-sm">—</td>
-          </ng-container>
-          <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef>Type</th>
-            <td mat-cell *matCellDef="let row"><span class="badge-neutral">—</span></td>
-          </ng-container>
-          <ng-container matColumnDef="note">
-            <th mat-header-cell *matHeaderCellDef class="!text-right">Note</th>
-            <td mat-cell *matCellDef="let row" class="!text-right !font-medium" [class]="getNoteClass(row.valeur)">{{ row.valeur | number:'1.1-1' }}/{{ row.noteMax }}</td>
-          </ng-container>
-          <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef>Date</th>
-            <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ formatDate(row.dateSaisie) }}</td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="notesColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: notesColumns" class="hover:bg-gray-50"></tr>
-        </table>
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Évaluation</th>
+                <th>Module</th>
+                <th>Type</th>
+                <th class="text-right">Note</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of notes; track row.evaluationNom) {
+                <tr>
+                  <td class="cell-primary text-sm">{{ row.evaluationNom }}</td>
+                  <td class="text-sm">—</td>
+                  <td><span class="badge-neutral">—</span></td>
+                  <td class="cell-number" [class]="getNoteClass(row.valeur)">{{ row.valeur | number:'1.1-1' }}/{{ row.noteMax }}</td>
+                  <td class="cell-secondary">{{ formatDate(row.dateSaisie) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       }
     </div>
 

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
 import { UtilisateurService } from '../../../core/services/utilisateur.service';
@@ -18,7 +17,7 @@ import { StudentDialogComponent } from '../student-dialog/student-dialog.compone
 @Component({
   selector: 'app-student-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatTableModule, MatProgressSpinnerModule],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatProgressSpinnerModule],
   templateUrl: './student-detail.component.html',
   styleUrl: './student-detail.component.scss'
 })
@@ -27,7 +26,6 @@ export default class StudentDetailComponent implements OnInit {
   notes: NoteResponse[] = [];
   alertes: AlerteResponse[] = [];
   isLoading = true;
-  notesColumns = ['evaluation', 'module', 'type', 'note', 'date'];
 
   constructor(
     private route: ActivatedRoute,

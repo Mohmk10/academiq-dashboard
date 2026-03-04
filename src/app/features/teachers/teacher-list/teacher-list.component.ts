@@ -2,11 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -21,16 +16,14 @@ import { TeacherDialogComponent } from '../teacher-dialog/teacher-dialog.compone
   selector: 'app-teacher-list',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatTableModule, MatSortModule,
-    MatPaginatorModule,
-    MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatDialogModule
+    CommonModule, ReactiveFormsModule,
+    MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
   templateUrl: './teacher-list.component.html',
   styleUrl: './teacher-list.component.scss'
 })
 export default class TeacherListComponent implements OnInit, OnDestroy {
   teachers: UtilisateurSummary[] = [];
-  displayedColumns = ['matricule', 'nom', 'email', 'statut', 'actions'];
   totalElements = 0;
   pageSize = 10;
   pageIndex = 0;
@@ -69,7 +62,17 @@ export default class TeacherListComponent implements OnInit, OnDestroy {
     });
   }
 
-  onPageChange(event: PageEvent): void { this.pageIndex = event.pageIndex; this.pageSize = event.pageSize; this.loadTeachers(); }
+  get totalPages(): number { return Math.ceil(this.totalElements / this.pageSize); }
+  get visiblePages(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(0, this.pageIndex - 2);
+    const end = Math.min(this.totalPages, start + 5);
+    for (let i = start; i < end; i++) pages.push(i);
+    return pages;
+  }
+  goToPage(page: number): void { this.pageIndex = page; this.loadTeachers(); }
+  changePageSize(size: number): void { this.pageSize = size; this.pageIndex = 0; this.loadTeachers(); }
+  min(a: number, b: number): number { return Math.min(a, b); }
 
   viewTeacher(id: number): void { this.router.navigate(['/enseignants', id]); }
 

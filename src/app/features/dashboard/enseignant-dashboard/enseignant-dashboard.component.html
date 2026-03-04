@@ -46,58 +46,44 @@
     <!-- Modules Table -->
     <div class="card">
       <h3 class="section-title">Mes modules</h3>
-      <div class="overflow-x-auto">
-        <table mat-table [dataSource]="sortedModules" matSort (matSortChange)="onSort($event)" class="w-full">
-          <ng-container matColumnDef="moduleNom">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Module</th>
-            <td mat-cell *matCellDef="let row" class="!font-medium !text-gray-900">{{ row.moduleNom }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="moduleCode">
-            <th mat-header-cell *matHeaderCellDef>Code</th>
-            <td mat-cell *matCellDef="let row">
-              <span class="badge-neutral font-mono">{{ row.moduleCode }}</span>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="nombreEtudiants">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header class="!text-center">Inscrits</th>
-            <td mat-cell *matCellDef="let row" class="!text-center !font-medium">{{ row.nombreEtudiants }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="moyenneClasse">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header class="!text-center">Moyenne</th>
-            <td mat-cell *matCellDef="let row" class="!text-center !font-medium" [class]="getMoyenneColor(row.moyenneClasse)">
-              {{ row.moyenneClasse | number:'1.1-1' }}/20
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="evaluationsCount">
-            <th mat-header-cell *matHeaderCellDef>Progression</th>
-            <td mat-cell *matCellDef="let row">
-              <div class="flex items-center gap-3 min-w-[140px]">
-                <div class="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                  <div class="h-full rounded-full transition-all duration-500"
-                       [style.width.%]="getProgressPercent(row)"
-                       [class]="getProgressPercent(row) >= 80 ? 'bg-emerald-500' : getProgressPercent(row) >= 50 ? 'bg-amber-500' : 'bg-red-500'">
+      <div class="data-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="sortable" [class.sort-active]="sortColumn === 'moduleNom'" (click)="onSort('moduleNom')">Module <i class="fas sort-icon" [class]="getSortIcon('moduleNom')"></i></th>
+              <th>Code</th>
+              <th class="sortable text-center" [class.sort-active]="sortColumn === 'nombreEtudiants'" (click)="onSort('nombreEtudiants')">Inscrits <i class="fas sort-icon" [class]="getSortIcon('nombreEtudiants')"></i></th>
+              <th class="sortable text-center" [class.sort-active]="sortColumn === 'moyenneClasse'" (click)="onSort('moyenneClasse')">Moyenne <i class="fas sort-icon" [class]="getSortIcon('moyenneClasse')"></i></th>
+              <th>Progression</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of sortedModules; track row.moduleId) {
+              <tr>
+                <td class="cell-primary">{{ row.moduleNom }}</td>
+                <td><span class="badge-neutral font-mono">{{ row.moduleCode }}</span></td>
+                <td class="cell-number" style="text-align: center;">{{ row.nombreEtudiants }}</td>
+                <td class="cell-number" style="text-align: center;" [class]="getMoyenneColor(row.moyenneClasse)">{{ row.moyenneClasse | number:'1.1-1' }}/20</td>
+                <td>
+                  <div class="flex items-center gap-3 min-w-[140px]">
+                    <div class="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full transition-all duration-500"
+                           [style.width.%]="getProgressPercent(row)"
+                           [class]="getProgressPercent(row) >= 80 ? 'bg-emerald-500' : getProgressPercent(row) >= 50 ? 'bg-amber-500' : 'bg-red-500'">
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-500 whitespace-nowrap">{{ row.evaluationsCount }}/{{ row.nombreEtudiants }}</span>
                   </div>
-                </div>
-                <span class="text-xs text-gray-500 whitespace-nowrap">{{ row.evaluationsCount }}/{{ row.nombreEtudiants }}</span>
-              </div>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef class="!text-center">Actions</th>
-            <td mat-cell *matCellDef="let row" class="!text-center">
-              <a routerLink="/notes" class="btn-primary !py-1.5 !px-3 !text-xs">
-                <i class="fas fa-pen-to-square text-[10px]"></i> Saisir
-              </a>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                </td>
+                <td style="text-align: center;">
+                  <a routerLink="/notes" class="btn-primary !py-1.5 !px-3 !text-xs">
+                    <i class="fas fa-pen-to-square text-[10px]"></i> Saisir
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
         </table>
       </div>
     </div>

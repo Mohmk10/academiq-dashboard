@@ -1,11 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
@@ -20,9 +15,8 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
   selector: 'app-alert-list',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatTableModule, MatSortModule,
-    MatPaginatorModule,
-    MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule
+    CommonModule, ReactiveFormsModule,
+    MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
     <div class="space-y-6 fade-in-up">
@@ -101,7 +95,7 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
       </div>
 
       <!-- Table -->
-      <div class="card !p-0 overflow-hidden">
+      <div class="data-table-wrapper">
         @if (isLoading) {
           <div class="flex items-center justify-center h-48"><mat-spinner diameter="40"></mat-spinner></div>
         } @else if (filteredAlertes.length === 0) {
@@ -110,62 +104,65 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
             <p class="font-medium">Aucune alerte trouvée</p>
           </div>
         } @else {
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="filteredAlertes" matSort class="w-full">
-              <ng-container matColumnDef="niveau">
-                <th mat-header-cell *matHeaderCellDef class="!w-16">Niv.</th>
-                <td mat-cell *matCellDef="let row">
-                  <i class="fas fa-circle text-xs" [class]="getNiveauClass(row)"></i>
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="type">
-                <th mat-header-cell *matHeaderCellDef>Type</th>
-                <td mat-cell *matCellDef="let row">
-                  <span class="text-xs px-2 py-0.5 rounded-full font-medium" [class]="getTypeBadgeClass(row.type)">{{ getTypeLabel(row.type) }}</span>
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="etudiant">
-                <th mat-header-cell *matHeaderCellDef>Étudiant</th>
-                <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.etudiantNom }}</td>
-              </ng-container>
-              <ng-container matColumnDef="matricule">
-                <th mat-header-cell *matHeaderCellDef>Matricule</th>
-                <td mat-cell *matCellDef="let row"><span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.etudiantMatricule }}</span></td>
-              </ng-container>
-              <ng-container matColumnDef="message">
-                <th mat-header-cell *matHeaderCellDef>Message</th>
-                <td mat-cell *matCellDef="let row" class="text-sm text-gray-600 max-w-xs truncate">{{ row.message }}</td>
-              </ng-container>
-              <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-                <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ formatDate(row.createdAt) }}</td>
-              </ng-container>
-              <ng-container matColumnDef="statut">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Statut</th>
-                <td mat-cell *matCellDef="let row">
-                  <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getStatutBadge(row.statut)">{{ row.statut }}</span>
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef class="!w-32"></th>
-                <td mat-cell *matCellDef="let row">
-                  <div class="flex gap-1">
-                    @if (row.statut === 'ACTIVE') {
-                      <button class="btn-secondary !py-1 !px-3 !text-xs" (click)="traiterAlerte(row); $event.stopPropagation()">Traiter</button>
-                      <button class="btn-secondary !py-1 !px-3 !text-xs !text-gray-400 !border-gray-200" (click)="ignorerAlerte(row); $event.stopPropagation()">Ignorer</button>
-                    } @else if (row.statut === 'TRAITEE') {
-                      <button class="btn-secondary !py-1 !px-3 !text-xs !text-emerald-600 !border-emerald-200" (click)="resoudreAlerte(row); $event.stopPropagation()">Résoudre</button>
-                    }
-                  </div>
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns"
-                class="hover:bg-gray-50 transition-colors"
-                [class.!bg-red-50]="row.statut === 'ACTIVE' && isCritique(row)"></tr>
-            </table>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="!w-16">Niv.</th>
+                <th>Type</th>
+                <th>Étudiant</th>
+                <th>Matricule</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th class="!w-32"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of filteredAlertes; track row.id) {
+                <tr [class.row-danger]="row.statut === 'ACTIVE' && isCritique(row)">
+                  <td><i class="fas fa-circle text-xs" [class]="getNiveauClass(row)"></i></td>
+                  <td><span class="text-xs px-2 py-0.5 rounded-full font-medium" [class]="getTypeBadgeClass(row.type)">{{ getTypeLabel(row.type) }}</span></td>
+                  <td class="cell-primary">{{ row.etudiantNom }}</td>
+                  <td><span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.etudiantMatricule }}</span></td>
+                  <td class="cell-secondary max-w-xs truncate">{{ row.message }}</td>
+                  <td class="cell-secondary">{{ formatDate(row.createdAt) }}</td>
+                  <td><span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getStatutBadge(row.statut)">{{ row.statut }}</span></td>
+                  <td class="cell-actions">
+                    <div class="flex gap-1">
+                      @if (row.statut === 'ACTIVE') {
+                        <button class="btn-secondary !py-1 !px-3 !text-xs" (click)="traiterAlerte(row); $event.stopPropagation()">Traiter</button>
+                        <button class="btn-secondary !py-1 !px-3 !text-xs !text-gray-400 !border-gray-200" (click)="ignorerAlerte(row); $event.stopPropagation()">Ignorer</button>
+                      } @else if (row.statut === 'TRAITEE') {
+                        <button class="btn-secondary !py-1 !px-3 !text-xs !text-emerald-600 !border-emerald-200" (click)="resoudreAlerte(row); $event.stopPropagation()">Résoudre</button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <div class="table-pagination">
+            <div class="pagination-info">
+              <span>{{ pageIndex * pageSize + 1 }}</span>–<span>{{ min((pageIndex + 1) * pageSize, totalElements) }}</span> sur <span>{{ totalElements }}</span>
+            </div>
+            <div class="pagination-controls">
+              <button class="pagination-btn" [disabled]="pageIndex === 0" (click)="goToPage(0)"><i class="fas fa-angles-left"></i></button>
+              <button class="pagination-btn" [disabled]="pageIndex === 0" (click)="goToPage(pageIndex - 1)"><i class="fas fa-chevron-left"></i></button>
+              @for (p of visiblePages; track p) {
+                <button class="pagination-btn" [class.active]="p === pageIndex" (click)="goToPage(p)">{{ p + 1 }}</button>
+              }
+              <button class="pagination-btn" [disabled]="pageIndex >= totalPages - 1" (click)="goToPage(pageIndex + 1)"><i class="fas fa-chevron-right"></i></button>
+              <button class="pagination-btn" [disabled]="pageIndex >= totalPages - 1" (click)="goToPage(totalPages - 1)"><i class="fas fa-angles-right"></i></button>
+            </div>
+            <div class="pagination-size">
+              <span>Lignes</span>
+              <select [value]="pageSize" (change)="changePageSize(+$any($event.target).value)">
+                <option [value]="10">10</option>
+                <option [value]="25">25</option>
+                <option [value]="50">50</option>
+              </select>
+            </div>
           </div>
-          <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageSizeOptions]="[10, 25, 50]" [pageIndex]="pageIndex" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
         }
       </div>
     </div>
@@ -175,7 +172,6 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
 export default class AlertListComponent implements OnInit, OnDestroy {
   alertes: AlerteResponse[] = [];
   filteredAlertes: AlerteResponse[] = [];
-  displayedColumns = ['niveau', 'type', 'etudiant', 'matricule', 'message', 'date', 'statut', 'actions'];
   totalElements = 0;
   pageSize = 10;
   pageIndex = 0;
@@ -189,7 +185,6 @@ export default class AlertListComponent implements OnInit, OnDestroy {
   typeFilter = new FormControl('');
   searchControl = new FormControl('');
 
-  @ViewChild(MatSort) sort!: MatSort;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -257,11 +252,17 @@ export default class AlertListComponent implements OnInit, OnDestroy {
     this.filteredAlertes = result;
   }
 
-  onPageChange(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.loadAlertes();
+  get totalPages(): number { return Math.ceil(this.totalElements / this.pageSize); }
+  get visiblePages(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(0, this.pageIndex - 2);
+    const end = Math.min(this.totalPages, start + 5);
+    for (let i = start; i < end; i++) pages.push(i);
+    return pages;
   }
+  goToPage(page: number): void { this.pageIndex = page; this.loadAlertes(); }
+  changePageSize(size: number): void { this.pageSize = size; this.pageIndex = 0; this.loadAlertes(); }
+  min(a: number, b: number): number { return Math.min(a, b); }
 
   traiterAlerte(alerte: AlerteResponse): void {
     const ref = this.dialog.open(TraiterAlerteDialogComponent, { width: '500px', maxWidth: '95vw', data: { alerte, action: 'traiter' } });

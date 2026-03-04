@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -17,8 +14,8 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   selector: 'app-module-tab',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatTableModule,
-    MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatDialogModule
+    CommonModule, ReactiveFormsModule,
+    MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
   template: `
     <div class="space-y-4">
@@ -65,47 +62,39 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
           <p class="font-medium">Aucun module trouvé</p>
         </div>
       } @else {
-        <div class="card !p-0 overflow-hidden">
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="modules" class="w-full">
-              <ng-container matColumnDef="code">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Code</th>
-                <td mat-cell *matCellDef="let row"><span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.code }}</span></td>
-              </ng-container>
-              <ng-container matColumnDef="nom">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Module</th>
-                <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.nom }}</td>
-              </ng-container>
-              <ng-container matColumnDef="ue">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">UE</th>
-                <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ row.ueNom || '—' }}</td>
-              </ng-container>
-              <ng-container matColumnDef="coefficient">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Coeff.</th>
-                <td mat-cell *matCellDef="let row">{{ row.coefficient }}</td>
-              </ng-container>
-              <ng-container matColumnDef="enseignant">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Enseignant</th>
-                <td mat-cell *matCellDef="let row" class="text-sm">{{ row.enseignantNom || '—' }}</td>
-              </ng-container>
-              <ng-container matColumnDef="volume">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Vol. H</th>
-                <td mat-cell *matCellDef="let row">{{ row.volumeHoraire ? row.volumeHoraire + 'h' : '—' }}</td>
-              </ng-container>
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef class="!w-16"></th>
-                <td mat-cell *matCellDef="let row">
-                  <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()"><mat-icon>more_vert</mat-icon></button>
-                  <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="openEdit(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Modifier</button>
-                    <button mat-menu-item (click)="deleteModule(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
-                  </mat-menu>
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50 transition-colors"></tr>
-            </table>
-          </div>
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Module</th>
+                <th>UE</th>
+                <th>Coeff.</th>
+                <th>Enseignant</th>
+                <th>Vol. H</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of modules; track row.id) {
+                <tr>
+                  <td><span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.code }}</span></td>
+                  <td class="cell-primary">{{ row.nom }}</td>
+                  <td class="cell-secondary">{{ row.ueNom || '—' }}</td>
+                  <td>{{ row.coefficient }}</td>
+                  <td class="text-sm">{{ row.enseignantNom || '—' }}</td>
+                  <td>{{ row.volumeHoraire ? row.volumeHoraire + 'h' : '—' }}</td>
+                  <td class="cell-actions">
+                    <button class="action-menu-btn" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()"><i class="fas fa-ellipsis-vertical"></i></button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="openEdit(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Modifier</button>
+                      <button mat-menu-item (click)="deleteModule(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                    </mat-menu>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
       }
     </div>
@@ -116,7 +105,6 @@ export class ModuleTabComponent implements OnInit {
   niveaux: NiveauResponse[] = [];
   ues: UeResponse[] = [];
   modules: ModuleResponse[] = [];
-  displayedColumns = ['code', 'nom', 'ue', 'coefficient', 'enseignant', 'volume', 'actions'];
   isLoading = true;
 
   filiereFilter = new FormControl<number | null>(null);

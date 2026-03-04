@@ -80,22 +80,26 @@
       <!-- Repartition table -->
       <div class="card">
         <h3 class="section-title">Repartition des etudiants</h3>
-        <table mat-table [dataSource]="data.repartitionEtudiants" class="w-full">
-          <ng-container matColumnDef="label">
-            <th mat-header-cell *matHeaderCellDef>Filiere</th>
-            <td mat-cell *matCellDef="let row" class="!font-medium !text-gray-900">{{ row.label }}</td>
-          </ng-container>
-          <ng-container matColumnDef="valeur">
-            <th mat-header-cell *matHeaderCellDef class="!text-right">Inscrits</th>
-            <td mat-cell *matCellDef="let row" class="!text-right !font-medium">{{ row.valeur }}</td>
-          </ng-container>
-          <ng-container matColumnDef="pourcentage">
-            <th mat-header-cell *matHeaderCellDef class="!text-right">%</th>
-            <td mat-cell *matCellDef="let row" class="!text-right text-gray-500">{{ row.pourcentage | number:'1.1-1' }}%</td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="['label', 'valeur', 'pourcentage']"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['label', 'valeur', 'pourcentage']"></tr>
-        </table>
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Filiere</th>
+                <th class="text-right">Inscrits</th>
+                <th class="text-right">%</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of data.repartitionEtudiants; track row.label) {
+                <tr>
+                  <td class="cell-primary">{{ row.label }}</td>
+                  <td class="cell-number">{{ row.valeur }}</td>
+                  <td class="cell-number" style="color: #6B7280;">{{ row.pourcentage | number:'1.1-1' }}%</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Alertes recentes -->

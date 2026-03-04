@@ -2,8 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -23,8 +21,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   selector: 'app-settings',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatTabsModule, MatTableModule,
-    MatPaginatorModule,
+    CommonModule, ReactiveFormsModule, MatTabsModule,
     MatButtonModule, MatIconModule, MatCheckboxModule, MatSlideToggleModule,
     MatMenuModule, MatProgressSpinnerModule, MatDialogModule
   ],
@@ -72,47 +69,60 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
             @if (usersLoading) {
               <div class="flex justify-center py-8"><mat-spinner diameter="40"></mat-spinner></div>
             } @else {
-              <div class="card !p-0 overflow-hidden">
-                <div class="overflow-x-auto">
-                  <table mat-table [dataSource]="users" class="w-full">
-                    <ng-container matColumnDef="nom">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Nom</th>
-                      <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.prenom }} {{ row.nom }}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="email">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Email</th>
-                      <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ row.email }}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="role">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Rôle</th>
-                      <td mat-cell *matCellDef="let row">
-                        <span class="text-xs px-2 py-0.5 rounded-full font-medium" [class]="getRoleBadge(row.role)">{{ getRoleLabel(row.role) }}</span>
-                      </td>
-                    </ng-container>
-                    <ng-container matColumnDef="statut">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Statut</th>
-                      <td mat-cell *matCellDef="let row">
-                        <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="row.actif ? 'bg-green-50 text-success' : 'bg-gray-100 text-gray-500'">{{ row.actif ? 'Actif' : 'Inactif' }}</span>
-                      </td>
-                    </ng-container>
-                    <ng-container matColumnDef="actions">
-                      <th mat-header-cell *matHeaderCellDef class="!w-16"></th>
-                      <td mat-cell *matCellDef="let row">
-                        <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
-                        <mat-menu #menu="matMenu">
-                          <button mat-menu-item (click)="toggleUser(row)">
-                            <i class="fas mr-3" [class]="row.actif ? 'fa-lock text-warning' : 'fa-lock-open text-success'"></i>
-                            {{ row.actif ? 'Désactiver' : 'Activer' }}
-                          </button>
-                          <button mat-menu-item (click)="deleteUser(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
-                        </mat-menu>
-                      </td>
-                    </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="userColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: userColumns" class="hover:bg-gray-50 transition-colors"></tr>
-                  </table>
+              <div class="data-table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Nom</th>
+                      <th>Email</th>
+                      <th>Rôle</th>
+                      <th>Statut</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of users; track row.id) {
+                      <tr>
+                        <td class="cell-primary">{{ row.prenom }} {{ row.nom }}</td>
+                        <td class="cell-secondary">{{ row.email }}</td>
+                        <td><span class="text-xs px-2 py-0.5 rounded-full font-medium" [class]="getRoleBadge(row.role)">{{ getRoleLabel(row.role) }}</span></td>
+                        <td><span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="row.actif ? 'bg-green-50 text-success' : 'bg-gray-100 text-gray-500'">{{ row.actif ? 'Actif' : 'Inactif' }}</span></td>
+                        <td class="cell-actions">
+                          <button class="action-menu-btn" [matMenuTriggerFor]="menu"><i class="fas fa-ellipsis-vertical"></i></button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="toggleUser(row)">
+                              <i class="fas mr-3" [class]="row.actif ? 'fa-lock text-warning' : 'fa-lock-open text-success'"></i>
+                              {{ row.actif ? 'Désactiver' : 'Activer' }}
+                            </button>
+                            <button mat-menu-item (click)="deleteUser(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                          </mat-menu>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+                <div class="table-pagination">
+                  <div class="pagination-info">
+                    <span>{{ userPageIndex * userPageSize + 1 }}</span>–<span>{{ min((userPageIndex + 1) * userPageSize, totalUsers) }}</span> sur <span>{{ totalUsers }}</span>
+                  </div>
+                  <div class="pagination-controls">
+                    <button class="pagination-btn" [disabled]="userPageIndex === 0" (click)="goToUserPage(0)"><i class="fas fa-angles-left"></i></button>
+                    <button class="pagination-btn" [disabled]="userPageIndex === 0" (click)="goToUserPage(userPageIndex - 1)"><i class="fas fa-chevron-left"></i></button>
+                    @for (p of userVisiblePages; track p) {
+                      <button class="pagination-btn" [class.active]="p === userPageIndex" (click)="goToUserPage(p)">{{ p + 1 }}</button>
+                    }
+                    <button class="pagination-btn" [disabled]="userPageIndex >= userTotalPages - 1" (click)="goToUserPage(userPageIndex + 1)"><i class="fas fa-chevron-right"></i></button>
+                    <button class="pagination-btn" [disabled]="userPageIndex >= userTotalPages - 1" (click)="goToUserPage(userTotalPages - 1)"><i class="fas fa-angles-right"></i></button>
+                  </div>
+                  <div class="pagination-size">
+                    <span>Lignes</span>
+                    <select [value]="userPageSize" (change)="changeUserPageSize(+$any($event.target).value)">
+                      <option [value]="10">10</option>
+                      <option [value]="25">25</option>
+                      <option [value]="50">50</option>
+                    </select>
+                  </div>
                 </div>
-                <mat-paginator [length]="totalUsers" [pageSize]="userPageSize" [pageSizeOptions]="[10, 25, 50]" [pageIndex]="userPageIndex" (page)="onUserPageChange($event)" showFirstLastButtons></mat-paginator>
               </div>
             }
           </div>
@@ -130,37 +140,31 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                 <p class="font-medium">Aucune règle configurée</p>
               </div>
             } @else {
-              <div class="card !p-0 overflow-hidden">
-                <div class="overflow-x-auto">
-                  <table mat-table [dataSource]="regles" class="w-full">
-                    <ng-container matColumnDef="type">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Type</th>
-                      <td mat-cell *matCellDef="let row" class="!font-medium">{{ getTypeLabel(row.type) }}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="seuil">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Seuil</th>
-                      <td mat-cell *matCellDef="let row">{{ row.seuil }}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="description">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Description</th>
-                      <td mat-cell *matCellDef="let row" class="text-sm text-gray-500">{{ row.description || '—' }}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="actif">
-                      <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Actif</th>
-                      <td mat-cell *matCellDef="let row">
-                        <mat-slide-toggle [checked]="row.actif" (change)="toggleRegle(row)" color="primary"></mat-slide-toggle>
-                      </td>
-                    </ng-container>
-                    <ng-container matColumnDef="actions">
-                      <th mat-header-cell *matHeaderCellDef class="!w-16"></th>
-                      <td mat-cell *matCellDef="let row">
-                        <button mat-icon-button color="warn" (click)="deleteRegle(row)"><mat-icon class="!text-lg">delete</mat-icon></button>
-                      </td>
-                    </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="regleColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: regleColumns" class="hover:bg-gray-50 transition-colors"></tr>
-                  </table>
-                </div>
+              <div class="data-table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Seuil</th>
+                      <th>Description</th>
+                      <th>Actif</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of regles; track row.id) {
+                      <tr>
+                        <td class="cell-primary">{{ getTypeLabel(row.type) }}</td>
+                        <td>{{ row.seuil }}</td>
+                        <td class="cell-secondary">{{ row.description || '—' }}</td>
+                        <td><mat-slide-toggle [checked]="row.actif" (change)="toggleRegle(row)" color="primary"></mat-slide-toggle></td>
+                        <td class="cell-actions">
+                          <button class="action-menu-btn" style="color: #DC2626;" (click)="deleteRegle(row)"><i class="fas fa-trash"></i></button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
               </div>
             }
           </div>
@@ -202,7 +206,6 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 })
 export default class SettingsComponent implements OnInit, OnDestroy {
   users: UtilisateurSummary[] = [];
-  userColumns = ['nom', 'email', 'role', 'statut', 'actions'];
   totalUsers = 0;
   userPageSize = 10;
   userPageIndex = 0;
@@ -211,7 +214,6 @@ export default class SettingsComponent implements OnInit, OnDestroy {
   roleFilter = new FormControl('');
 
   regles: RegleAlerteResponse[] = [];
-  regleColumns = ['type', 'seuil', 'description', 'actif', 'actions'];
   reglesLoading = true;
 
   userStats: { role: string; label: string; count: number }[] = [];
@@ -288,11 +290,17 @@ export default class SettingsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onUserPageChange(event: PageEvent): void {
-    this.userPageIndex = event.pageIndex;
-    this.userPageSize = event.pageSize;
-    this.loadUsers();
+  get userTotalPages(): number { return Math.ceil(this.totalUsers / this.userPageSize); }
+  get userVisiblePages(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(0, this.userPageIndex - 2);
+    const end = Math.min(this.userTotalPages, start + 5);
+    for (let i = start; i < end; i++) pages.push(i);
+    return pages;
   }
+  goToUserPage(page: number): void { this.userPageIndex = page; this.loadUsers(); }
+  changeUserPageSize(size: number): void { this.userPageSize = size; this.userPageIndex = 0; this.loadUsers(); }
+  min(a: number, b: number): number { return Math.min(a, b); }
 
   toggleUser(user: UtilisateurSummary): void {
     this.utilisateurService.toggleActivation(user.id).subscribe({

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -21,7 +20,7 @@ interface GradeRow extends NotePrepopuleeDTO {
   selector: 'app-grade-entry',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, RouterLink, MatTableModule, MatButtonModule,
+    CommonModule, FormsModule, RouterLink, MatButtonModule,
     MatCheckboxModule, MatProgressSpinnerModule, MatIconModule
   ],
   template: `
@@ -87,63 +86,56 @@ interface GradeRow extends NotePrepopuleeDTO {
           <p class="font-medium">Aucun étudiant inscrit</p>
         </div>
       } @else {
-        <div class="card !p-0 overflow-hidden">
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="rows" class="w-full grade-entry-table">
-              <ng-container matColumnDef="index">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase !w-12">#</th>
-                <td mat-cell *matCellDef="let row; let i = index" class="text-gray-400 text-sm">{{ i + 1 }}</td>
-              </ng-container>
-              <ng-container matColumnDef="matricule">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Matricule</th>
-                <td mat-cell *matCellDef="let row"><span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.matricule }}</span></td>
-              </ng-container>
-              <ng-container matColumnDef="nom">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Nom & Prénom</th>
-                <td mat-cell *matCellDef="let row" class="!font-medium">{{ row.etudiantNom }} {{ row.etudiantPrenom }}</td>
-              </ng-container>
-              <ng-container matColumnDef="note">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase !w-28">Note /{{ evaluation?.noteMax || 20 }}</th>
-                <td mat-cell *matCellDef="let row">
-                  <input type="number" class="inline-input input-note"
-                    [class.bg-gray-100]="row.absent"
-                    [disabled]="row.absent"
-                    [(ngModel)]="row.valeur"
-                    [min]="0" [max]="evaluation?.noteMax || 20"
-                    [placeholder]="row.absent ? 'ABS' : '—'">
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="absent">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase !w-20">Absent</th>
-                <td mat-cell *matCellDef="let row">
-                  <mat-checkbox [(ngModel)]="row.absent" (change)="onAbsentChange(row)" color="warn"></mat-checkbox>
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="commentaire">
-                <th mat-header-cell *matHeaderCellDef class="!text-gray-500 !text-xs !font-semibold uppercase">Commentaire</th>
-                <td mat-cell *matCellDef="let row">
-                  <input type="text" class="inline-input"
-                    [(ngModel)]="row.commentaire" placeholder="Optionnel">
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50 transition-colors"></tr>
-            </table>
-          </div>
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="!w-12">#</th>
+                <th>Matricule</th>
+                <th>Nom & Prénom</th>
+                <th class="!w-28">Note /{{ evaluation?.noteMax || 20 }}</th>
+                <th class="!w-20">Absent</th>
+                <th>Commentaire</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of rows; track row.etudiantId; let i = $index) {
+                <tr>
+                  <td class="text-gray-400 text-sm">{{ i + 1 }}</td>
+                  <td><span class="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded">{{ row.matricule }}</span></td>
+                  <td class="cell-primary">{{ row.etudiantNom }} {{ row.etudiantPrenom }}</td>
+                  <td>
+                    <input type="number" class="inline-input input-note"
+                      [class.bg-gray-100]="row.absent"
+                      [disabled]="row.absent"
+                      [(ngModel)]="row.valeur"
+                      [min]="0" [max]="evaluation?.noteMax || 20"
+                      [placeholder]="row.absent ? 'ABS' : '—'">
+                  </td>
+                  <td>
+                    <mat-checkbox [(ngModel)]="row.absent" (change)="onAbsentChange(row)" color="warn"></mat-checkbox>
+                  </td>
+                  <td>
+                    <input type="text" class="inline-input"
+                      [(ngModel)]="row.commentaire" placeholder="Optionnel">
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
       }
     </div>
   `,
   styles: [`
     :host { display: block; }
-    ::ng-deep .grade-entry-table .mat-mdc-row { height: 56px; }
-    ::ng-deep .grade-entry-table input[type="number"]::-webkit-inner-spin-button { opacity: 1; }
+    .data-table tbody tr { height: 56px; }
+    .data-table input[type="number"]::-webkit-inner-spin-button { opacity: 1; }
   `]
 })
 export default class GradeEntryComponent implements OnInit {
   evaluation: EvaluationResponse | null = null;
   rows: GradeRow[] = [];
-  displayedColumns = ['index', 'matricule', 'nom', 'note', 'absent', 'commentaire'];
   isLoading = true;
   isSaving = false;
 
