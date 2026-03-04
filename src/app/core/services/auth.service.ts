@@ -13,6 +13,7 @@ import {
 } from '../models/auth.model';
 import { Role } from '../models/user.model';
 import { MockDataService } from './mock-data.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -30,7 +31,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private mock: MockDataService
+    private mock: MockDataService,
+    private notification: NotificationService
   ) {
     if (this.mock.isDevMode()) {
       this.initDevMode('SUPER_ADMIN');
@@ -78,6 +80,15 @@ export class AuthService {
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     this.currentUserSubject.next(null);
     this.isLoggedInSubject.next(false);
+    this.router.navigate(['/login']);
+  }
+
+  handleSessionExpired(): void {
+    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    this.currentUserSubject.next(null);
+    this.isLoggedInSubject.next(false);
+    this.notification.warning('Votre session a expire. Veuillez vous reconnecter.');
     this.router.navigate(['/login']);
   }
 
