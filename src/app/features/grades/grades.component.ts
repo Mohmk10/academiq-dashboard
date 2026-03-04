@@ -102,12 +102,12 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                   <th>Type</th>
                   <th>Saisie</th>
                   <th>Statut</th>
-                  <th></th>
+                  @if (!isReadOnly) { <th></th> }
                 </tr>
               </thead>
               <tbody>
                 @for (row of evaluations; track row.id) {
-                  <tr class="row-clickable" (click)="goToSaisie(row)">
+                  <tr [class.row-clickable]="!isReadOnly" (click)="!isReadOnly && goToSaisie(row)">
                     <td class="cell-primary">{{ row.nom }}</td>
                     <td>
                       <span class="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">{{ row.moduleCode }}</span>
@@ -127,23 +127,25 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                         {{ row.publiee ? 'Publiée' : 'Brouillon' }}
                       </span>
                     </td>
-                    <td class="cell-actions">
-                      <button class="action-menu-btn" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-                        <i class="fas fa-ellipsis-vertical"></i>
-                      </button>
-                      <mat-menu #menu="matMenu">
-                        @if (canEdit) {
-                          <button mat-menu-item (click)="goToSaisie(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Saisir les notes</button>
-                          <button mat-menu-item (click)="openEditEvaluation(row)"><i class="fas fa-edit mr-3 text-gray-400"></i> Modifier</button>
-                          @if (!row.publiee) {
-                            <button mat-menu-item (click)="publierEvaluation(row)"><i class="fas fa-check-circle mr-3 text-success"></i> Publier</button>
+                    @if (!isReadOnly) {
+                      <td class="cell-actions">
+                        <button class="action-menu-btn" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                          <i class="fas fa-ellipsis-vertical"></i>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                          @if (canEdit) {
+                            <button mat-menu-item (click)="goToSaisie(row)"><i class="fas fa-pen mr-3 text-gray-400"></i> Saisir les notes</button>
+                            <button mat-menu-item (click)="openEditEvaluation(row)"><i class="fas fa-edit mr-3 text-gray-400"></i> Modifier</button>
+                            @if (!row.publiee) {
+                              <button mat-menu-item (click)="publierEvaluation(row)"><i class="fas fa-check-circle mr-3 text-success"></i> Publier</button>
+                            }
                           }
-                        }
-                        @if (canDelete) {
-                          <button mat-menu-item (click)="deleteEvaluation(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
-                        }
-                      </mat-menu>
-                    </td>
+                          @if (canDelete) {
+                            <button mat-menu-item (click)="deleteEvaluation(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                          }
+                        </mat-menu>
+                      </td>
+                    }
                   </tr>
                 }
               </tbody>
@@ -175,6 +177,7 @@ export default class GradesComponent implements OnInit {
   get canCreate(): boolean { return this.authService.hasAnyRole(['ADMIN', 'ENSEIGNANT']); }
   get canEdit(): boolean { return this.authService.hasAnyRole(['ADMIN', 'ENSEIGNANT']); }
   get canDelete(): boolean { return this.authService.hasAnyRole(['ADMIN']); }
+  get isReadOnly(): boolean { return this.authService.isExactRole('RESPONSABLE_PEDAGOGIQUE'); }
 
   ngOnInit(): void {
     if (this.role === 'ETUDIANT') {
