@@ -19,7 +19,7 @@ import { ApiResponse, PageResponse } from '../models/api-response.model';
 @Injectable({ providedIn: 'root' })
 export class MockDataService {
 
-  readonly DEV_MODE = true;
+  readonly DEV_MODE = false;
 
   isDevMode(): boolean {
     return this.DEV_MODE;
