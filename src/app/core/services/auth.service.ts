@@ -223,8 +223,28 @@ export class AuthService {
         role: payload.role ?? ''
       });
       this.isLoggedInSubject.next(true);
+      this.refreshProfileFromBackend();
     } catch {
       this.isLoggedInSubject.next(false);
     }
+  }
+
+  private refreshProfileFromBackend(): void {
+    this.getProfile().subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          const current = this.currentUserSubject.value;
+          if (current) {
+            this.currentUserSubject.next({
+              ...current,
+              nom: res.data.nom ?? current.nom,
+              prenom: res.data.prenom ?? current.prenom,
+              email: res.data.email ?? current.email
+            });
+          }
+        }
+      },
+      error: () => {}
+    });
   }
 }

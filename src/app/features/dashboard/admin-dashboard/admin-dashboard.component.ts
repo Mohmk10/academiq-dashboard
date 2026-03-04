@@ -73,9 +73,15 @@ export class AdminDashboardComponent implements OnInit {
 
     this.analyticsService.getDashboardAdmin().subscribe({
       next: (res) => {
-        this.data = res.data;
-        if (res.data.repartitionEtudiants?.length) {
-          this.buildDoughnutChart(res.data.repartitionEtudiants);
+        const d = res.data;
+        this.data = {
+          ...d,
+          repartitionEtudiants: d.repartitionEtudiants ?? [],
+          evolutionInscriptions: d.evolutionInscriptions ?? [],
+          dernieresAlertes: d.dernieresAlertes ?? []
+        };
+        if (this.data.repartitionEtudiants.length) {
+          this.buildDoughnutChart(this.data.repartitionEtudiants);
           this.buildBarChart();
         }
         this.isLoading = false;

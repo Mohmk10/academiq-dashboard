@@ -145,7 +145,7 @@
     </div>
 
     <!-- Charts -->
-    @if (data.repartitionEtudiants.length > 0) {
+    @if ((data.repartitionEtudiants.length) > 0) {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="card">
           <h3 class="section-title">Inscriptions par filiere</h3>
@@ -184,7 +184,7 @@
       <!-- Repartition table -->
       <div class="card">
         <h3 class="section-title">Repartition des etudiants</h3>
-        @if (data.repartitionEtudiants.length > 0) {
+        @if ((data.repartitionEtudiants.length) > 0) {
           <div class="data-table-wrapper">
             <table class="data-table">
               <thead>
@@ -215,7 +215,7 @@
       <!-- Alertes recentes -->
       <div class="card">
         <h3 class="section-title">Alertes critiques recentes</h3>
-        @if (data.dernieresAlertes.length === 0) {
+        @if ((data.dernieresAlertes.length) === 0) {
           <div class="flex flex-col items-center justify-center py-12 text-gray-400">
             <i class="fas fa-check-circle text-emerald-400 text-3xl mb-3"></i>
             <p class="text-sm">Aucune alerte critique</p>

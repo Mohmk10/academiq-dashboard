@@ -52,9 +52,14 @@ export class EnseignantDashboardComponent implements OnInit {
 
     this.analyticsService.getDashboardEnseignant().subscribe({
       next: (res) => {
-        this.data = res.data;
-        this.sortedModules = [...res.data.modules];
-        this.buildBarChart(res.data.modules);
+        const d = res.data;
+        this.data = {
+          ...d,
+          modules: d.modules ?? [],
+          alertesRecentes: d.alertesRecentes ?? []
+        };
+        this.sortedModules = [...this.data.modules];
+        this.buildBarChart(this.data.modules);
         this.isLoading = false;
       },
       error: () => {

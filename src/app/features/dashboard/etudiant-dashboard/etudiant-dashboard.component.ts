@@ -76,10 +76,15 @@ export class EtudiantDashboardComponent implements OnInit {
 
     this.analyticsService.getDashboardEtudiant().subscribe({
       next: (res) => {
-        this.data = res.data;
-        this.buildBarChart(res.data.resultatsModules);
-        this.buildLineChart(res.data.evolutionMoyenne);
-        this.buildNotesRecentes(res.data.resultatsModules);
+        const d = res.data;
+        this.data = {
+          ...d,
+          resultatsModules: d.resultatsModules ?? [],
+          evolutionMoyenne: d.evolutionMoyenne ?? []
+        };
+        this.buildBarChart(this.data.resultatsModules);
+        this.buildLineChart(this.data.evolutionMoyenne);
+        this.buildNotesRecentes(this.data.resultatsModules);
         this.isLoading = false;
       },
       error: () => {
