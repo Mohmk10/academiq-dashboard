@@ -1,6 +1,6 @@
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, filter, first, switchMap, throwError, timeout } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 let isRefreshing = false;
@@ -48,9 +48,11 @@ function handle401(req: HttpRequest<unknown>, next: HttpHandlerFn, authService: 
 
   return refreshTokenSubject.pipe(
     filter(token => token !== null),
-    take(1),
+    first(),
+    timeout(10000),
     switchMap(token => next(req.clone({
       setHeaders: { Authorization: `Bearer ${token}` }
-    })))
+    }))),
+    catchError(err => throwError(() => err))
   );
 }
