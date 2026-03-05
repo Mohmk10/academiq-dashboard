@@ -12,9 +12,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
-      if (error.status === 500 && req.url.includes('/affectations')) {
-        return throwError(() => error);
-      }
 
       const message = getErrorMessage(error);
       notification.error(message);

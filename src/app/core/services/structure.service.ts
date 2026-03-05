@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ApiService } from './api.service';
 import { ApiResponse, PageResponse } from '../models/api-response.model';
 import {
@@ -44,7 +44,7 @@ export class StructureService {
     if (filiereId) {
       return this.api.get<NiveauResponse[]>(`structure/filieres/${filiereId}/niveaux`);
     }
-    return this.api.get<NiveauResponse[]>('structure/filieres/0/niveaux');
+    return of({ success: true, message: '', data: [], timestamp: new Date().toISOString() } as ApiResponse<NiveauResponse[]>);
   }
 
   createNiveau(request: NiveauRequest): Observable<ApiResponse<NiveauResponse>> {
@@ -88,7 +88,7 @@ export class StructureService {
     if (niveauId) {
       return this.api.get<SemestreResponse[]>(`structure/niveaux/${niveauId}/semestres`);
     }
-    return this.api.get<SemestreResponse[]>('structure/niveaux/0/semestres');
+    return of({ success: true, message: '', data: [], timestamp: new Date().toISOString() } as ApiResponse<SemestreResponse[]>);
   }
 
   createSemestre(request: SemestreRequest): Observable<ApiResponse<SemestreResponse>> {
@@ -108,7 +108,7 @@ export class StructureService {
     if (semestreId) {
       return this.api.get<UeResponse[]>(`structure/semestres/${semestreId}/ues`);
     }
-    return this.api.get<UeResponse[]>('structure/semestres/0/ues');
+    return of({ success: true, message: '', data: [], timestamp: new Date().toISOString() } as ApiResponse<UeResponse[]>);
   }
 
   createUe(request: UeRequest): Observable<ApiResponse<UeResponse>> {
@@ -128,7 +128,7 @@ export class StructureService {
     if (ueId) {
       return this.api.get<ModuleResponse[]>(`structure/ues/${ueId}/modules`);
     }
-    return this.api.get<ModuleResponse[]>('structure/ues/0/modules');
+    return of({ success: true, message: '', data: [], timestamp: new Date().toISOString() } as ApiResponse<ModuleResponse[]>);
   }
 
   getModule(id: number): Observable<ApiResponse<ModuleResponse>> {

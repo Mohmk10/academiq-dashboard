@@ -26,7 +26,7 @@ export class NoteService {
     if (moduleId) {
       return this.api.get<EvaluationResponse[]>(`notes/evaluations/module/${moduleId}`);
     }
-    return this.api.get<EvaluationResponse[]>('notes/evaluations/module/0');
+    return this.api.get<EvaluationResponse[]>('notes/evaluations');
   }
 
   getEvaluation(id: number): Observable<ApiResponse<EvaluationResponse>> {
