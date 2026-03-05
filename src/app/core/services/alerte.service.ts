@@ -62,4 +62,8 @@ export class AlerteService {
   toggleRegle(id: number): Observable<ApiResponse<RegleAlerteResponse>> {
     return this.api.patch<RegleAlerteResponse>(`alertes/regles/${id}/toggle`);
   }
+
+  deleteAlerte(id: number): Observable<ApiResponse<void>> {
+    return this.api.delete<void>(`alertes/${id}`);
+  }
 }

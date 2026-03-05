@@ -2,11 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { AnalyticsService } from '../../../core/services/analytics.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { AdminService } from '../../../core/services/admin.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { DashboardAdminDTO, RepartitionDTO } from '../../../core/models/analytics.model';
+import { ResetDatabaseDialogComponent } from './reset-database-dialog.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -15,6 +19,7 @@ import { DashboardAdminDTO, RepartitionDTO } from '../../../core/models/analytic
     CommonModule,
     RouterLink,
     MatProgressSpinnerModule,
+    MatDialogModule,
     BaseChartDirective
   ],
   templateUrl: './admin-dashboard.component.html',
@@ -59,7 +64,10 @@ export class AdminDashboardComponent implements OnInit {
 
   constructor(
     private analyticsService: AnalyticsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private adminService: AdminService,
+    private notificationService: NotificationService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -199,5 +207,26 @@ export class AdminDashboardComponent implements OnInit {
         barThickness: 24
       }]
     };
+  }
+
+  resetDatabase(): void {
+    const dialogRef = this.dialog.open(ResetDatabaseDialogComponent, {
+      width: '480px',
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.adminService.resetDatabase().subscribe({
+          next: () => {
+            this.notificationService.success('Base de donnees reinitialisee avec succes. Deconnexion...');
+            setTimeout(() => this.authService.logout(), 2000);
+          },
+          error: () => {
+            this.notificationService.error('Erreur lors de la reinitialisation de la base de donnees.');
+          }
+        });
+      }
+    });
   }
 }

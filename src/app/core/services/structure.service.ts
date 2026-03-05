@@ -173,6 +173,10 @@ export class StructureService {
   }
 
   deleteAffectation(id: number): Observable<ApiResponse<void>> {
-    return this.api.patch<void>(`affectations/${id}/desactiver`);
+    return this.api.delete<void>(`affectations/${id}`);
+  }
+
+  deleteInscription(id: number): Observable<ApiResponse<void>> {
+    return this.api.delete<void>(`inscriptions/${id}`);
   }
 }

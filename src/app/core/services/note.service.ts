@@ -110,4 +110,8 @@ export class NoteService {
   importerNotes(evaluationId: number, file: File): Observable<ApiResponse<ImportResult>> {
     return this.api.upload<ImportResult>(`notes/evaluations/${evaluationId}/import-excel`, file);
   }
+
+  deleteNote(id: number): Observable<ApiResponse<void>> {
+    return this.api.delete<void>(`notes/${id}`);
+  }
 }
