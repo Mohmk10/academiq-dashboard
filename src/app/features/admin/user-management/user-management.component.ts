@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { MockDataService } from '../../../core/services/mock-data.service';
+import { UtilisateurService } from '../../../core/services/utilisateur.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Role, UtilisateurSummary } from '../../../core/models/user.model';
@@ -40,17 +40,17 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
   stats = { total: 0, superAdmins: 0, admins: 0, enseignants: 0, etudiants: 0, actifs: 0 };
 
   private destroy$ = new Subject<void>();
-
-  private currentUserId: number | null = null;
+  private currentUserEmail: string | null = null;
 
   constructor(
-    private mock: MockDataService,
+    private utilisateurService: UtilisateurService,
     private authService: AuthService,
     private dialog: MatDialog,
     private notification: NotificationService
   ) {
-    const currentUser = this.mock.getUserByRole(this.authService.getCurrentUserRole() ?? 'ADMIN');
-    this.currentUserId = currentUser?.id ?? null;
+    const user = this.authService.currentUser$.subscribe(u => {
+      this.currentUserEmail = u?.email ?? null;
+    });
   }
 
   ngOnInit(): void {
@@ -67,9 +67,18 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
   }
 
   loadUsers(): void {
-    this.allUsers = this.mock.getAllUsers();
-    this.computeStats();
-    this.applyFilters();
+    this.utilisateurService.getAll(0, 1000).subscribe({
+      next: (res) => {
+        this.allUsers = res.data?.content ?? [];
+        this.computeStats();
+        this.applyFilters();
+      },
+      error: () => {
+        this.allUsers = [];
+        this.computeStats();
+        this.applyFilters();
+      }
+    });
   }
 
   computeStats(): void {
@@ -200,7 +209,7 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
       this.notification.error('Le role du Super Administrateur ne peut pas etre modifie');
       return;
     }
-    if (user.id === this.currentUserId) {
+    if (user.email === this.currentUserEmail) {
       this.notification.error('Vous ne pouvez pas modifier votre propre role');
       return;
     }
@@ -210,16 +219,20 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
     });
     ref.afterClosed().subscribe(newRole => {
       if (newRole) {
-        user.role = newRole;
-        this.notification.success(`Role de ${user.prenom} ${user.nom} modifie en ${this.getRoleLabel(newRole)}`);
-        this.computeStats();
+        this.utilisateurService.changeRole(user.id, newRole).subscribe({
+          next: () => {
+            this.notification.success(`Role de ${user.prenom} ${user.nom} modifie en ${this.getRoleLabel(newRole)}`);
+            this.loadUsers();
+          },
+          error: () => this.notification.error('Erreur lors du changement de role')
+        });
       }
     });
   }
 
   toggleActivation(user: UtilisateurSummary): void {
     if (user.role === 'SUPER_ADMIN') return;
-    if (user.id === this.currentUserId) {
+    if (user.email === this.currentUserEmail) {
       this.notification.error('Vous ne pouvez pas desactiver votre propre compte');
       return;
     }
@@ -230,16 +243,20 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
     });
     ref.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        user.actif = !user.actif;
-        this.notification.success(`Utilisateur ${action === 'activer' ? 'active' : 'desactive'}`);
-        this.computeStats();
+        this.utilisateurService.toggleActivation(user.id).subscribe({
+          next: () => {
+            this.notification.success(`Utilisateur ${action === 'activer' ? 'active' : 'desactive'}`);
+            this.loadUsers();
+          },
+          error: () => this.notification.error('Erreur lors de l\'operation')
+        });
       }
     });
   }
 
   deleteUser(user: UtilisateurSummary): void {
     if (user.role === 'SUPER_ADMIN') return;
-    if (user.id === this.currentUserId) {
+    if (user.email === this.currentUserEmail) {
       this.notification.error('Vous ne pouvez pas supprimer votre propre compte');
       return;
     }
@@ -254,10 +271,13 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
     });
     ref.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        this.allUsers = this.allUsers.filter(u => u.id !== user.id);
-        this.notification.success('Utilisateur supprime');
-        this.computeStats();
-        this.applyFilters();
+        this.utilisateurService.delete(user.id).subscribe({
+          next: () => {
+            this.notification.success('Utilisateur supprime');
+            this.loadUsers();
+          },
+          error: () => this.notification.error('Erreur lors de la suppression')
+        });
       }
     });
   }

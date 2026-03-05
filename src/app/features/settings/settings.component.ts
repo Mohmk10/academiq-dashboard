@@ -248,7 +248,7 @@ export default class SettingsComponent implements OnInit, OnDestroy {
 
     obs.subscribe({
       next: (res) => { this.users = res.data.content; this.totalUsers = res.data.totalElements; this.usersLoading = false; },
-      error: () => { this.usersLoading = false; this.loadMockUsers(); }
+      error: () => { this.usersLoading = false; this.users = []; this.totalUsers = 0; }
     });
   }
 
@@ -256,13 +256,7 @@ export default class SettingsComponent implements OnInit, OnDestroy {
     this.reglesLoading = true;
     this.alerteService.getRegles().subscribe({
       next: (res) => { this.regles = res.data; this.reglesLoading = false; },
-      error: () => {
-        this.reglesLoading = false;
-        this.regles = [
-          { id: 1, type: 'MOYENNE_FAIBLE', seuil: 10, actif: true, description: 'Alerte si moyenne < 10', createdAt: '2024-10-01' },
-          { id: 2, type: 'NOTE_BASSE', seuil: 5, actif: true, description: 'Alerte si note < 5', createdAt: '2024-10-01' },
-        ];
-      }
+      error: () => { this.reglesLoading = false; this.regles = []; }
     });
   }
 
@@ -277,14 +271,7 @@ export default class SettingsComponent implements OnInit, OnDestroy {
           { role: 'TOTAL', label: 'Total', count: data.total || 0 },
         ];
       },
-      error: () => {
-        this.userStats = [
-          { role: 'ADMIN', label: 'Administrateurs', count: 2 },
-          { role: 'ENSEIGNANT', label: 'Enseignants', count: 8 },
-          { role: 'ETUDIANT', label: 'Étudiants', count: 120 },
-          { role: 'TOTAL', label: 'Total', count: 130 },
-        ];
-      }
+      error: () => { this.userStats = []; }
     });
   }
 
@@ -360,12 +347,4 @@ export default class SettingsComponent implements OnInit, OnDestroy {
     return labels[type] || type;
   }
 
-  private loadMockUsers(): void {
-    this.users = [
-      { id: 1, nom: 'Kouyaté', prenom: 'Makan', email: 'makan@univ.ml', role: 'ADMIN', actif: true },
-      { id: 10, nom: 'Keita', prenom: 'Ousmane', email: 'ousmane.keita@univ.ml', role: 'ENSEIGNANT', actif: true, matricule: 'ENS-2020-001' },
-      { id: 20, nom: 'Diallo', prenom: 'Amadou', email: 'amadou.diallo@univ.ml', role: 'ETUDIANT', actif: true, matricule: 'ETU-2024-001' },
-    ];
-    this.totalUsers = 3;
-  }
 }

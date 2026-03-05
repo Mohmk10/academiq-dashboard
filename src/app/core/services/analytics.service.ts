@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import { MockDataService } from './mock-data.service';
 import { ApiResponse } from '../models/api-response.model';
 import {
   DashboardAdminDTO,
@@ -17,7 +16,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
 
-  constructor(private api: ApiService, private mock: MockDataService) {}
+  constructor(private api: ApiService) {}
 
   getSystemStats(): Observable<ApiResponse<any>> {
     return this.api.get<any>('analytics/system-stats');
@@ -28,16 +27,10 @@ export class AnalyticsService {
   }
 
   getDashboardAdmin(): Observable<ApiResponse<DashboardAdminDTO>> {
-    if (this.mock.isDevMode()) {
-      return of(this.mock.wrap(this.mock.dashboardAdmin)).pipe(delay(300));
-    }
     return this.api.get<DashboardAdminDTO>('analytics/dashboard/admin');
   }
 
   getDashboardEnseignant(enseignantId?: number): Observable<ApiResponse<DashboardEnseignantDTO>> {
-    if (this.mock.isDevMode()) {
-      return of(this.mock.wrap(this.mock.dashboardEnseignant)).pipe(delay(300));
-    }
     if (enseignantId) {
       return this.api.get<DashboardEnseignantDTO>(`analytics/dashboard/enseignant/${enseignantId}`);
     }
@@ -45,9 +38,6 @@ export class AnalyticsService {
   }
 
   getDashboardEtudiant(etudiantId?: number): Observable<ApiResponse<DashboardEtudiantDTO>> {
-    if (this.mock.isDevMode()) {
-      return of(this.mock.wrap(this.mock.dashboardEtudiant)).pipe(delay(300));
-    }
     if (etudiantId) {
       return this.api.get<DashboardEtudiantDTO>(`analytics/dashboard/etudiant/${etudiantId}`);
     }

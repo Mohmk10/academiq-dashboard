@@ -175,7 +175,7 @@ export default class GradeEntryComponent implements OnInit {
         }));
         this.isLoading = false;
       },
-      error: () => { this.isLoading = false; this.loadMockStudents(); }
+      error: () => { this.isLoading = false; this.rows = []; }
     });
   }
 
@@ -234,13 +234,4 @@ export default class GradeEntryComponent implements OnInit {
     return labels[type] || type;
   }
 
-  private loadMockStudents(): void {
-    this.rows = [
-      { etudiantId: 1, etudiantNom: 'Diallo', etudiantPrenom: 'Amadou', matricule: 'ETU-2024-001', valeur: 14, absent: false, commentaire: '' },
-      { etudiantId: 2, etudiantNom: 'Traoré', etudiantPrenom: 'Fatoumata', matricule: 'ETU-2024-002', valeur: 16, absent: false, commentaire: 'Très bon travail' },
-      { etudiantId: 3, etudiantNom: 'Coulibaly', etudiantPrenom: 'Ibrahim', matricule: 'ETU-2024-003', valeur: null, absent: false, commentaire: '' },
-      { etudiantId: 4, etudiantNom: 'Sangaré', etudiantPrenom: 'Mariam', matricule: 'ETU-2024-004', valeur: null, absent: true, commentaire: 'Absence justifiée' },
-      { etudiantId: 5, etudiantNom: 'Konaté', etudiantPrenom: 'Seydou', matricule: 'ETU-2024-005', valeur: 8, absent: false, commentaire: '' },
-    ];
-  }
 }

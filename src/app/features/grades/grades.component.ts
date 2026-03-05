@@ -191,7 +191,7 @@ export default class GradesComponent implements OnInit {
     this.isLoading = true;
     this.noteService.getEvaluations().subscribe({
       next: (res) => { this.evaluations = res.data; this.isLoading = false; },
-      error: () => { this.isLoading = false; this.loadMockEvaluations(); }
+      error: () => { this.isLoading = false; this.evaluations = []; }
     });
   }
 
@@ -201,10 +201,10 @@ export default class GradesComponent implements OnInit {
       next: (res) => {
         this.noteService.getNotesEtudiant(res.data.id).subscribe({
           next: (notesRes) => { this.studentModules = this.groupNotesByModule(notesRes.data); this.isLoading = false; },
-          error: () => { this.isLoading = false; this.loadMockStudentNotes(); }
+          error: () => { this.isLoading = false; this.studentModules = []; }
         });
       },
-      error: () => { this.isLoading = false; this.loadMockStudentNotes(); }
+      error: () => { this.isLoading = false; this.studentModules = []; }
     });
   }
 
@@ -283,42 +283,6 @@ export default class GradesComponent implements OnInit {
     return Array.from(map.values());
   }
 
-  private loadMockEvaluations(): void {
-    this.evaluations = [
-      { id: 1, moduleId: 1, moduleNom: 'Algorithmique', moduleCode: 'INFO-101', promotionId: 1, promotionNom: 'L1 Info 2024', type: 'EXAMEN', nom: 'Examen final Algo', coefficient: 2, noteMax: 20, nombreNotesSaisies: 42, nombreEtudiantsInscrits: 45, publiee: true, date: '2025-01-15' },
-      { id: 2, moduleId: 1, moduleNom: 'Algorithmique', moduleCode: 'INFO-101', promotionId: 1, promotionNom: 'L1 Info 2024', type: 'CONTROLE_CONTINU', nom: 'CC1 Algo', coefficient: 1, noteMax: 20, nombreNotesSaisies: 45, nombreEtudiantsInscrits: 45, publiee: true },
-      { id: 3, moduleId: 2, moduleNom: 'Programmation C', moduleCode: 'INFO-102', promotionId: 1, promotionNom: 'L1 Info 2024', type: 'PROJET', nom: 'Projet C', coefficient: 1, noteMax: 20, nombreNotesSaisies: 30, nombreEtudiantsInscrits: 45, publiee: false },
-      { id: 4, moduleId: 3, moduleNom: 'Bases de données', moduleCode: 'INFO-201', promotionId: 2, promotionNom: 'L2 Info 2024', type: 'EXAMEN', nom: 'Examen BDD', coefficient: 2, noteMax: 20, nombreNotesSaisies: 0, nombreEtudiantsInscrits: 38, publiee: false },
-    ];
-  }
-
-  private loadMockStudentNotes(): void {
-    this.studentModules = [
-      {
-        moduleNom: 'Algorithmique', moduleCode: 'INFO-101', moyenne: 14.5,
-        notes: [
-          { evaluationNom: 'Examen final', type: 'EXAMEN', valeur: 15, noteMax: 20, coefficient: 2 },
-          { evaluationNom: 'CC1', type: 'CONTROLE_CONTINU', valeur: 13, noteMax: 20, coefficient: 1 },
-          { evaluationNom: 'TP noté', type: 'TP', valeur: 16, noteMax: 20, coefficient: 1 }
-        ]
-      },
-      {
-        moduleNom: 'Programmation C', moduleCode: 'INFO-102', moyenne: 11.33,
-        notes: [
-          { evaluationNom: 'Examen final', type: 'EXAMEN', valeur: 12, noteMax: 20, coefficient: 2 },
-          { evaluationNom: 'Projet', type: 'PROJET', valeur: 14, noteMax: 20, coefficient: 1 },
-          { evaluationNom: 'CC1', type: 'CONTROLE_CONTINU', valeur: 8, noteMax: 20, coefficient: 1 }
-        ]
-      },
-      {
-        moduleNom: 'Mathématiques', moduleCode: 'MATH-101', moyenne: 9.0,
-        notes: [
-          { evaluationNom: 'Examen final', type: 'EXAMEN', valeur: 8, noteMax: 20, coefficient: 2 },
-          { evaluationNom: 'CC1', type: 'CONTROLE_CONTINU', valeur: 10, noteMax: 20, coefficient: 1 }
-        ]
-      }
-    ];
-  }
 }
 
 interface StudentModuleGroup {

@@ -3,10 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
-import { MockDataService } from '../../core/services/mock-data.service';
 import { Role } from '../../core/models/user.model';
 import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
 import { BreadcrumbComponent } from '../../shared/components/breadcrumb/breadcrumb.component';
@@ -32,7 +30,6 @@ interface MenuSection {
     RouterLinkActive,
     MatMenuModule,
     MatTooltipModule,
-    FormsModule,
     LoadingBarComponent,
     BreadcrumbComponent
   ],
@@ -46,26 +43,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   userRole: Role | null = null;
   userInitials = '';
   menuSections: MenuSection[] = [];
-  isDevMode = false;
-  selectedRole: Role = 'SUPER_ADMIN';
-  devRoles: { value: Role; label: string }[] = [
-    { value: 'SUPER_ADMIN', label: 'Super Admin' },
-    { value: 'ADMIN', label: 'Admin' },
-    { value: 'RESPONSABLE_PEDAGOGIQUE', label: 'Resp. Pedagogique' },
-    { value: 'ENSEIGNANT', label: 'Enseignant' },
-    { value: 'ETUDIANT', label: 'Etudiant' }
-  ];
 
   private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
-    private router: Router,
-    private mock: MockDataService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.isDevMode = this.mock.isDevMode();
     this.checkScreenSize();
 
     this.authService.currentUser$.pipe(takeUntil(this.destroy$)).subscribe(user => {
@@ -73,13 +59,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         this.userName = `${user.prenom} ${user.nom}`;
         this.userInitials = `${user.prenom.charAt(0)}${user.nom.charAt(0)}`.toUpperCase();
         this.userRole = this.authService.getCurrentUserRole();
-        this.selectedRole = this.userRole ?? 'ADMIN';
         this.menuSections = this.buildMenu();
       }
     });
 
     this.userRole = this.authService.getCurrentUserRole();
-    this.selectedRole = this.userRole ?? 'ADMIN';
     this.menuSections = this.buildMenu();
   }
 
@@ -105,10 +89,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.authService.logout();
-  }
-
-  onDevRoleChange(role: Role): void {
-    this.authService.switchRole(role);
   }
 
   getRoleLabel(): string {

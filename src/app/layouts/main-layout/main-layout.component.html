@@ -79,19 +79,6 @@
           <i class="fas fa-bars text-xl"></i>
         </button>
 
-        @if (isDevMode) {
-          <div class="flex items-center gap-2.5">
-            <span class="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wide">DEV</span>
-            <select
-              class="field-input text-sm !px-2.5 !py-1.5 cursor-pointer"
-              [ngModel]="selectedRole"
-              (ngModelChange)="onDevRoleChange($event)">
-              @for (r of devRoles; track r.value) {
-                <option [value]="r.value">{{ r.label }}</option>
-              }
-            </select>
-          </div>
-        }
       </div>
 
       <!-- Right -->
