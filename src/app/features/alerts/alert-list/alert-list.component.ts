@@ -230,11 +230,12 @@ export default class AlertListComponent implements OnInit, OnDestroy {
     this.alerteService.getStatistiques().subscribe({
       next: (res) => {
         const s = res.data;
+        const parType = s.parType ?? {};
         this.stats = {
-          critiques: (s.parType['RISQUE_ECHEC'] || 0) + (s.parType['NOTE_BASSE'] || 0),
-          attention: (s.parType['MOYENNE_FAIBLE'] || 0) + (s.parType['ABSENCE_NOTE'] || 0),
-          traitees: s.alertesTraitees,
-          total: s.alertesActives
+          critiques: (parType['RISQUE_ECHEC'] || 0) + (parType['NOTE_BASSE'] || 0),
+          attention: (parType['MOYENNE_FAIBLE'] || 0) + (parType['ABSENCE_NOTE'] || 0),
+          traitees: s.alertesTraitees ?? 0,
+          total: s.alertesActives ?? 0
         };
       },
       error: () => { this.stats = { critiques: 0, attention: 0, traitees: 0, total: 0 }; }

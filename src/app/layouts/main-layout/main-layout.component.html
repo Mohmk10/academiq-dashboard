@@ -55,7 +55,7 @@
           {{ userInitials }}
         </div>
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-gray-200 truncate">{{ userName }}</p>
+          <p class="text-sm font-medium text-gray-200 truncate uppercase">{{ userName }}</p>
           <p class="text-[10px] text-gray-500">{{ getRoleLabel() }}</p>
         </div>
       </a>
@@ -84,9 +84,11 @@
       <!-- Right -->
       <div class="flex items-center gap-1">
         <!-- Notifications -->
-        <button class="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+        <button routerLink="/alertes" class="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
           <i class="fas fa-bell text-xl"></i>
-          <span class="absolute top-1.5 right-1.5 w-4 h-4 bg-danger text-white text-[10px] font-bold rounded-full flex items-center justify-center">3</span>
+          @if (alertCount > 0) {
+            <span class="absolute top-1.5 right-1.5 w-4 h-4 bg-danger text-white text-[10px] font-bold rounded-full flex items-center justify-center">{{ alertCount }}</span>
+          }
         </button>
 
         <!-- Separator -->
@@ -97,13 +99,13 @@
           <div class="w-9 h-9 rounded-full bg-primary-light flex items-center justify-center text-xs font-semibold text-primary">
             {{ userInitials }}
           </div>
-          <span class="hidden sm:block text-sm font-medium text-gray-700">{{ userName }}</span>
+          <span class="hidden sm:block text-sm font-medium text-gray-700 uppercase">{{ userName }}</span>
           <i class="fas fa-chevron-down hidden sm:block text-gray-400 text-xs"></i>
         </button>
 
         <mat-menu #userMenu="matMenu" xPosition="before">
           <div class="px-4 py-3 border-b border-gray-100">
-            <p class="text-sm font-semibold text-gray-900">{{ userName }}</p>
+            <p class="text-sm font-semibold text-gray-900 uppercase">{{ userName }}</p>
             <p class="text-xs text-gray-500">{{ getRoleLabel() }}</p>
           </div>
           <button mat-menu-item routerLink="/profil">

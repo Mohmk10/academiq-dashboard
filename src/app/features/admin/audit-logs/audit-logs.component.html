@@ -40,7 +40,9 @@
 
   <!-- Table -->
   <div class="data-table-wrapper">
-    @if (pagedLogs.length === 0) {
+    @if (isLoading) {
+      <div class="flex items-center justify-center h-48"><mat-spinner diameter="40"></mat-spinner></div>
+    } @else if (pagedLogs.length === 0) {
       <div class="flex flex-col items-center justify-center py-16 text-gray-400">
         <i class="fas fa-clipboard-list text-5xl mb-4"></i>
         <p class="font-medium">Aucun log trouve</p>
@@ -85,7 +87,11 @@
               </td>
               <td class="cell-secondary max-w-xs truncate">{{ log.details }}</td>
               <td>
-                <span class="font-mono text-xs text-gray-400">{{ log.ip }}</span>
+                @if (log.ip) {
+                  <span class="font-mono text-xs text-gray-400">{{ log.ip }}</span>
+                } @else {
+                  <span class="text-gray-300">—</span>
+                }
               </td>
             </tr>
           }

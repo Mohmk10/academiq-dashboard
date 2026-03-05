@@ -86,14 +86,18 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                         <td><span class="text-xs px-2 py-0.5 rounded-full font-medium" [class]="getRoleBadge(row.role)">{{ getRoleLabel(row.role) }}</span></td>
                         <td><span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="row.actif ? 'bg-green-50 text-success' : 'bg-gray-100 text-gray-500'">{{ row.actif ? 'Actif' : 'Inactif' }}</span></td>
                         <td class="cell-actions">
-                          <button class="action-menu-btn" [matMenuTriggerFor]="menu"><i class="fas fa-ellipsis-vertical"></i></button>
-                          <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="toggleUser(row)">
-                              <i class="fas mr-3" [class]="row.actif ? 'fa-lock text-warning' : 'fa-lock-open text-success'"></i>
-                              {{ row.actif ? 'Désactiver' : 'Activer' }}
-                            </button>
-                            <button mat-menu-item (click)="deleteUser(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
-                          </mat-menu>
+                          @if (row.role !== 'SUPER_ADMIN') {
+                            <button class="action-menu-btn" [matMenuTriggerFor]="menu"><i class="fas fa-ellipsis-vertical"></i></button>
+                            <mat-menu #menu="matMenu">
+                              <button mat-menu-item (click)="toggleUser(row)">
+                                <i class="fas mr-3" [class]="row.actif ? 'fa-lock text-warning' : 'fa-lock-open text-success'"></i>
+                                {{ row.actif ? 'Désactiver' : 'Activer' }}
+                              </button>
+                              <button mat-menu-item (click)="deleteUser(row)" class="!text-danger"><i class="fas fa-trash mr-3"></i> Supprimer</button>
+                            </mat-menu>
+                          } @else {
+                            <span class="text-gray-300 text-xs">—</span>
+                          }
                         </td>
                       </tr>
                     }
@@ -288,13 +292,15 @@ export default class SettingsComponent implements OnInit, OnDestroy {
   min(a: number, b: number): number { return Math.min(a, b); }
 
   toggleUser(user: UtilisateurSummary): void {
+    if (user.role === 'SUPER_ADMIN') return;
     this.utilisateurService.toggleActivation(user.id).subscribe({
       next: () => { this.notification.success(`Utilisateur ${user.actif ? 'désactivé' : 'activé'}`); this.loadUsers(); },
-      error: () => {}
+      error: () => this.notification.error('Erreur lors de l\'operation')
     });
   }
 
   deleteUser(user: UtilisateurSummary): void {
+    if (user.role === 'SUPER_ADMIN') return;
     const ref = this.dialog.open(ConfirmDialogComponent, {
       width: '400px', maxWidth: '95vw', data: { title: 'Supprimer l\'utilisateur', message: `Supprimer ${user.prenom} ${user.nom} ?`, confirmText: 'Supprimer' }
     });

@@ -5,6 +5,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
+import { AlerteService } from '../../core/services/alerte.service';
 import { Role } from '../../core/models/user.model';
 import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
 import { BreadcrumbComponent } from '../../shared/components/breadcrumb/breadcrumb.component';
@@ -43,11 +44,13 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   userRole: Role | null = null;
   userInitials = '';
   menuSections: MenuSection[] = [];
+  alertCount = 0;
 
   private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
+    private alerteService: AlerteService,
     private router: Router
   ) {}
 
@@ -65,6 +68,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
     this.userRole = this.authService.getCurrentUserRole();
     this.menuSections = this.buildMenu();
+    this.loadAlertCount();
   }
 
   ngOnDestroy(): void {
@@ -100,6 +104,13 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       'RESPONSABLE_PEDAGOGIQUE': 'Responsable pedagogique'
     };
     return labels[this.userRole ?? ''] ?? this.userRole ?? '';
+  }
+
+  private loadAlertCount(): void {
+    this.alerteService.getStatistiques().subscribe({
+      next: (res) => this.alertCount = res.data?.alertesActives ?? 0,
+      error: () => this.alertCount = 0
+    });
   }
 
   private checkScreenSize(): void {
