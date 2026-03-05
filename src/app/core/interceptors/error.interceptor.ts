@@ -8,7 +8,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError(error => {
-      if (req.url.includes('/auth/login') || req.url.includes('/auth/refresh')) {
+      if (req.url.includes('/auth/login') || req.url.includes('/auth/refresh') || req.url.includes('/auth/me')) {
+        return throwError(() => error);
+      }
+
+      if (error.status === 500 && req.url.includes('/affectations')) {
         return throwError(() => error);
       }
 

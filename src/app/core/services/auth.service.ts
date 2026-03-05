@@ -42,6 +42,7 @@ export class AuthService {
           this.storeTokens(response.data);
           this.currentUserSubject.next(response.data);
           this.isLoggedInSubject.next(true);
+          this.refreshProfileFromBackend();
         }
       })
     );
