@@ -10,6 +10,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { UtilisateurService } from '../../core/services/utilisateur.service';
 import { AlerteService } from '../../core/services/alerte.service';
+import { AdminService } from '../../core/services/admin.service';
+import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { UtilisateurSummary } from '../../core/models/user.model';
 import { RegleAlerteResponse, TypeAlerte } from '../../core/models/alerte.model';
@@ -86,7 +88,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                         <td><span class="text-xs px-2 py-0.5 rounded-full font-medium" [class]="getRoleBadge(row.role)">{{ getRoleLabel(row.role) }}</span></td>
                         <td><span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="row.actif ? 'bg-green-50 text-success' : 'bg-gray-100 text-gray-500'">{{ row.actif ? 'Actif' : 'Inactif' }}</span></td>
                         <td class="cell-actions">
-                          @if (row.role !== 'SUPER_ADMIN') {
+                          @if (row.role !== 'SUPER_ADMIN' && row.role !== 'ADMIN' && row.email !== currentUserEmail) {
                             <button class="action-menu-btn" [matMenuTriggerFor]="menu"><i class="fas fa-ellipsis-vertical"></i></button>
                             <mat-menu #menu="matMenu">
                               <button mat-menu-item (click)="toggleUser(row)">
@@ -194,7 +196,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                   @if (isAnalyzing) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                   <i class="fas fa-magnifying-glass-chart mr-2"></i> Analyser toutes les promotions
                 </button>
-                <button class="btn-secondary" (click)="exporterDonnees()">
+                <button class="btn-secondary" [disabled]="isExporting" (click)="exporterDonnees()">
+                  @if (isExporting) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                   <i class="fas fa-database mr-2"></i> Exporter toutes les données
                 </button>
               </div>
@@ -221,15 +224,23 @@ export default class SettingsComponent implements OnInit, OnDestroy {
   userStats: { role: string; label: string; count: number }[] = [];
   todayDate = new Date().toLocaleDateString('fr-FR');
   isAnalyzing = false;
+  isExporting = false;
+  currentUserEmail = '';
 
   private destroy$ = new Subject<void>();
 
   constructor(
     private utilisateurService: UtilisateurService,
     private alerteService: AlerteService,
+    private adminService: AdminService,
+    private authService: AuthService,
     private notification: NotificationService,
     private dialog: MatDialog
-  ) {}
+  ) {
+    this.authService.currentUser$.subscribe(u => {
+      this.currentUserEmail = u?.email ?? '';
+    });
+  }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -292,7 +303,11 @@ export default class SettingsComponent implements OnInit, OnDestroy {
   min(a: number, b: number): number { return Math.min(a, b); }
 
   toggleUser(user: UtilisateurSummary): void {
-    if (user.role === 'SUPER_ADMIN') return;
+    if (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN') return;
+    if (user.email === this.currentUserEmail) {
+      this.notification.error('Vous ne pouvez pas désactiver votre propre compte');
+      return;
+    }
     this.utilisateurService.toggleActivation(user.id).subscribe({
       next: () => { this.notification.success(`Utilisateur ${user.actif ? 'désactivé' : 'activé'}`); this.loadUsers(); },
       error: () => this.notification.error('Erreur lors de l\'operation')
@@ -300,7 +315,11 @@ export default class SettingsComponent implements OnInit, OnDestroy {
   }
 
   deleteUser(user: UtilisateurSummary): void {
-    if (user.role === 'SUPER_ADMIN') return;
+    if (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN') return;
+    if (user.email === this.currentUserEmail) {
+      this.notification.error('Vous ne pouvez pas supprimer votre propre compte');
+      return;
+    }
     const ref = this.dialog.open(ConfirmDialogComponent, {
       width: '400px', maxWidth: '95vw', data: { title: 'Supprimer l\'utilisateur', message: `Supprimer ${user.prenom} ${user.nom} ?`, confirmText: 'Supprimer' }
     });
@@ -328,14 +347,36 @@ export default class SettingsComponent implements OnInit, OnDestroy {
 
   analyserPromotions(): void {
     this.isAnalyzing = true;
-    setTimeout(() => {
-      this.isAnalyzing = false;
-      this.notification.success('Analyse terminée — alertes générées');
-    }, 2000);
+    this.alerteService.analyserToutes().subscribe({
+      next: () => {
+        this.isAnalyzing = false;
+        this.notification.success('Analyse de toutes les promotions terminée');
+      },
+      error: () => {
+        this.isAnalyzing = false;
+        this.notification.error('Erreur lors de l\'analyse des promotions');
+      }
+    });
   }
 
   exporterDonnees(): void {
-    this.notification.info('Fonctionnalité à venir');
+    this.isExporting = true;
+    this.adminService.exporterDonnees().subscribe({
+      next: (blob) => {
+        this.isExporting = false;
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'export-donnees.zip';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.notification.success('Export téléchargé avec succès');
+      },
+      error: () => {
+        this.isExporting = false;
+        this.notification.error('Erreur lors de l\'export des données');
+      }
+    });
   }
 
   getRoleLabel(role: string): string {

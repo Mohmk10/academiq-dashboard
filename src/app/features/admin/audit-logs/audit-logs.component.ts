@@ -13,7 +13,6 @@ interface AuditLog {
   cible?: string;
   details: string;
   date: string;
-  ip?: string;
 }
 
 @Component({
@@ -80,8 +79,7 @@ export default class AuditLogsComponent implements OnInit {
           role: log.role,
           cible: log.targetName || log.cible,
           details: log.details || log.action,
-          date: log.date || log.createdAt || '',
-          ip: log.ip
+          date: log.date || log.createdAt || ''
         }));
         this.applyFilters();
         this.isLoading = false;

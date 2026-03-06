@@ -182,20 +182,14 @@ export default class ReportsComponent implements OnInit {
     this.structureService.getPromotions().subscribe({
       next: (res) => this.promotions = res.data,
       error: () => {
-        this.promotions = [
-          { id: 1, anneeUniversitaire: '2024-2025', niveauId: 1, niveauNom: 'L1', filiereNom: 'Informatique', actif: true },
-          { id: 2, anneeUniversitaire: '2024-2025', niveauId: 2, niveauNom: 'L2', filiereNom: 'Informatique', actif: true },
-        ];
+        this.promotions = [];
       }
     });
 
     this.structureService.getModules().subscribe({
       next: (res) => this.modules = res.data,
       error: () => {
-        this.modules = [
-          { id: 1, nom: 'Algorithmique', code: 'INFO-101', coefficient: 3, ueId: 1 },
-          { id: 2, nom: 'Programmation C', code: 'INFO-102', coefficient: 3, ueId: 1 },
-        ];
+        this.modules = [];
       }
     });
 

@@ -66,4 +66,8 @@ export class AlerteService {
   deleteAlerte(id: number): Observable<ApiResponse<void>> {
     return this.api.delete<void>(`alertes/${id}`);
   }
+
+  analyserToutes(): Observable<ApiResponse<any>> {
+    return this.api.post<any>('alertes/analyser/toutes', {});
+  }
 }

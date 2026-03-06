@@ -11,4 +11,8 @@ export class AdminService {
   resetDatabase(): Observable<ApiResponse<void>> {
     return this.api.post<void>('admin/reset-database?confirm=RESET_ALL', {});
   }
+
+  exporterDonnees(): Observable<Blob> {
+    return this.api.download('admin/export-donnees');
+  }
 }

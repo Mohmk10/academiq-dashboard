@@ -37,6 +37,11 @@ export interface ChangeRoleDialogData {
           </select>
         </div>
 
+        <div class="field">
+          <label class="field-label">Motif du changement</label>
+          <textarea class="field-input" [(ngModel)]="motif" rows="3" placeholder="Indiquez la raison du changement de role..."></textarea>
+        </div>
+
         @if (selectedRole !== data.currentRole) {
           <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg">
             <div class="flex gap-2">
@@ -59,6 +64,7 @@ export interface ChangeRoleDialogData {
 })
 export class ChangeRoleDialogComponent {
   selectedRole: Role;
+  motif = '';
 
   availableRoles: { value: Role; label: string }[] = [
     { value: 'ADMIN', label: 'Administrateur' },
@@ -86,5 +92,5 @@ export class ChangeRoleDialogComponent {
   }
 
   onCancel(): void { this.dialogRef.close(); }
-  onConfirm(): void { this.dialogRef.close(this.selectedRole); }
+  onConfirm(): void { this.dialogRef.close({ role: this.selectedRole, motif: this.motif }); }
 }

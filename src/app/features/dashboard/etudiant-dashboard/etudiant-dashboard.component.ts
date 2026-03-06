@@ -120,16 +120,22 @@ export class EtudiantDashboardComponent implements OnInit {
 
   telechargerReleve(): void {
     this.notification.info('Téléchargement du relevé en cours...');
-    this.rapportService.telechargerReleve(0, 0).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'releve_notes.pdf';
-        a.click();
-        window.URL.revokeObjectURL(url);
+    this.authService.getProfile().subscribe({
+      next: (res) => {
+        const etudiantId = res.data.id;
+        this.rapportService.telechargerReleve(etudiantId, 0).subscribe({
+          next: (blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'releve_notes.pdf';
+            a.click();
+            window.URL.revokeObjectURL(url);
+          },
+          error: () => this.notification.error('Impossible de télécharger le relevé')
+        });
       },
-      error: () => this.notification.error('Impossible de télécharger le relevé')
+      error: () => this.notification.error('Impossible de récupérer le profil')
     });
   }
 
@@ -170,13 +176,13 @@ export class EtudiantDashboardComponent implements OnInit {
 
   private buildNotesRecentes(modules: ResultatModuleDTO[]): void {
     this.notesRecentes = modules.map(m => ({
-      date: '2026-02-' + String(Math.floor(10 + Math.random() * 18)).padStart(2, '0'),
-      evaluation: 'Examen ' + m.moduleCode,
+      date: '',
+      evaluation: m.moduleCode,
       module: m.moduleNom,
-      type: 'EXAMEN',
+      type: m.statut ?? '',
       note: m.moyenne,
       sur: m.noteMax
-    })).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 10);
+    })).slice(0, 10);
   }
 
 }

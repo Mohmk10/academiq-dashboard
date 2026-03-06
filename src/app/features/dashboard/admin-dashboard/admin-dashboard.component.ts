@@ -195,7 +195,7 @@ export class AdminDashboardComponent implements OnInit {
     if (!this.data?.repartitionEtudiants?.length) return;
     const repartition = this.data.repartitionEtudiants;
     const labels = repartition.map(r => r.label);
-    const values = repartition.map(() => Math.round(50 + Math.random() * 45));
+    const values = repartition.map(r => r.pourcentage);
     const colors = values.map(v => v >= 70 ? '#059669' : v >= 50 ? '#D97706' : '#DC2626');
 
     this.barData = {

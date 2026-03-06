@@ -198,8 +198,13 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
     });
     ref.afterClosed().subscribe(result => {
       if (result) {
-        this.notification.success(`Utilisateur ${result.prenom} ${result.nom} cree avec succes`);
-        this.loadUsers();
+        this.utilisateurService.create(result).subscribe({
+          next: () => {
+            this.notification.success(`Utilisateur ${result.prenom} ${result.nom} cree avec succes`);
+            this.loadUsers();
+          },
+          error: () => this.notification.error('Erreur lors de la creation de l\'utilisateur')
+        });
       }
     });
   }
@@ -217,11 +222,11 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
       width: '450px', maxWidth: '95vw',
       data: { userName: `${user.prenom} ${user.nom}`, currentRole: user.role }
     });
-    ref.afterClosed().subscribe(newRole => {
-      if (newRole) {
-        this.utilisateurService.changeRole(user.id, newRole).subscribe({
+    ref.afterClosed().subscribe(result => {
+      if (result) {
+        this.utilisateurService.changeRole(user.id, result.role, result.motif).subscribe({
           next: () => {
-            this.notification.success(`Role de ${user.prenom} ${user.nom} modifie en ${this.getRoleLabel(newRole)}`);
+            this.notification.success(`Role de ${user.prenom} ${user.nom} modifie en ${this.getRoleLabel(result.role)}`);
             this.loadUsers();
           },
           error: () => this.notification.error('Erreur lors du changement de role')

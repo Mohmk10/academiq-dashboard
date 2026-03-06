@@ -57,7 +57,6 @@
             <th>Utilisateur</th>
             <th>Cible</th>
             <th>Details</th>
-            <th>IP</th>
           </tr>
         </thead>
         <tbody>
@@ -73,10 +72,7 @@
                 </span>
               </td>
               <td>
-                <div>
-                  <span class="text-sm font-medium text-gray-900">{{ log.utilisateur }}</span>
-                  <span class="text-xs text-gray-400 ml-1.5">({{ log.role }})</span>
-                </div>
+                <span class="text-sm font-medium text-gray-900">{{ log.utilisateur }}</span>
               </td>
               <td>
                 @if (log.cible) {
@@ -86,13 +82,6 @@
                 }
               </td>
               <td class="cell-secondary max-w-xs truncate">{{ log.details }}</td>
-              <td>
-                @if (log.ip) {
-                  <span class="font-mono text-xs text-gray-400">{{ log.ip }}</span>
-                } @else {
-                  <span class="text-gray-300">—</span>
-                }
-              </td>
             </tr>
           }
         </tbody>

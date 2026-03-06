@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
-import { authGuard } from './core/guards/auth.guard';
+import { authGuard, noAuthGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
-  { path: 'login', loadComponent: () => import('./features/auth/login/login.component') },
+  { path: 'login', loadComponent: () => import('./features/auth/login/login.component'), canActivate: [noAuthGuard] },
   { path: 'forgot-password', loadComponent: () => import('./features/auth/forgot-password/forgot-password.component') },
 
   {

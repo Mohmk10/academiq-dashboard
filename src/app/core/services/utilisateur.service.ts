@@ -36,8 +36,8 @@ export class UtilisateurService {
     return this.api.patch<void>(`${this.endpoint}/${id}/toggle-activation`);
   }
 
-  changeRole(id: number, role: Role): Observable<ApiResponse<void>> {
-    return this.api.patch<void>(`${this.endpoint}/${id}/role`, { role });
+  changeRole(id: number, role: Role, motif?: string): Observable<ApiResponse<void>> {
+    return this.api.patch<void>(`${this.endpoint}/${id}/role`, { role, motif });
   }
 
   rechercher(keyword: string, page: number, size: number): Observable<ApiResponse<PageResponse<UtilisateurSummary>>> {

@@ -97,21 +97,6 @@
         </div>
       </div>
 
-      <!-- Zone dangereuse -->
-      <div class="border-2 border-red-300 rounded-xl p-5 bg-red-50/50">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-sm font-semibold text-red-700 flex items-center gap-2">
-              <i class="fas fa-triangle-exclamation"></i> Zone dangereuse
-            </h3>
-            <p class="text-xs text-red-600/70 mt-1">Reinitialiser completement la base de donnees. Cette action est irreversible.</p>
-          </div>
-          <button (click)="resetDatabase()"
-                  class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors whitespace-nowrap">
-            <i class="fas fa-database mr-1.5"></i>Reinitialiser la base de donnees
-          </button>
-        </div>
-      </div>
     }
 
     <!-- Metric Cards -->
@@ -289,5 +274,23 @@
         </div>
       </div>
     </div>
+
+    <!-- Zone dangereuse -->
+    @if (isSuperAdmin) {
+      <div class="border-2 border-red-300 rounded-xl p-5 bg-red-50/50">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-semibold text-red-700 flex items-center gap-2">
+              <i class="fas fa-triangle-exclamation"></i> Zone dangereuse
+            </h3>
+            <p class="text-xs text-red-600/70 mt-1">Reinitialiser completement la base de donnees. Cette action est irreversible.</p>
+          </div>
+          <button (click)="resetDatabase()"
+                  class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors whitespace-nowrap">
+            <i class="fas fa-database mr-1.5"></i>Reinitialiser la base de donnees
+          </button>
+        </div>
+      </div>
+    }
   </div>
 }

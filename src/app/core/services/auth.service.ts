@@ -39,6 +39,8 @@ export class AuthService {
     return this.http.post<ApiResponse<AuthResponse>>(`${this.API_URL}/auth/login`, request).pipe(
       tap(response => {
         if (response.success) {
+          response.data.nom = this.sanitizeName(response.data.nom);
+          response.data.prenom = this.sanitizeName(response.data.prenom);
           this.storeTokens(response.data);
           this.currentUserSubject.next(response.data);
           this.isLoggedInSubject.next(true);
@@ -52,6 +54,8 @@ export class AuthService {
     return this.http.post<ApiResponse<AuthResponse>>(`${this.API_URL}/auth/register`, request).pipe(
       tap(response => {
         if (response.success) {
+          response.data.nom = this.sanitizeName(response.data.nom);
+          response.data.prenom = this.sanitizeName(response.data.prenom);
           this.storeTokens(response.data);
           this.currentUserSubject.next(response.data);
           this.isLoggedInSubject.next(true);
@@ -65,7 +69,7 @@ export class AuthService {
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     this.currentUserSubject.next(null);
     this.isLoggedInSubject.next(false);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login'], { replaceUrl: true });
   }
 
   handleSessionExpired(): void {
@@ -74,7 +78,7 @@ export class AuthService {
     this.currentUserSubject.next(null);
     this.isLoggedInSubject.next(false);
     this.notification.warning('Votre session a expire. Veuillez vous reconnecter.');
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login'], { replaceUrl: true });
   }
 
   refreshToken(): Observable<ApiResponse<AuthResponse>> {
@@ -182,8 +186,8 @@ export class AuthService {
       this.currentUserSubject.next({
         accessToken: token,
         refreshToken: this.getRefreshToken() ?? '',
-        nom: payload.nom ?? '',
-        prenom: payload.prenom ?? '',
+        nom: this.sanitizeName(payload.nom ?? ''),
+        prenom: this.sanitizeName(payload.prenom ?? ''),
         email: payload.sub ?? payload.email ?? '',
         role: payload.role ?? ''
       });
@@ -202,8 +206,8 @@ export class AuthService {
           if (current) {
             this.currentUserSubject.next({
               ...current,
-              nom: res.data.nom ?? current.nom,
-              prenom: res.data.prenom ?? current.prenom,
+              nom: this.sanitizeName(res.data.nom ?? current.nom),
+              prenom: this.sanitizeName(res.data.prenom ?? current.prenom),
               email: res.data.email ?? current.email
             });
           }
@@ -211,5 +215,22 @@ export class AuthService {
       },
       error: () => {}
     });
+  }
+
+  /**
+   * Repairs UTF-8 mojibake (e.g. "KouyatÃ©" → "Kouyaté") and normalizes to NFC.
+   * When the backend double-encodes UTF-8, accented characters get stored as
+   * their raw byte sequences interpreted as Latin-1. This detects and reverses that.
+   */
+  private sanitizeName(value: string): string {
+    if (!value) return '';
+    try {
+      const bytes = new Uint8Array([...value].map(c => c.charCodeAt(0)));
+      const decoded = new TextDecoder('utf-8').decode(bytes);
+      if (decoded !== value && !decoded.includes('\uFFFD')) {
+        return decoded.normalize('NFC');
+      }
+    } catch { /* not mojibake, proceed with NFC only */ }
+    return value.normalize('NFC');
   }
 }

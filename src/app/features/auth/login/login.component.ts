@@ -51,7 +51,7 @@ export default class LoginComponent {
     this.authService.login({ email, motDePasse }).subscribe({
       next: () => {
         this.notification.success('Connexion réussie');
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard'], { replaceUrl: true });
       },
       error: (err) => {
         this.isLoading = false;
