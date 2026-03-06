@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { UtilisateurDetail } from '../../../core/models/user.model';
+import { PhoneSnDirective } from '../../../shared/directives/phone-sn.directive';
 
 export interface StudentDialogData {
   mode: 'create' | 'edit';
@@ -14,7 +15,7 @@ export interface StudentDialogData {
   selector: 'app-student-dialog',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule
+    CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule, PhoneSnDirective
   ],
   template: `
     <div class="dialog-container">
@@ -50,8 +51,8 @@ export interface StudentDialogData {
 
         <div class="form-grid-2">
           <div class="field">
-            <label class="field-label">Téléphone</label>
-            <input class="field-input" formControlName="telephone" placeholder="Ex: +221 77 000 00 00">
+            <label class="field-label">Téléphone <span class="required">*</span></label>
+            <input class="field-input" type="tel" formControlName="telephone" appPhoneSn placeholder="+221 XX XXX XX XX">
           </div>
           <div class="field">
             <label class="field-label">Date de naissance</label>
@@ -65,8 +66,8 @@ export interface StudentDialogData {
             <input class="field-input" formControlName="nomTuteur" placeholder="Ex: Diallo">
           </div>
           <div class="field">
-            <label class="field-label">Numéro du tuteur</label>
-            <input class="field-input" formControlName="numeroTuteur" placeholder="Ex: +221 70 000 00 00">
+            <label class="field-label">Numéro du tuteur <span class="required">*</span></label>
+            <input class="field-input" type="tel" formControlName="numeroTuteur" appPhoneSn placeholder="+221 XX XXX XX XX">
           </div>
         </div>
       </form>
@@ -98,10 +99,10 @@ export class StudentDialogComponent implements OnInit {
       prenom: [s?.prenom ?? '', Validators.required],
       email: [s?.email ?? '', [Validators.required, Validators.email]],
       motDePasse: ['', this.data.mode === 'create' ? [Validators.required, Validators.minLength(8)] : []],
-      telephone: [s?.telephone ?? ''],
+      telephone: [s?.telephone ?? '', Validators.required],
       dateNaissance: [s?.dateNaissance ?? ''],
       nomTuteur: [s?.etudiant?.nomTuteur ?? ''],
-      numeroTuteur: [s?.etudiant?.numeroTuteur ?? '']
+      numeroTuteur: [s?.etudiant?.numeroTuteur ?? '', Validators.required]
     });
   }
 

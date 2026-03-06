@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { Role } from '../../../core/models/user.model';
+import { PhoneSnDirective } from '../../../shared/directives/phone-sn.directive';
 
 @Component({
   selector: 'app-create-user-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, PhoneSnDirective],
   template: `
     <div class="dialog-container">
       <div class="dialog-header">
@@ -27,14 +28,32 @@ import { Role } from '../../../core/models/user.model';
           </div>
         </div>
 
+        <div class="field">
+          <label class="field-label">Email <span class="required">*</span></label>
+          <input class="field-input" type="email" formControlName="email" placeholder="Ex: utilisateur@academiq.sn">
+        </div>
+
         <div class="form-grid-2">
           <div class="field">
-            <label class="field-label">Email <span class="required">*</span></label>
-            <input class="field-input" type="email" formControlName="email" placeholder="Ex: utilisateur@academiq.sn">
+            <label class="field-label">Mot de passe <span class="required">*</span></label>
+            <div style="position: relative;">
+              <input class="field-input" [type]="showPassword ? 'text' : 'password'" formControlName="motDePasse" placeholder="Minimum 8 caracteres" style="padding-right: 2.5rem;">
+              <button type="button" (click)="showPassword = !showPassword" style="position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #6b7280; padding: 0.25rem;">
+                <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+              </button>
+            </div>
           </div>
           <div class="field">
-            <label class="field-label">Mot de passe <span class="required">*</span></label>
-            <input class="field-input" type="password" formControlName="motDePasse" placeholder="Minimum 8 caracteres">
+            <label class="field-label">Confirmer le mot de passe <span class="required">*</span></label>
+            <div style="position: relative;">
+              <input class="field-input" [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmMotDePasse" placeholder="Retapez le mot de passe" style="padding-right: 2.5rem;">
+              <button type="button" (click)="showConfirmPassword = !showConfirmPassword" style="position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #6b7280; padding: 0.25rem;">
+                <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+              </button>
+            </div>
+            @if (form.get('confirmMotDePasse')?.touched && form.hasError('motDePasseMismatch')) {
+              <p style="color: #DC2626; font-size: 0.75rem; margin-top: 0.25rem;">Les mots de passe ne correspondent pas</p>
+            }
           </div>
         </div>
 
@@ -48,8 +67,8 @@ import { Role } from '../../../core/models/user.model';
             </select>
           </div>
           <div class="field">
-            <label class="field-label">Telephone</label>
-            <input class="field-input" formControlName="telephone" placeholder="Ex: +221 77 000 00 00">
+            <label class="field-label">Telephone <span class="required">*</span></label>
+            <input class="field-input" type="tel" formControlName="telephone" appPhoneSn placeholder="+221 XX XXX XX XX">
           </div>
         </div>
 
@@ -67,6 +86,16 @@ import { Role } from '../../../core/models/user.model';
                   <option [value]="n">{{ n }}</option>
                 }
               </select>
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="field">
+              <label class="field-label">Nom du Tuteur(trice)</label>
+              <input class="field-input" formControlName="nomTuteur" placeholder="Ex: Diallo Senior">
+            </div>
+            <div class="field">
+              <label class="field-label">Numero du Tuteur(trice) <span class="required">*</span></label>
+              <input class="field-input" type="tel" formControlName="numeroTuteur" appPhoneSn placeholder="+221 XX XXX XX XX">
             </div>
           </div>
         }
@@ -112,6 +141,8 @@ import { Role } from '../../../core/models/user.model';
 })
 export class CreateUserDialogComponent implements OnInit {
   form!: FormGroup;
+  showPassword = false;
+  showConfirmPassword = false;
 
   roles: { value: Role; label: string }[] = [
     { value: 'ADMIN', label: 'Administrateur' },
@@ -134,22 +165,43 @@ export class CreateUserDialogComponent implements OnInit {
       prenom: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       motDePasse: ['', [Validators.required, Validators.minLength(8)]],
+      confirmMotDePasse: ['', Validators.required],
       role: ['ETUDIANT', Validators.required],
-      telephone: [''],
+      telephone: ['', Validators.required],
       matricule: [''],
       niveau: [''],
+      nomTuteur: [''],
+      numeroTuteur: ['', Validators.required],
       specialite: [''],
       grade: [''],
       fonction: [''],
       departement: ['']
+    }, { validators: this.passwordMatchValidator });
+
+    this.form.get('role')!.valueChanges.subscribe(role => {
+      const ctrl = this.form.get('numeroTuteur')!;
+      if (role === 'ETUDIANT') {
+        ctrl.setValidators(Validators.required);
+      } else {
+        ctrl.clearValidators();
+        ctrl.setValue('');
+      }
+      ctrl.updateValueAndValidity();
     });
+  }
+
+  private passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
+    const mdp = group.get('motDePasse')?.value;
+    const confirm = group.get('confirmMotDePasse')?.value;
+    return mdp === confirm ? null : { motDePasseMismatch: true };
   }
 
   onCancel(): void { this.dialogRef.close(); }
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+      const { confirmMotDePasse, ...result } = this.form.value;
+      this.dialogRef.close(result);
     }
   }
 }

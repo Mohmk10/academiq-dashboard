@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { UtilisateurDetail } from '../../../core/models/user.model';
+import { PhoneSnDirective } from '../../../shared/directives/phone-sn.directive';
 
 export interface TeacherDialogData {
   mode: 'create' | 'edit';
@@ -13,7 +14,7 @@ export interface TeacherDialogData {
 @Component({
   selector: 'app-teacher-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule, PhoneSnDirective],
   template: `
     <div class="dialog-container">
       <div class="dialog-header">
@@ -76,8 +77,8 @@ export interface TeacherDialogData {
         </div>
 
         <div class="field">
-          <label class="field-label">Téléphone</label>
-          <input class="field-input" formControlName="telephone" placeholder="Ex: +221 77 000 00 00">
+          <label class="field-label">Téléphone <span class="required">*</span></label>
+          <input class="field-input" type="tel" formControlName="telephone" appPhoneSn placeholder="+221 XX XXX XX XX">
         </div>
       </form>
 
@@ -108,7 +109,7 @@ export class TeacherDialogComponent implements OnInit {
       prenom: [t?.prenom ?? '', Validators.required],
       email: [t?.email ?? '', [Validators.required, Validators.email]],
       motDePasse: ['', this.data.mode === 'create' ? [Validators.required, Validators.minLength(8)] : []],
-      telephone: [t?.telephone ?? ''],
+      telephone: [t?.telephone ?? '', Validators.required],
       specialite: [t?.enseignant?.specialite ?? '', Validators.required],
       grade: [t?.enseignant?.grade ?? ''],
       departement: [t?.enseignant?.departement ?? ''],

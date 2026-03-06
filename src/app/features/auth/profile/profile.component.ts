@@ -6,11 +6,12 @@ import { AuthService } from '../../../core/services/auth.service';
 import { UtilisateurService } from '../../../core/services/utilisateur.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { UtilisateurDetail, Role } from '../../../core/models/user.model';
+import { PhoneSnDirective } from '../../../shared/directives/phone-sn.directive';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatProgressSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule, MatProgressSpinnerModule, PhoneSnDirective],
   template: `
     <div class="space-y-6 max-w-3xl mx-auto fade-in-up">
       @if (isLoading) {
@@ -53,7 +54,7 @@ import { UtilisateurDetail, Role } from '../../../core/models/user.model';
                 </div>
                 <div class="field">
                   <label class="field-label">Téléphone</label>
-                  <input class="field-input" formControlName="telephone">
+                  <input class="field-input" type="tel" formControlName="telephone" appPhoneSn placeholder="+221 XX XXX XX XX">
                 </div>
                 <div class="field">
                   <label class="field-label">Nom <span class="required">*</span></label>
