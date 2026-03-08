@@ -91,7 +91,7 @@ export default class StudentDetailComponent implements OnInit {
   }
 
   getAlertIcon(type: string): string {
-    return type === 'ABSENCE_NOTE' ? 'text-warning' : 'text-danger';
+    return type === 'ABSENCES_REPETEES' || type === 'MOYENNE_FAIBLE' || type === 'NON_ASSIDUITE' ? 'text-warning' : 'text-danger';
   }
 
   private loadNotes(id: number): void {

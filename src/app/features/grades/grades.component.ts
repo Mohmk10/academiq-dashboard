@@ -252,7 +252,7 @@ export default class GradesComponent implements OnInit {
   }
 
   getTypeLabel(type: string): string {
-    const labels: Record<string, string> = { EXAMEN: 'Examen', CONTROLE_CONTINU: 'CC', TP: 'TP', PROJET: 'Projet', RATTRAPAGE: 'Rattrapage' };
+    const labels: Record<string, string> = { CC: 'CC', TP: 'TP', PARTIEL: 'Partiel', EXAMEN: 'Examen', RATTRAPAGE: 'Rattrapage', PROJET: 'Projet', ORAL: 'Oral' };
     return labels[type] || type;
   }
 

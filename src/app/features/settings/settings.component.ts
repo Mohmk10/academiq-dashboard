@@ -390,7 +390,7 @@ export default class SettingsComponent implements OnInit, OnDestroy {
   }
 
   getTypeLabel(type: string): string {
-    const labels: Record<string, string> = { NOTE_BASSE: 'Note basse', ABSENCE_NOTE: 'Absence', MOYENNE_FAIBLE: 'Moyenne faible', RISQUE_ECHEC: 'Risque échec', CUSTOM: 'Personnalisée' };
+    const labels: Record<string, string> = { NOTE_ELIMINATOIRE: 'Note éliminatoire', ABSENCES_REPETEES: 'Absences répétées', MOYENNE_FAIBLE: 'Moyenne faible', RISQUE_EXCLUSION: 'Risque exclusion', CHUTE_PERFORMANCE: 'Chute performance', NON_ASSIDUITE: 'Non-assiduité' };
     return labels[type] || type;
   }
 

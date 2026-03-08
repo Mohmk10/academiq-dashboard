@@ -39,13 +39,17 @@ import { UeResponse, ModuleResponse } from '../../../../core/models/structure.mo
         </div>
         <div class="form-grid-2">
           <div class="field">
+            <label class="field-label">Crédits <span class="required">*</span></label>
+            <input class="field-input" type="number" formControlName="credits" placeholder="Ex: 3" min="1">
+          </div>
+          <div class="field">
             <label class="field-label">Coefficient <span class="required">*</span></label>
             <input class="field-input" type="number" formControlName="coefficient" placeholder="Ex: 3">
           </div>
-          <div class="field">
-            <label class="field-label">Volume horaire</label>
-            <input class="field-input" type="number" formControlName="volumeHoraire" placeholder="Ex: 48">
-          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Volume horaire (CM)</label>
+          <input class="field-input" type="number" formControlName="volumeHoraireCM" placeholder="Ex: 48">
         </div>
       </form>
 
@@ -76,8 +80,9 @@ export class ModuleDialogComponent implements OnInit {
       nom: [data.module?.nom || '', Validators.required],
       code: [data.module?.code || '', Validators.required],
       ueId: [data.module?.ueId || null, Validators.required],
+      credits: [data.module?.credits ?? 1, [Validators.required, Validators.min(1)]],
       coefficient: [data.module?.coefficient || 1, [Validators.required, Validators.min(1)]],
-      volumeHoraire: [data.module?.volumeHoraire || null]
+      volumeHoraireCM: [data.module?.volumeHoraire || null]
     });
   }
 

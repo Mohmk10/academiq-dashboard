@@ -94,16 +94,18 @@ export interface UeResponse {
 export interface ModuleRequest {
   nom: string;
   code: string;
+  credits: number;
   coefficient: number;
   ueId: number;
   enseignantId?: number;
-  volumeHoraire?: number;
+  volumeHoraireCM?: number;
 }
 
 export interface ModuleResponse {
   id: number;
   nom: string;
   code: string;
+  credits: number;
   coefficient: number;
   ueId: number;
   ueNom?: string;

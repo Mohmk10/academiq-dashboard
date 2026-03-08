@@ -169,8 +169,8 @@ export class AdminDashboardComponent implements OnInit {
 
   getAlertTypeIcon(type: string): string {
     switch (type) {
-      case 'NOTE_BASSE': case 'MOYENNE_FAIBLE': case 'RISQUE_ECHEC': return 'text-danger';
-      case 'ABSENCE_NOTE': return 'text-warning';
+      case 'NOTE_ELIMINATOIRE': case 'RISQUE_EXCLUSION': case 'CHUTE_PERFORMANCE': return 'text-danger';
+      case 'MOYENNE_FAIBLE': case 'ABSENCES_REPETEES': case 'NON_ASSIDUITE': return 'text-warning';
       default: return 'text-gray-500';
     }
   }

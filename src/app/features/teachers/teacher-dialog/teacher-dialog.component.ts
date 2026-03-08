@@ -55,7 +55,7 @@ export interface TeacherDialogData {
           <div class="field">
             <label class="field-label">Grade</label>
             <select class="field-input" formControlName="grade">
-              <option value="" disabled>Sélectionner...</option>
+              <option value="">Sélectionner...</option>
               <option value="Professeur">Professeur</option>
               <option value="Maître de conférences">Maître de conférences</option>
               <option value="Docteur">Docteur</option>
@@ -84,16 +84,25 @@ export interface TeacherDialogData {
 
       <div class="dialog-actions">
         <button class="btn-secondary" (click)="dialogRef.close()">Annuler</button>
-        <button class="btn-primary" (click)="onSubmit()" [disabled]="form.invalid">Enregistrer</button>
+        <button class="btn-primary" (click)="onSubmit()" [disabled]="form.invalid || (isEditMode && !hasChanges)">
+          {{ isEditMode && !hasChanges ? 'Aucune modification' : 'Enregistrer' }}
+        </button>
       </div>
     </div>
   `
 })
 export class TeacherDialogComponent implements OnInit {
   form!: FormGroup;
+  private initialValues: any;
+
+  get isEditMode(): boolean { return this.data.mode === 'edit'; }
 
   get dialogTitle(): string {
     return this.data.mode === 'create' ? 'Ajouter un enseignant' : 'Modifier l\'enseignant';
+  }
+
+  get hasChanges(): boolean {
+    return JSON.stringify(this.form.value) !== JSON.stringify(this.initialValues);
   }
 
   constructor(
@@ -115,9 +124,35 @@ export class TeacherDialogComponent implements OnInit {
       departement: [t?.enseignant?.departement ?? ''],
       bureau: [t?.enseignant?.bureau ?? '']
     });
+    this.initialValues = { ...this.form.value };
   }
 
   onSubmit(): void {
-    if (this.form.valid) this.dialogRef.close(this.form.value);
+    if (this.form.invalid) return;
+    if (this.isEditMode && !this.hasChanges) return;
+
+    const v = this.form.value;
+
+    if (this.isEditMode) {
+      // PUT /utilisateurs/{id} — UtilisateurUpdateRequest
+      const result: any = { nom: v.nom, prenom: v.prenom, telephone: v.telephone };
+      if (v.email && v.email !== this.data.teacher?.email) result.email = v.email;
+      if (v.specialite) result.specialite = v.specialite;
+      if (v.grade) result.grade = v.grade;
+      if (v.departement) result.departement = v.departement;
+      if (v.bureau) result.bureau = v.bureau;
+      this.dialogRef.close(result);
+    } else {
+      // POST /utilisateurs — UtilisateurCreateRequest
+      const result: any = {
+        nom: v.nom, prenom: v.prenom, email: v.email,
+        motDePasse: v.motDePasse, role: 'ENSEIGNANT', telephone: v.telephone,
+        specialite: v.specialite
+      };
+      if (v.grade) result.grade = v.grade;
+      if (v.departement) result.departement = v.departement;
+      if (v.bureau) result.bureau = v.bureau;
+      this.dialogRef.close(result);
+    }
   }
 }

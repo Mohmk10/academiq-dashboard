@@ -68,7 +68,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
     this.userRole = this.authService.getCurrentUserRole();
     this.menuSections = this.buildMenu();
-    this.loadAlertCount();
+    if (this.canAccessAlerts) {
+      this.alerteService.resetAlertCount();
+      this.alerteService.alertCount$.pipe(takeUntil(this.destroy$)).subscribe(count => this.alertCount = count);
+      this.alerteService.refreshAlertCount();
+    }
   }
 
   ngOnDestroy(): void {
@@ -106,11 +110,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     return labels[this.userRole ?? ''] ?? this.userRole ?? '';
   }
 
-  private loadAlertCount(): void {
-    this.alerteService.getStatistiques().subscribe({
-      next: (res) => this.alertCount = res.data?.alertesActives ?? 0,
-      error: () => this.alertCount = 0
-    });
+  get canAccessAlerts(): boolean {
+    return this.authService.hasAnyRole(['ADMIN', 'RESPONSABLE_PEDAGOGIQUE', 'ENSEIGNANT']);
   }
 
   private checkScreenSize(): void {

@@ -200,7 +200,29 @@ export class CreateUserDialogComponent implements OnInit {
 
   onSubmit(): void {
     if (this.form.valid) {
-      const { confirmMotDePasse, ...result } = this.form.value;
+      const v = this.form.value;
+      const result: any = {
+        nom: v.nom,
+        prenom: v.prenom,
+        email: v.email,
+        motDePasse: v.motDePasse,
+        role: v.role,
+        telephone: v.telephone
+      };
+
+      if (v.role === 'ETUDIANT') {
+        if (v.matricule) result.matriculeEtudiant = v.matricule;
+        if (v.niveau) result.niveauActuel = v.niveau;
+        if (v.nomTuteur) result.nomTuteur = v.nomTuteur;
+        if (v.numeroTuteur) result.numeroTuteur = v.numeroTuteur;
+      } else if (v.role === 'ENSEIGNANT') {
+        if (v.specialite) result.specialite = v.specialite;
+        if (v.grade) result.grade = v.grade;
+      } else if (v.role === 'ADMIN') {
+        if (v.fonction) result.fonction = v.fonction;
+        if (v.departement) result.departementAdmin = v.departement;
+      }
+
       this.dialogRef.close(result);
     }
   }

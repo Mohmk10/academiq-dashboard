@@ -1,4 +1,4 @@
-export type TypeEvaluation = 'EXAMEN' | 'CONTROLE_CONTINU' | 'TP' | 'PROJET' | 'RATTRAPAGE';
+export type TypeEvaluation = 'CC' | 'TP' | 'PARTIEL' | 'EXAMEN' | 'RATTRAPAGE' | 'PROJET' | 'ORAL';
 
 export interface EvaluationRequest {
   moduleId: number;

@@ -53,12 +53,12 @@ export class TraiterAlerteDialogComponent {
   ) {}
 
   getTypeLabel(): string {
-    const labels: Record<string, string> = { NOTE_BASSE: 'Note basse', ABSENCE_NOTE: 'Absence', MOYENNE_FAIBLE: 'Moyenne faible', RISQUE_ECHEC: 'Risque échec', CUSTOM: 'Personnalisée' };
+    const labels: Record<string, string> = { NOTE_ELIMINATOIRE: 'Note éliminatoire', ABSENCES_REPETEES: 'Absences répétées', MOYENNE_FAIBLE: 'Moyenne faible', RISQUE_EXCLUSION: 'Risque exclusion', CHUTE_PERFORMANCE: 'Chute performance', NON_ASSIDUITE: 'Non-assiduité' };
     return labels[this.data.alerte.type] || this.data.alerte.type;
   }
 
   getTypeBadgeClass(): string {
-    const classes: Record<string, string> = { NOTE_BASSE: 'bg-red-100 text-danger', ABSENCE_NOTE: 'bg-orange-100 text-warning', MOYENNE_FAIBLE: 'bg-amber-100 text-amber-700', RISQUE_ECHEC: 'bg-red-100 text-danger', CUSTOM: 'bg-gray-100 text-gray-600' };
+    const classes: Record<string, string> = { NOTE_ELIMINATOIRE: 'bg-red-100 text-danger', ABSENCES_REPETEES: 'bg-orange-100 text-warning', MOYENNE_FAIBLE: 'bg-amber-100 text-amber-700', RISQUE_EXCLUSION: 'bg-red-100 text-danger', CHUTE_PERFORMANCE: 'bg-red-100 text-danger', NON_ASSIDUITE: 'bg-orange-100 text-warning' };
     return classes[this.data.alerte.type] || 'bg-gray-100 text-gray-600';
   }
 

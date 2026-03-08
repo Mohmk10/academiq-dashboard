@@ -84,12 +84,14 @@
       <!-- Right -->
       <div class="flex items-center gap-1">
         <!-- Notifications -->
-        <button routerLink="/alertes" class="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
-          <i class="fas fa-bell text-xl"></i>
-          @if (alertCount > 0) {
-            <span class="absolute top-1.5 right-1.5 w-4 h-4 bg-danger text-white text-[10px] font-bold rounded-full flex items-center justify-center">{{ alertCount }}</span>
-          }
-        </button>
+        @if (canAccessAlerts) {
+          <button routerLink="/alertes" class="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+            <i class="fas fa-bell text-xl"></i>
+            @if (alertCount > 0) {
+              <span class="absolute top-1.5 right-1.5 w-4 h-4 bg-danger text-white text-[10px] font-bold rounded-full flex items-center justify-center">{{ alertCount }}</span>
+            }
+          </button>
+        }
 
         <!-- Separator -->
         <div class="hidden sm:block border-l border-gray-200 h-8 mx-2"></div>

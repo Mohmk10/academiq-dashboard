@@ -86,11 +86,13 @@ export class EvaluationDialogComponent implements OnInit {
   modules: ModuleResponse[] = [];
   promotions: PromotionResponse[] = [];
   types: { value: TypeEvaluation; label: string }[] = [
-    { value: 'EXAMEN', label: 'Examen' },
-    { value: 'CONTROLE_CONTINU', label: 'Contrôle continu' },
+    { value: 'CC', label: 'Contrôle continu' },
     { value: 'TP', label: 'TP' },
+    { value: 'PARTIEL', label: 'Partiel' },
+    { value: 'EXAMEN', label: 'Examen' },
+    { value: 'RATTRAPAGE', label: 'Rattrapage' },
     { value: 'PROJET', label: 'Projet' },
-    { value: 'RATTRAPAGE', label: 'Rattrapage' }
+    { value: 'ORAL', label: 'Oral' }
   ];
 
   get dialogTitle(): string {
@@ -120,8 +122,8 @@ export class EvaluationDialogComponent implements OnInit {
       next: (res) => this.modules = res.data,
       error: () => {
         this.modules = [
-          { id: 1, nom: 'Algorithmique', code: 'INFO-101', coefficient: 3, ueId: 1 },
-          { id: 2, nom: 'Programmation C', code: 'INFO-102', coefficient: 3, ueId: 1 }
+          { id: 1, nom: 'Algorithmique', code: 'INFO-101', coefficient: 3, credits: 3, ueId: 1 },
+          { id: 2, nom: 'Programmation C', code: 'INFO-102', coefficient: 3, credits: 3, ueId: 1 }
         ];
       }
     });

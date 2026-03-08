@@ -50,7 +50,7 @@ import { PhoneSnDirective } from '../../../shared/directives/phone-sn.directive'
               <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
                 <div class="field">
                   <label class="field-label">Email</label>
-                  <input class="field-input !text-gray-400" formControlName="email" readonly>
+                  <input class="field-input" type="email" formControlName="email">
                 </div>
                 <div class="field">
                   <label class="field-label">Téléphone</label>
@@ -76,7 +76,7 @@ import { PhoneSnDirective } from '../../../shared/directives/phone-sn.directive'
             </form>
             <div class="flex justify-end gap-3 mt-4">
               <button class="btn-secondary" (click)="cancelEdit()">Annuler</button>
-              <button class="btn-primary" [disabled]="profileForm.invalid || isSaving" (click)="saveProfile()">
+              <button class="btn-primary" [disabled]="profileForm.invalid || isSaving || !profileHasChanges" (click)="saveProfile()">
                 @if (isSaving) { <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner> }
                 Enregistrer
               </button>
@@ -211,7 +211,7 @@ export default class ProfileComponent implements OnInit {
   ) {
     this.role = this.authService.getCurrentUserRole();
     this.profileForm = this.fb.group({
-      email: [{ value: '', disabled: true }],
+      email: ['', [Validators.required, Validators.email]],
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
       telephone: [''],
@@ -265,24 +265,43 @@ export default class ProfileComponent implements OnInit {
   cancelEdit(): void {
     this.editMode = false;
     if (this.user) {
-      this.profileForm.patchValue({ nom: this.user.nom, prenom: this.user.prenom, telephone: this.user.telephone || '', dateNaissance: this.user.dateNaissance || '', adresse: this.user.adresse || '' });
+      this.profileForm.patchValue({ email: this.user.email, nom: this.user.nom, prenom: this.user.prenom, telephone: this.user.telephone || '', dateNaissance: this.user.dateNaissance || '', adresse: this.user.adresse || '' });
     }
   }
 
+  get profileHasChanges(): boolean {
+    if (!this.user) return false;
+    const v = this.profileForm.value;
+    return v.nom !== this.user.nom || v.prenom !== this.user.prenom ||
+      (v.email || '') !== (this.user.email || '') ||
+      (v.telephone || '') !== (this.user.telephone || '') ||
+      (v.dateNaissance || '') !== (this.user.dateNaissance || '') ||
+      (v.adresse || '') !== (this.user.adresse || '');
+  }
+
   saveProfile(): void {
-    if (!this.user || this.profileForm.invalid) return;
+    if (!this.user || this.profileForm.invalid || !this.profileHasChanges) return;
     this.isSaving = true;
-    const data = this.profileForm.getRawValue();
+    const v = this.profileForm.value;
+    const data: any = { nom: v.nom, prenom: v.prenom };
+    if (v.email && v.email !== this.user.email) data.email = v.email;
+    if (v.telephone) data.telephone = v.telephone;
+    if (v.dateNaissance) data.dateNaissance = v.dateNaissance;
+    if (v.adresse) data.adresse = v.adresse;
+
     this.utilisateurService.update(this.user.id, data).subscribe({
       next: () => {
         this.notification.success('Profil mis à jour');
         this.editMode = false;
         this.isSaving = false;
         if (this.user) {
-          this.user.nom = data.nom;
-          this.user.prenom = data.prenom;
-          this.user.telephone = data.telephone;
-          this.initials = `${data.prenom.charAt(0)}${data.nom.charAt(0)}`.toUpperCase();
+          this.user.nom = v.nom;
+          this.user.prenom = v.prenom;
+          if (v.email) this.user.email = v.email;
+          this.user.telephone = v.telephone;
+          this.user.dateNaissance = v.dateNaissance;
+          this.user.adresse = v.adresse;
+          this.initials = `${v.prenom.charAt(0)}${v.nom.charAt(0)}`.toUpperCase();
         }
       },
       error: () => { this.isSaving = false; }

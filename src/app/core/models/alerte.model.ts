@@ -1,5 +1,6 @@
-export type TypeAlerte = 'NOTE_BASSE' | 'ABSENCE_NOTE' | 'MOYENNE_FAIBLE' | 'RISQUE_ECHEC' | 'CUSTOM';
+export type TypeAlerte = 'MOYENNE_FAIBLE' | 'ABSENCES_REPETEES' | 'CHUTE_PERFORMANCE' | 'RISQUE_EXCLUSION' | 'NOTE_ELIMINATOIRE' | 'NON_ASSIDUITE';
 export type StatutAlerte = 'ACTIVE' | 'TRAITEE' | 'RESOLUE' | 'IGNOREE';
+export type NiveauAlerte = 'INFO' | 'ATTENTION' | 'CRITIQUE';
 
 export interface AlerteResponse {
   id: number;
@@ -26,31 +27,34 @@ export interface TraiterAlerteRequest {
 }
 
 export interface RegleAlerteRequest {
+  nom: string;
   type: TypeAlerte;
+  niveauAlerte: NiveauAlerte;
   seuil: number;
-  actif: boolean;
   description?: string;
+  seuilCritique?: number;
+  nombreMaxAbsences?: number;
+  pourcentageBaisse?: number;
 }
 
 export interface RegleAlerteResponse {
   id: number;
+  nom: string;
   type: TypeAlerte;
+  niveauAlerte: NiveauAlerte;
   seuil: number;
   actif: boolean;
   description?: string;
-  createdAt: string;
+  seuilCritique?: number;
+  nombreMaxAbsences?: number;
+  pourcentageBaisse?: number;
 }
 
 export interface StatistiquesAlertesDTO {
-  totalAlertes: number;
-  alertesActives: number;
-  alertesTraitees: number;
-  alertesResolues: number;
+  totalActives: number;
+  totalCritiques: number;
+  totalAttention: number;
+  totalTraitees: number;
+  totalResolues: number;
   parType: { [key: string]: number };
-  evolution: EvolutionAlertesDTO[];
-}
-
-export interface EvolutionAlertesDTO {
-  periode: string;
-  count: number;
 }

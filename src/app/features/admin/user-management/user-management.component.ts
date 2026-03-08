@@ -10,6 +10,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { Role, UtilisateurSummary } from '../../../core/models/user.model';
 import { ChangeRoleDialogComponent } from './change-role-dialog.component';
 import { CreateUserDialogComponent } from './create-user-dialog.component';
+import { EditUserDialogComponent } from './edit-user-dialog.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
@@ -206,6 +207,29 @@ export default class UserManagementComponent implements OnInit, OnDestroy {
           error: () => this.notification.error('Erreur lors de la creation de l\'utilisateur')
         });
       }
+    });
+  }
+
+  openEditDialog(user: UtilisateurSummary): void {
+    this.utilisateurService.getById(user.id).subscribe({
+      next: (res) => {
+        const ref = this.dialog.open(EditUserDialogComponent, {
+          width: '650px', maxWidth: '95vw',
+          data: { user: res.data }
+        });
+        ref.afterClosed().subscribe(result => {
+          if (result) {
+            this.utilisateurService.update(user.id, result).subscribe({
+              next: () => {
+                this.notification.success(`Utilisateur ${result.prenom} ${result.nom} modifie`);
+                this.loadUsers();
+              },
+              error: () => this.notification.error('Erreur lors de la modification')
+            });
+          }
+        });
+      },
+      error: () => this.notification.error('Impossible de charger les details de l\'utilisateur')
     });
   }
 

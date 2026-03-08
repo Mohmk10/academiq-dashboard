@@ -73,17 +73,26 @@ export interface StudentDialogData {
       </form>
 
       <div class="dialog-actions">
-        <button class="btn-secondary" (click)="onCancel()">Annuler</button>
-        <button class="btn-primary" (click)="onSubmit()" [disabled]="form.invalid">Enregistrer</button>
+        <button class="btn-secondary" (click)="dialogRef.close()">Annuler</button>
+        <button class="btn-primary" (click)="onSubmit()" [disabled]="form.invalid || (isEditMode && !hasChanges)">
+          {{ isEditMode && !hasChanges ? 'Aucune modification' : 'Enregistrer' }}
+        </button>
       </div>
     </div>
   `
 })
 export class StudentDialogComponent implements OnInit {
   form!: FormGroup;
+  private initialValues: any;
+
+  get isEditMode(): boolean { return this.data.mode === 'edit'; }
 
   get dialogTitle(): string {
     return this.data.mode === 'create' ? 'Ajouter un étudiant' : 'Modifier l\'étudiant';
+  }
+
+  get hasChanges(): boolean {
+    return JSON.stringify(this.form.value) !== JSON.stringify(this.initialValues);
   }
 
   constructor(
@@ -104,13 +113,33 @@ export class StudentDialogComponent implements OnInit {
       nomTuteur: [s?.etudiant?.nomTuteur ?? ''],
       numeroTuteur: [s?.etudiant?.numeroTuteur ?? '', Validators.required]
     });
+    this.initialValues = { ...this.form.value };
   }
 
-  onCancel(): void { this.dialogRef.close(); }
-
   onSubmit(): void {
-    if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+    if (this.form.invalid) return;
+    if (this.isEditMode && !this.hasChanges) return;
+
+    const v = this.form.value;
+
+    if (this.isEditMode) {
+      // PUT /utilisateurs/{id} — UtilisateurUpdateRequest
+      const result: any = { nom: v.nom, prenom: v.prenom, telephone: v.telephone };
+      if (v.email && v.email !== this.data.student?.email) result.email = v.email;
+      if (v.dateNaissance) result.dateNaissance = v.dateNaissance;
+      if (v.nomTuteur) result.nomTuteur = v.nomTuteur;
+      if (v.numeroTuteur) result.numeroTuteur = v.numeroTuteur;
+      this.dialogRef.close(result);
+    } else {
+      // POST /utilisateurs — UtilisateurCreateRequest
+      const result: any = {
+        nom: v.nom, prenom: v.prenom, email: v.email,
+        motDePasse: v.motDePasse, role: 'ETUDIANT', telephone: v.telephone,
+        numeroTuteur: v.numeroTuteur
+      };
+      if (v.dateNaissance) result.dateNaissance = v.dateNaissance;
+      if (v.nomTuteur) result.nomTuteur = v.nomTuteur;
+      this.dialogRef.close(result);
     }
   }
 }

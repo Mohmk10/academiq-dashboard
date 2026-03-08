@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { ApiResponse, PageResponse } from '../models/api-response.model';
 import {
@@ -13,7 +13,21 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AlerteService {
 
+  private alertCountSubject = new BehaviorSubject<number>(0);
+  alertCount$ = this.alertCountSubject.asObservable();
+
   constructor(private api: ApiService) {}
+
+  refreshAlertCount(): void {
+    this.getStatistiques().subscribe({
+      next: (res) => this.alertCountSubject.next(res.data?.totalActives ?? 0),
+      error: () => {}
+    });
+  }
+
+  resetAlertCount(): void {
+    this.alertCountSubject.next(0);
+  }
 
   getAlertes(page: number, size: number, statut?: StatutAlerte): Observable<ApiResponse<PageResponse<AlerteResponse>>> {
     return this.api.getPage<AlerteResponse>('alertes/rechercher', page, size, 'createdAt', 'desc', statut ? { statut } : undefined);

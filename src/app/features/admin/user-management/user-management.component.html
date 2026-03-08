@@ -130,6 +130,9 @@
                     <i class="fas fa-ellipsis-vertical"></i>
                   </button>
                   <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="openEditDialog(user)">
+                      <i class="fas fa-pen mr-3 text-gray-400"></i> Modifier
+                    </button>
                     <button mat-menu-item (click)="openChangeRoleDialog(user)">
                       <i class="fas fa-user-shield mr-3 text-gray-400"></i> Changer le role
                     </button>

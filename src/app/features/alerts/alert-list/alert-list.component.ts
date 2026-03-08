@@ -79,10 +79,11 @@ import { ReglesDialogComponent } from './dialogs/regles-dialog.component';
             <select class="field-input" [formControl]="typeFilter">
               <option value="">Tous les types</option>
               <option value="MOYENNE_FAIBLE">Moyenne faible</option>
-              <option value="NOTE_BASSE">Note basse</option>
-              <option value="ABSENCE_NOTE">Absences</option>
-              <option value="RISQUE_ECHEC">Risque échec</option>
-              <option value="CUSTOM">Personnalisée</option>
+              <option value="NOTE_ELIMINATOIRE">Note éliminatoire</option>
+              <option value="ABSENCES_REPETEES">Absences répétées</option>
+              <option value="RISQUE_EXCLUSION">Risque exclusion</option>
+              <option value="CHUTE_PERFORMANCE">Chute performance</option>
+              <option value="NON_ASSIDUITE">Non-assiduité</option>
             </select>
           </div>
           <div class="field !mb-0">
@@ -230,12 +231,11 @@ export default class AlertListComponent implements OnInit, OnDestroy {
     this.alerteService.getStatistiques().subscribe({
       next: (res) => {
         const s = res.data;
-        const parType = s.parType ?? {};
         this.stats = {
-          critiques: (parType['RISQUE_ECHEC'] || 0) + (parType['NOTE_BASSE'] || 0),
-          attention: (parType['MOYENNE_FAIBLE'] || 0) + (parType['ABSENCE_NOTE'] || 0),
-          traitees: s.alertesTraitees ?? 0,
-          total: s.alertesActives ?? 0
+          critiques: s.totalCritiques ?? 0,
+          attention: s.totalAttention ?? 0,
+          traitees: s.totalTraitees ?? 0,
+          total: s.totalActives ?? 0
         };
       },
       error: () => { this.stats = { critiques: 0, attention: 0, traitees: 0, total: 0 }; }
@@ -250,8 +250,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
 
     if (type) result = result.filter(a => a.type === type);
     if (niveau === 'critique') result = result.filter(a => this.isCritique(a));
-    else if (niveau === 'attention') result = result.filter(a => a.type === 'MOYENNE_FAIBLE' || a.type === 'ABSENCE_NOTE');
-    else if (niveau === 'info') result = result.filter(a => a.type === 'CUSTOM');
+    else if (niveau === 'attention') result = result.filter(a => a.type === 'MOYENNE_FAIBLE' || a.type === 'ABSENCES_REPETEES' || a.type === 'NON_ASSIDUITE');
     if (search) result = result.filter(a => a.etudiantNom.toLowerCase().includes(search) || a.etudiantMatricule.toLowerCase().includes(search));
 
     this.filteredAlertes = result;
@@ -273,7 +272,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
     const ref = this.dialog.open(TraiterAlerteDialogComponent, { width: '500px', maxWidth: '95vw', data: { alerte, action: 'traiter' } });
     ref.afterClosed().subscribe(result => {
       if (result) this.alerteService.traiterAlerte(alerte.id, result).subscribe({
-        next: () => { this.notification.success('Alerte traitée'); this.loadAlertes(); this.loadStats(); },
+        next: () => { this.notification.success('Alerte traitée'); this.loadAlertes(); this.loadStats(); this.alerteService.refreshAlertCount(); },
         error: () => {}
       });
     });
@@ -283,7 +282,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
     const ref = this.dialog.open(TraiterAlerteDialogComponent, { width: '500px', maxWidth: '95vw', data: { alerte, action: 'ignorer' } });
     ref.afterClosed().subscribe(result => {
       if (result) this.alerteService.ignorerAlerte(alerte.id).subscribe({
-        next: () => { this.notification.success('Alerte ignorée'); this.loadAlertes(); this.loadStats(); },
+        next: () => { this.notification.success('Alerte ignorée'); this.loadAlertes(); this.loadStats(); this.alerteService.refreshAlertCount(); },
         error: () => {}
       });
     });
@@ -291,7 +290,7 @@ export default class AlertListComponent implements OnInit, OnDestroy {
 
   resoudreAlerte(alerte: AlerteResponse): void {
     this.alerteService.resoudreAlerte(alerte.id).subscribe({
-      next: () => { this.notification.success('Alerte résolue'); this.loadAlertes(); this.loadStats(); },
+      next: () => { this.notification.success('Alerte résolue'); this.loadAlertes(); this.loadStats(); this.alerteService.refreshAlertCount(); },
       error: () => {}
     });
   }
@@ -301,22 +300,22 @@ export default class AlertListComponent implements OnInit, OnDestroy {
   }
 
   isCritique(a: AlerteResponse): boolean {
-    return a.type === 'RISQUE_ECHEC' || a.type === 'NOTE_BASSE';
+    return a.type === 'RISQUE_EXCLUSION' || a.type === 'NOTE_ELIMINATOIRE' || a.type === 'CHUTE_PERFORMANCE';
   }
 
   getNiveauClass(a: AlerteResponse): string {
     if (this.isCritique(a)) return 'text-danger';
-    if (a.type === 'MOYENNE_FAIBLE' || a.type === 'ABSENCE_NOTE') return 'text-warning';
+    if (a.type === 'MOYENNE_FAIBLE' || a.type === 'ABSENCES_REPETEES' || a.type === 'NON_ASSIDUITE') return 'text-warning';
     return 'text-blue-500';
   }
 
   getTypeLabel(type: string): string {
-    const labels: Record<string, string> = { NOTE_BASSE: 'Note basse', ABSENCE_NOTE: 'Absence', MOYENNE_FAIBLE: 'Moy. faible', RISQUE_ECHEC: 'Risque échec', CUSTOM: 'Personnalisée' };
+    const labels: Record<string, string> = { NOTE_ELIMINATOIRE: 'Note élim.', ABSENCES_REPETEES: 'Absences', MOYENNE_FAIBLE: 'Moy. faible', RISQUE_EXCLUSION: 'Risque excl.', CHUTE_PERFORMANCE: 'Chute perf.', NON_ASSIDUITE: 'Non-assiduité' };
     return labels[type] || type;
   }
 
   getTypeBadgeClass(type: string): string {
-    const classes: Record<string, string> = { NOTE_BASSE: 'bg-red-100 text-danger', ABSENCE_NOTE: 'bg-orange-100 text-warning', MOYENNE_FAIBLE: 'bg-amber-100 text-amber-700', RISQUE_ECHEC: 'bg-red-100 text-danger', CUSTOM: 'bg-gray-100 text-gray-600' };
+    const classes: Record<string, string> = { NOTE_ELIMINATOIRE: 'bg-red-100 text-danger', ABSENCES_REPETEES: 'bg-orange-100 text-warning', MOYENNE_FAIBLE: 'bg-amber-100 text-amber-700', RISQUE_EXCLUSION: 'bg-red-100 text-danger', CHUTE_PERFORMANCE: 'bg-red-100 text-danger', NON_ASSIDUITE: 'bg-orange-100 text-warning' };
     return classes[type] || 'bg-gray-100 text-gray-600';
   }
 
